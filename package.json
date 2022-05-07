@@ -1,0 +1,59 @@
+{
+  "name": "wfe-navigator",
+  "version": "0.1.0",
+  "description": "Wide Field Ethnography Navigator",
+
+  "private": true,
+  "license": "MIT",
+  "author": "Irene W.",
+  "main": "public/main.js",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "better-sqlite3": "^7.5.1",
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "d3": "^7.4.4",
+    "d3-simple-slider": "^1.10.4",
+    "electron": "^18.2.0",
+    "electron-rebuild": "^3.2.7",
+    "knex": "^2.0.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-player": "^2.10.0",
+    "react-scripts": "5.0.1",
+    "wait-on": "^6.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron-dev": "electron .",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
+    "package-win": "electron-packager . wfe-nav --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"WFE Navigator\"",
+    "package-linux": "electron-packager . wfe-nav --overwrite --asar=true --platform=linux --arch=x64  --prune=true --out=release-builds"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
