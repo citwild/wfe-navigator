@@ -4,7 +4,7 @@ export default class Media {
   constructor(
     startTime, 
     endTime, 
-    source = null, 
+    source = "", 
     name = "",
     date = "", 
     location = "Unknown", 
@@ -35,22 +35,26 @@ export default class Media {
 
   getLocation() {
     if (this.location == null) { 
-      return 'unknown'
+      return 'Unknown'
     }
     return this.location;
   }
 
   getEquipment() {
     if (this.equipment == null) {
-      return 'unknown'
+      return 'Unknown'
     }
     return this.equipment;
   }
 
+  getSource() {
+    return this.source;
+  }
+
 
   // METHODS
-  // isInRange(currentTime) {
-  //   return (currentTime >= this.startTime && currentTime <= this.endTime);
-  // }
+  isInRange(currentTime) {
+    return (currentTime >= this.startTime && currentTime <= this.endTime);
+  }
 
 }

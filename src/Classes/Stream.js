@@ -88,7 +88,7 @@ export default class Stream {
     
     //iterate over all media objects in array if in range
     for (const entry of this.media) {
-      if (currentTime >= entry.startTime && currentTime <= entry.startTime.endTime) {
+      if (entry.isInRange(currentTime)) {
         return entry;
       }
     }

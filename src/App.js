@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
 import timelines from './lib/timelines.js'; //examples = https://codepen.io/manglass/pen/MvLBRz
+import ReactPlayer from 'react-player'
 
 // Styling 
 import './App.css';
@@ -12,12 +13,11 @@ import Media from './Classes/Media.js';
 import Stream from './Classes/Stream.js';
 
 // Components
-import ReactPlayerVideo from './Components/ReactPlayerVideo.js';
-import RepBar from './Components/RepBar.js';
+import MediaPlayer from './Components/MediaPlayer.js';
 import StreamTimelines from './Components/StreamTimelines';
 import MainSlider from './Components/MainSlider';
 
-
+const rootDir = "http://localhost:8080/static/";
 
 class App extends Component {
   constructor() {
@@ -41,42 +41,44 @@ class App extends Component {
     // this.updateMasterSliderRange();
   }
 
-  addStream1 = () => {
-    var stream = new Stream("2017-03-15", "PS A", "gopro");
-    stream.addMedia(new Media(1, 50,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Media(57, 203,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Media(220, 460,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    console.log(stream); 
-    this.setState({
-      allStreams: [...this.state.allStreams, stream]
-    }, () => {
-      this.updateMasterSliderRange();  
-      console.log(this.state.allStreams);  
-    });
-  }
-  
-  addStream2 = () => {
-    var stream = new Stream("2017-03-15", "PS B", "gopro");
-    stream.addMedia(new Media(10, 20,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Media(23, 45,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Media(30, 35,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Media(74, 250,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Media(251, 400,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-
-    this.setState({
-      allStreams: [...this.state.allStreams, stream]
-    }, () => {
-      this.updateMasterSliderRange();    
-    });
-  }
-
   addStream = (streamDate, streamLocation, streamEquipment) => {
+
+    ///// TEMP path creator, based on COMPRESSED VERSION of files
+    var path = [streamDate];
+    if (streamLocation !== "Unknown") { 
+      path.push(streamLocation);
+    }
+    if (streamEquipment !== "Unknown") {
+      path.push(streamEquipment);
+    }
+    path = path.join('/') + "/";
+
+    var fileSuffix = "";
+    if (streamLocation == 'Huddle') {
+      fileSuffix = "-320";
+    } else if (streamEquipment == 'gopro') {
+      fileSuffix = "-320";
+    } else if (streamEquipment == 'zoom') {
+      fileSuffix = "-128";
+    }
+    ///////////////
+
     var stream = new Stream(streamDate, streamLocation, streamEquipment);
     window.api.receive("sendFiles", (data) => {
       data.forEach(file => {
-        stream.addMedia(new Media(file.time_begin, file.time_end,"source", "vid1",  file.nominal_date, file.location, file.equipment));
+        stream.addMedia(
+          new Media(
+            file.time_begin, 
+            file.time_end,
+            path + file.file_name.split('.')[0] + fileSuffix + "." + file.file_ext, 
+            file.file_name, 
+            file.nominal_date, 
+            file.location, 
+            file.equipment
+          )
+        );
       })
-      console.log({stream});
+      // console.log({stream});
       this.setState({
         allStreams: [...this.state.allStreams, stream]
       }, () => {
@@ -94,7 +96,7 @@ class App extends Component {
     var getAllMaxs = this.state.allStreams.map( (thisStream) => thisStream.getLatestTime() );
     var newMin = d3.min(getAllMins);
     var newMax = d3.max(getAllMaxs);
-    console.log("MIN/MAX: " + newMin + "-" + newMax);
+    // console.log("MIN/MAX: " + newMin + "-" + newMax);
     this.setState({
       sliderRange: {
         minTime: newMin,
@@ -124,46 +126,6 @@ class App extends Component {
       })
     }));
     // this.updateMasterSliderRange();
-  }
-
-  createMasterSlider = () => {
-    console.log('creating master slider...');
-    d3.select("#master-slider > svg").remove();
-
-    const sliderHeight = 50;
-    const sliderWidth = 1600;
-
-    // var linearScale = d3.scaleLinear()
-    //   .domain([0, 24])
-    //   .range([0, 500]);
-    
-    var slider = d3Slider
-      .sliderTop()
-      .min(this.state.masterSlider.minTime)
-      .max(this.state.masterSlider.maxTime)
-      .step(1)
-      .default(this.state.masterTime)
-      .width(sliderWidth)
-      .displayValue(false)
-      .tickFormat(d3.timeFormat("%H:%M:%S")) //time zone based on system settings
-      .on('onchange', (val) => {
-        d3.select('#value').text(new Date(val));
-        // d3.select('#value').text(val);
-        
-      })
-      .on('end', (value) => {
-        this.updateMasterTime(value);
-      });;
-
-    var g = d3
-      .select('#master-slider')
-      .append('svg')
-      .attr('width', sliderWidth + 20)
-      .attr('height', sliderHeight)
-      .append('g')
-      .attr('transform', 'translate(10,40)');
-    
-    g.call(slider);
   }
 
 
@@ -255,6 +217,8 @@ class App extends Component {
 
     // console.log(this.state.masterSlider.minTime + "< >" + this.state.masterSlider.maxTime);
 
+    // var fileURL = URL.createObjectURL("C:/Users/Irene/Desktop/BeamCoffer/2014-02-19/PS%20A/gopro/GOPR0045-320.mp4")
+    
     // this.createSlider();
     return (
       <div style={{padding: 50}}>
@@ -299,19 +263,11 @@ class App extends Component {
 
         </div>
             
-        <div>
-          <button onClick={() => this.addStream("2014-02-19", "PS A", "gopro")}>02/19 - A/gopro</button>
-          <br/>
-          <button onClick={() => this.addStream("2014-02-20", "Huddle", "Unknown")}>02/20 - Huddle</button>
-          <button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>02/20 - B/gopro</button>
-          <button onClick={() => this.addStream("2014-02-20", "PS F", "gopro")}>02/20 - C/gopro</button>
-          <br/>
-          <button onClick={() => this.addStream("2014-02-21", "PS C", "zoom")}>02/21 - C/zoom</button>
-        </div>
+        
 
         <div>
           
-          <h1>query filters</h1>
+          {/* <h1>query filters</h1>
           <form action="#" method="post" className="query" id="query-fields">
             <div>
               <h3>location</h3>
@@ -332,7 +288,7 @@ class App extends Component {
             </div>
             
           </form>
-          <h2>query result</h2>
+          <h2>query result</h2> */}
         
         
         </div>
@@ -355,18 +311,46 @@ class App extends Component {
         <button onClick={this.clearSelectedFiles}>cancel import</button>
         <h2>videos</h2> */}
 
-
-        {/* <p><button onClick={this.togglePlayAll}>toggle play ALL</button></p> */}
-        {/* {this.state.videos.map( (thisVid) => <ReactPlayerVideo 
-          key = {thisVid.id}
-          ref = {thisVid.playerRef}
-          videoInfo = {thisVid} 
-          masterSlider = {this.state.masterSlider}
-          addPlayerRef = {this.addPlayerRef}
-          removeVideo = {this.removeVideo}
-          />
-        )} */}
+        <div id="media-container">
+          {/* <p><button onClick={this.togglePlayAll}>toggle play ALL</button></p> */}
+          {this.state.allStreams.map( (thisStream) => {
+            var keyGen = [
+              thisStream.getDate(), 
+              thisStream.getLocation(), 
+              thisStream.getEquipment()
+            ];
+            console.log(this.state.masterTime);
+            var media = thisStream.getMediaAtTime(this.state.masterTime);
+            if (media !== null) {
+              console.log(media.getSource());
+            }
+            return <MediaPlayer 
+              key = {keyGen.join('|')}
+              stream = {thisStream}
+              masterTime = {this.state.masterTime}
+              updateMasterTime = {this.updateMasterTime}
+              sliderRange = {this.state.sliderRange}
+              // addPlayerRef = {this.addPlayerRef}
+              // removeVideo = {this.removeVideo}
+            />
+            }
+          )}
+          
+          
+        </div>
         
+        <div>
+
+          <h4>Sample inputs</h4>
+          <button onClick={() => this.addStream("2014-02-19", "PS A", "gopro")}>02/19 - A/gopro</button>
+          <button onClick={() => this.addStream("2014-02-19", "Huddle", "Unknown")}>02/20 - Huddle</button>
+          <br/>
+          
+          <button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>02/20 - B/gopro</button>
+          <button onClick={() => this.addStream("2014-02-20", "PS F", "gopro")}>02/20 - C/gopro</button>
+          <br/>
+          <button onClick={() => this.addStream("2014-02-21", "PS C", "gopro")}>02/21 - C/zoom</button>
+        </div>
         
       </div>
     );

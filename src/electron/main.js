@@ -19,7 +19,8 @@ function createWindow () {
     height: 600,
     webPreferences: {
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
     }
   })
 
@@ -61,6 +62,7 @@ function createWindow () {
 
   });
 
+  serveLocalFiles();
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
@@ -69,6 +71,22 @@ function createWindow () {
     app.quit();
   });
 }
+
+
+function serveLocalFiles() {
+  
+  var rootDir = "C:/Users/Irene/Desktop/BeamCoffer";
+  var express = require('express');
+  var expressApp = express();
+  var expressPORT = 8080;
+
+  expressApp.use('/static', express.static(rootDir));
+  expressApp.listen(8080);
+  console.log("serving local files at port: " + expressPORT);
+
+
+}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -92,3 +110,5 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+

@@ -117,8 +117,6 @@ class StreamTimelines extends Component {
       .background(backgroundColor)
       .showTimeAxis();
 
-    console.log({chart});
-    
     var xScale = d3.scaleLinear()
       .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
       .range([margin.left, 1000 - margin.right]);

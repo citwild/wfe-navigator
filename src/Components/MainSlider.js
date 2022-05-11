@@ -27,7 +27,8 @@ class MainSlider extends Component {
   }
 
   createMainSlider = () => {
-    console.log('creating main-slider...');
+    console.log('drawing main-slider...');
+    
     d3.select("#main-slider > svg").remove();
 
     const sliderHeight = 50;
@@ -86,7 +87,6 @@ class MainSlider extends Component {
   }
 
   render() { 
-    console.log(this.state.minTime);
     return (
       <div id="slider-container">
         <div id="slider-value"></div>
