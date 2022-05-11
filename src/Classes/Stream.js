@@ -2,11 +2,13 @@ export default class Stream {
   
   constructor( 
     date = "", 
-    location = "", 
-    equipment = "",
+    location = "Unknown", 
+    equipment = "Unknown",
     media = [],
-    earliestTime = 0,
-    latestTime = 200
+    earliestTime = -1,
+    latestTime = 0,
+    type = "media", //stream, media
+    description = ""
     ) {
     this.media = media; 
     this.earliestTime = earliestTime; 
@@ -14,6 +16,8 @@ export default class Stream {
     this.date = date;
     this.location = location;
     this.equipment = equipment;
+    this.type = type;
+    this.description = description;
   }
 
 

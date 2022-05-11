@@ -2,11 +2,10 @@
   "name": "wfe-navigator",
   "version": "0.1.0",
   "description": "Wide Field Ethnography Navigator",
-
   "private": true,
   "license": "MIT",
   "author": "Irene W.",
-  "main": "public/main.js",
+  "main": "src/electron/main.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",

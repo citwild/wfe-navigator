@@ -44,7 +44,7 @@ export default class RepBar extends Component {
 
   createBar = () => {
     
-    const svgWidth = 800;
+    const svgWidth = 1600;
     const barHeight = 20;
     const fillColor = "orange";
     const emptyColor = "#ccc";
@@ -79,7 +79,7 @@ export default class RepBar extends Component {
       colorCoder.push(fillColor);
     }
 
-    var data = d3.range(this.props.overallStartTime, this.props.overallEndTime, 1);
+    var data = d3.range(this.props.overallStartTime, this.props.overallEndTime, 20000);
 
     let linearScale = d3.scaleLinear()
         .domain([this.props.overallStartTime, this.props.overallEndTime])
@@ -102,7 +102,10 @@ export default class RepBar extends Component {
       .attr('x', (d) => {
         return linearScale(d);
       })
-      .attr('width', rectWidth)
+      .attr('width', (d) => {
+        if (d == this.props.masterTime) { return 3;}
+        return rectWidth;
+      })
       .attr('height', (d) => {
         if (d == this.props.masterTime) { return svgHeightAndPadding;}
         return barHeight;
@@ -131,6 +134,8 @@ export default class RepBar extends Component {
   ref = (ref) => {
     this.svg = ref;
   }
+
+  static getDerivedStateFromProps(props, state) {}
 
 
   render() {

@@ -1,14 +1,22 @@
-import './App.css';
+// Libraries
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
+import timelines from './lib/timelines.js'; //examples = https://codepen.io/manglass/pen/MvLBRz
 
-//Components
+// Styling 
+import './App.css';
+
+// Class objects
+import Media from './Classes/Media.js';
+import Stream from './Classes/Stream.js';
+
+// Components
 import ReactPlayerVideo from './Components/ReactPlayerVideo.js';
 import RepBar from './Components/RepBar.js';
-// Class objects
-import Video from './Classes/Video.js';
-import Stream from './Classes/Stream.js';
+import StreamTimelines from './Components/StreamTimelines';
+import MainSlider from './Components/MainSlider';
+
 
 
 class App extends Component {
@@ -16,7 +24,7 @@ class App extends Component {
     super();
     this.state = {
       masterSlider: {
-        minTime: 0,
+        minTime: -1,
         maxTime: 0,
         
         // playTimeline: false
@@ -32,43 +40,13 @@ class App extends Component {
     // console.log(this.state.streams);
     this.createMasterSlider();
     this.updateMasterSliderRange();
-
-    // this.dbTest();
   }
-
-  // dbTest = () => {
-  //   const db = new Database('.\..\BeamCoffer\BeamCoffer_meta.db', { fileMustExist: true, readonly: true, verbose: console.log });
-
-
-  //   // const fields = "id, startTime, endTime";
-  //   // const table = "media data";
-  //   // const condition = ["location == Hub", "equipment == zoom"]
-  //   // const allConditions = condition.join(" AND ");
-
-  //   // let qry = [];
-  //   // qry.push("SELECT");
-  //   // qry.push(fields);
-  //   // qry.push("FROM");
-  //   // qry.push(table);
-  //   // qry.push("WHERE");
-  //   // qry.push(allConditions);
-
-  //   // // const statement = qry.join(" ");
-
-  //   const statement = "SELECT * FROM media_files";
-
-  //   const stmt = db.prepare(statement);
-
-  //   const result = stmt.all();
-  //   console.log(result);
-  // }
-
 
   addStream1 = () => {
     var stream = new Stream("2017-03-15", "PS A", "gopro");
-    stream.addMedia(new Video(1, 50,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(57, 203,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(220, 460,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(1, 50,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(57, 203,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(220, 460,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
 
     this.setState({
       streams: [...this.state.streams, stream]
@@ -78,29 +56,133 @@ class App extends Component {
   }
   
   addStream2 = () => {
-    var stream = new Stream("2017-03-15", "PS B", "gopro");
-    stream.addMedia(new Video(10, 20,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(23, 45,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(30, 35,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(74, 250,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(251, 400,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    // var stream = new Stream("2017-03-15", "PS B", "gopro");
+    // stream.addMedia(new Video(10, 20,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
+    // stream.addMedia(new Video(23, 45,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
+    // stream.addMedia(new Video(30, 35,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    // stream.addMedia(new Video(74, 250,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    // stream.addMedia(new Video(251, 400,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
 
-    this.setState({
-      streams: [...this.state.streams, stream]
-    }, () => {
-      this.updateMasterSliderRange();    
-    });
+    // this.setState({
+    //   streams: [...this.state.streams, stream]
+    // }, () => {
+    //   this.updateMasterSliderRange();    
+    // });
+
+    var testData = [
+      {label: "stream a", 
+        times: [
+          {"starting_time": 1355752800000, "ending_time": 1355759900000},
+          {"starting_time": 1355767900000, "ending_time": 1355774400000}
+        ]
+      },
+      {label: "stream b", 
+        times: [
+          {"starting_time": 1355759910000, "ending_time": 1355761900000},
+          {"starting_time": 1355761960000, "ending_time": 1355762020000}
+        ]
+      },
+      {label: "stream c", 
+        times: [
+          {"starting_time": 1355761910000, "ending_time": 1355763910000}
+        ]
+      },
+      {label: "stream F", 
+        times: [
+          {"color":"yellow", "label":"Weeee", "starting_time": 1355761910000, "ending_time": 1355763910000}
+        ]
+      },
+      {label: "stream c", 
+        times: [
+          {"starting_time": 1355761910000, "ending_time": 1355763910000}
+        ]
+      },
+      {label: "stream a", 
+        times: [
+          {"starting_time": 1355752800000, "ending_time": 1355759900000},
+          {"starting_time": 1355767900000, "ending_time": 1355774400000}
+        ]
+      },
+      {label: "stream a", 
+        times: [
+          {"starting_time": 1355752800000, "ending_time": 1355759900000},
+          {"starting_time": 1355767900000, "ending_time": 1355774400000}
+        ]
+      },
+      {label: "stream audio only", 
+        times: [
+          {"starting_time": 1355752800000, "ending_time": 1355759900000},
+          {"starting_time": 1355767900000, "ending_time": 1355774400000}
+        ]
+      },
+      {label: "stream audio only", 
+        times: [
+          {"starting_time": 1355752800000, "ending_time": 1355759900000},
+          {"starting_time": 1355767900000, "ending_time": 1355774400000}
+        ]
+      },
+      {label: "stream audio only", 
+        times: [
+          {"starting_time": 1355752800000, "ending_time": 1355759900000},
+          {"starting_time": 1355767900000, "ending_time": 1355774400000}
+        ]
+      }
+      ];
+    
+    //TODO:
+    //  add scrubber line 
+    //  add eventlistener to get value from slider
+    var chart = timelines()
+      .stack()
+      .orient("bottom")
+      .itemHeight(10)
+      .itemMargin(3)
+      .margin({left:70, right:20, top:0, bottom:0})
+      .colors(() => {return "lightpink"})
+      .background("#f2f2f2")
+      .showTimeAxis();
+
+    console.log({chart});
+    
+    //TODO: 
+    //  make height dynamic
+    d3.select("#timeline1")
+      .append("svg")
+      .attr("width", 1000)
+      // .attr("height", 300) //needs to make dynamic
+      .datum(testData)
+      .call(chart)
+      .append('rect')
+      .attr("width", 1)
+      .attr("height", '100%')
+      .attr('x', 500)
+      .style('fill', "red");
+
   }
 
-  addStream3 = () => {
-    var stream = new Stream("2017-03-15", "Hub", "gopro");
-    stream.addMedia(new Video(20, 345,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
-    stream.addMedia(new Video(375, 566,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
-    this.setState({
-      streams: [...this.state.streams, stream]
-    }, () => {
-      this.updateMasterSliderRange(); 
+  addStream = (streamDate, streamLocation, streamEquipment) => {
+    var stream = new Stream(streamDate, streamLocation, streamEquipment);
+    window.api.receive("sendFiles", (data) => {
+      data.forEach(file => {
+        stream.addMedia(new Media(file.time_begin, file.time_end,"source", "vid1",  file.nominal_date, file.location, file.equipment));
+      })
+      console.log({stream});
+      this.setState({
+        streams: [...this.state.streams, stream]
+      }, () => {
+        console.log(this.state.streams);
+        this.updateMasterSliderRange(); 
+      });
     });
+    window.api.send("getFiles", [streamDate, streamLocation, streamEquipment]);
+
+    // this.setState({
+    //   streams: [...this.state.streams, stream]
+    // }, () => {
+    //   console.log(this.state.streams);
+    //   this.updateMasterSliderRange(); 
+    // });
+  
   }
 
   // execute every time a video is added
@@ -146,7 +228,7 @@ class App extends Component {
     d3.select("#master-slider > svg").remove();
 
     const sliderHeight = 50;
-    const sliderWidth = 800;
+    const sliderWidth = 1600;
 
     // var linearScale = d3.scaleLinear()
     //   .domain([0, 24])
@@ -160,9 +242,10 @@ class App extends Component {
       .default(this.state.masterTime)
       .width(sliderWidth)
       .displayValue(false)
+      .tickFormat(d3.timeFormat("%H:%M:%S")) //time zone based on system settings
       .on('onchange', (val) => {
-        // d3.select('#value').text(new Date(val));
-        d3.select('#value').text(val);
+        d3.select('#value').text(new Date(val));
+        // d3.select('#value').text(val);
         
       })
       .on('end', (value) => {
@@ -281,6 +364,17 @@ class App extends Component {
           <h2>masterSlider</h2>
           <div id="value">slider value</div>
           <div id='master-slider'></div>
+          <div id='timeline1'>
+          <MainSlider
+            overallStartTime = {this.state.masterSlider.minTime}
+            overallEndTime = {this.state.masterSlider.maxTime}
+            masterTime = {this.state.masterTime}
+          />
+          <StreamTimelines/>
+
+          </div>
+          <div id='target1'></div>
+          
         </div>
         <div>
 
@@ -308,7 +402,7 @@ class App extends Component {
         <div>
           <button onClick={this.addStream1}>Click to add Stream #1</button>
           <button onClick={this.addStream2}>Click to add Stream #2</button>
-          <button onClick={this.addStream3}>Click to add Stream #3</button>
+          <button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>Click to add Stream #3</button>
         </div>
 
         <div>
