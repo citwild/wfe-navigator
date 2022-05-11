@@ -5,10 +5,24 @@ import * as d3Slider from 'd3-simple-slider';
 class MainSlider extends Component {
   constructor(props) {
     super(props);
-    this.state = {  }
+    this.state = {
+      minTime: 0,
+      maxTime: 0
+    }
   }
   
   componentDidMount() {
+    if (this.props.sliderRange.maxTime - this.props.sliderRange.minTime !== 0) {
+      this.createMainSlider();
+    }
+    
+  }
+
+  componentDidUpdate() {
+    if (document.querySelector('div#main-slider > svg') != null) {
+      d3.select('div#main-slider').selectAll('svg').remove();
+    }
+    
     this.createMainSlider();
   }
 
@@ -17,45 +31,67 @@ class MainSlider extends Component {
     d3.select("#main-slider > svg").remove();
 
     const sliderHeight = 50;
-    const sliderWidth = 1000
-    ;
+    const sliderWidth = 1000;
 
-    // var linearScale = d3.scaleLinear()
-    //   .domain([0, 24])
-    //   .range([0, 500]);
+    var xScale = d3.scaleLinear()
+      .domain([this.state.minTime, this.state.maxTime])
+      .range([20, 1000]);
     
     var slider = d3Slider
       .sliderTop()
-      .min(this.props.overallStartTime)
-      .max(this.props.overallEndTime)
+      .min(this.state.minTime)
+      .max(this.state.maxTime)
       .step(1)
       .default(this.props.masterTime)
-      .width(sliderWidth)
+      .width(sliderWidth - (2 * 20))
       .displayValue(false)
       .tickFormat(d3.timeFormat("%H:%M:%S")) //time zone based on system settings
       .on('onchange', (val) => {
-        d3.select('#value').text(new Date(val));
+        d3.select('#slider-value').text(new Date(val));
         // d3.select('#value').text(val);
         
       })
       .on('end', (value) => {
-        this.updateMasterTime(value);
-      });;
+        this.props.updateMasterTime(value);
+        // d3.select('rect#scrubber-line')
+        // .attr('x', xScale.invert(this.props.masterTime))
+      });
 
     var g = d3
       .select('#main-slider')
       .append('svg')
-      .attr('width', sliderWidth + 20)
+      .attr('width', sliderWidth)
       .attr('height', sliderHeight)
       .append('g')
-      .attr('transform', 'translate(10,40)');
+      .attr('transform', 'translate(20,40)');
     
     g.call(slider);
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    //adapt Stream object into d3-timelines format to display
+    if(nextProps.sliderRange.minTime !== prevState.minTime ||
+      nextProps.sliderRange.maxTime !== prevState.maxTime){
+      //Change in props
+      if (document.querySelector('div#main-slider > svg') != null) {
+        d3.select('div#main-slider').selectAll('svg').remove();
+      }
+    
+      return {
+        minTime: nextProps.sliderRange.minTime,
+        maxTime: nextProps.sliderRange.maxTime
+      };
+    }
+    return null; // No change to state
+  }
+
   render() { 
+    console.log(this.state.minTime);
     return (
-      <div id="main-slider"></div>
+      <div id="slider-container">
+        <div id="slider-value"></div>
+        <div id="main-slider"></div>
+      </div>
     );
   }
 }

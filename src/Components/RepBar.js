@@ -135,9 +135,6 @@ export default class RepBar extends Component {
     this.svg = ref;
   }
 
-  static getDerivedStateFromProps(props, state) {}
-
-
   render() {
     // render svg element and use ref callback to store reference
     return (

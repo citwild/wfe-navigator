@@ -9,7 +9,8 @@ export default class Media {
     date = "", 
     location = "Unknown", 
     equipment = "Unknown",
-    type = "video" //video, audio, image
+    mediaType = "video", //video, audio, image
+    dbItemID = null
     ) {
     this.source = source; //the video path/source e.g. localhost:5000/media/file_name
     this.name = name;
@@ -18,7 +19,8 @@ export default class Media {
     this.date = date;
     this.location = location;
     this.equipment = equipment;
-    this.type = type;
+    this.mediaType = mediaType;
+    this.dbItemID = dbItemID;
   }
 
 

@@ -23,14 +23,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      masterSlider: {
-        minTime: -1,
-        maxTime: 0,
+      sliderRange: {
+        minTime: null,
+        maxTime: null,
         
         // playTimeline: false
       },
       masterTime: 0,
-      streams: [],
+      allStreams: [],
       localFiles: []
     };
   }
@@ -38,8 +38,7 @@ class App extends Component {
 
   componentDidMount() {
     // console.log(this.state.streams);
-    this.createMasterSlider();
-    this.updateMasterSliderRange();
+    // this.updateMasterSliderRange();
   }
 
   addStream1 = () => {
@@ -47,117 +46,28 @@ class App extends Component {
     stream.addMedia(new Media(1, 50,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
     stream.addMedia(new Media(57, 203,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
     stream.addMedia(new Media(220, 460,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-
+    console.log(stream); 
     this.setState({
-      streams: [...this.state.streams, stream]
+      allStreams: [...this.state.allStreams, stream]
     }, () => {
-      this.updateMasterSliderRange();    
+      this.updateMasterSliderRange();  
+      console.log(this.state.allStreams);  
     });
   }
   
   addStream2 = () => {
-    // var stream = new Stream("2017-03-15", "PS B", "gopro");
-    // stream.addMedia(new Video(10, 20,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
-    // stream.addMedia(new Video(23, 45,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
-    // stream.addMedia(new Video(30, 35,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    // stream.addMedia(new Video(74, 250,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
-    // stream.addMedia(new Video(251, 400,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    var stream = new Stream("2017-03-15", "PS B", "gopro");
+    stream.addMedia(new Media(10, 20,"source", "vid1",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(23, 45,"source", "vid2",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(30, 35,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(74, 250,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
+    stream.addMedia(new Media(251, 400,"source", "vid3",  "2017-03-15", "PS A", "gopro"));
 
-    // this.setState({
-    //   streams: [...this.state.streams, stream]
-    // }, () => {
-    //   this.updateMasterSliderRange();    
-    // });
-
-    var testData = [
-      {label: "stream a", 
-        times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000},
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}
-        ]
-      },
-      {label: "stream b", 
-        times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000},
-          {"starting_time": 1355761960000, "ending_time": 1355762020000}
-        ]
-      },
-      {label: "stream c", 
-        times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}
-        ]
-      },
-      {label: "stream F", 
-        times: [
-          {"color":"yellow", "label":"Weeee", "starting_time": 1355761910000, "ending_time": 1355763910000}
-        ]
-      },
-      {label: "stream c", 
-        times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}
-        ]
-      },
-      {label: "stream a", 
-        times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000},
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}
-        ]
-      },
-      {label: "stream a", 
-        times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000},
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}
-        ]
-      },
-      {label: "stream audio only", 
-        times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000},
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}
-        ]
-      },
-      {label: "stream audio only", 
-        times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000},
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}
-        ]
-      },
-      {label: "stream audio only", 
-        times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000},
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}
-        ]
-      }
-      ];
-    
-    //TODO:
-    //  add scrubber line 
-    //  add eventlistener to get value from slider
-    var chart = timelines()
-      .stack()
-      .orient("bottom")
-      .itemHeight(10)
-      .itemMargin(3)
-      .margin({left:70, right:20, top:0, bottom:0})
-      .colors(() => {return "lightpink"})
-      .background("#f2f2f2")
-      .showTimeAxis();
-
-    console.log({chart});
-    
-    //TODO: 
-    //  make height dynamic
-    d3.select("#timeline1")
-      .append("svg")
-      .attr("width", 1000)
-      // .attr("height", 300) //needs to make dynamic
-      .datum(testData)
-      .call(chart)
-      .append('rect')
-      .attr("width", 1)
-      .attr("height", '100%')
-      .attr('x', 500)
-      .style('fill', "red");
-
+    this.setState({
+      allStreams: [...this.state.allStreams, stream]
+    }, () => {
+      this.updateMasterSliderRange();    
+    });
   }
 
   addStream = (streamDate, streamLocation, streamEquipment) => {
@@ -168,32 +78,25 @@ class App extends Component {
       })
       console.log({stream});
       this.setState({
-        streams: [...this.state.streams, stream]
+        allStreams: [...this.state.allStreams, stream]
       }, () => {
-        console.log(this.state.streams);
+        console.log(this.state.allStreams);
         this.updateMasterSliderRange(); 
       });
     });
     window.api.send("getFiles", [streamDate, streamLocation, streamEquipment]);
-
-    // this.setState({
-    //   streams: [...this.state.streams, stream]
-    // }, () => {
-    //   console.log(this.state.streams);
-    //   this.updateMasterSliderRange(); 
-    // });
-  
+ 
   }
 
   // execute every time a video is added
   updateMasterSliderRange = () => {
-    var getAllMins = this.state.streams.map( (thisStream) => thisStream.getEarliestTime() );
-    var getAllMaxs = this.state.streams.map( (thisStream) => thisStream.getLatestTime() );
+    var getAllMins = this.state.allStreams.map( (thisStream) => thisStream.getEarliestTime() );
+    var getAllMaxs = this.state.allStreams.map( (thisStream) => thisStream.getLatestTime() );
     var newMin = d3.min(getAllMins);
     var newMax = d3.max(getAllMaxs);
     console.log("MIN/MAX: " + newMin + "-" + newMax);
     this.setState({
-      masterSlider: {
+      sliderRange: {
         minTime: newMin,
         maxTime: newMax
       }
@@ -343,7 +246,6 @@ class App extends Component {
     // 31,536,000,000 ms = 1 yr (365 days)... not sure how to account leap year
 
     // files is a FileList of File objects. List some properties.
-
     var output = [];
     if (this.state.localFiles.length !== 0) {
       for (var f of this.state.localFiles) {
@@ -351,34 +253,32 @@ class App extends Component {
       }
     }
 
-    this.createMasterSlider();
-    console.log(this.state.masterSlider.minTime + "< >" + this.state.masterSlider.maxTime);
+    // console.log(this.state.masterSlider.minTime + "< >" + this.state.masterSlider.maxTime);
 
-    console.log("currtime = " + this.state.masterTime);
-    console.log('running render');
     // this.createSlider();
     return (
       <div style={{padding: 50}}>
         
         <div>
           <h2>masterSlider</h2>
-          <div id="value">slider value</div>
-          <div id='master-slider'></div>
-          <div id='timeline1'>
+          
           <MainSlider
-            overallStartTime = {this.state.masterSlider.minTime}
-            overallEndTime = {this.state.masterSlider.maxTime}
+            sliderRange = {this.state.sliderRange}
             masterTime = {this.state.masterTime}
+            updateMasterTime = {this.updateMasterTime}
+            
           />
-          <StreamTimelines/>
-
-          </div>
-          <div id='target1'></div>
+          <StreamTimelines
+            sliderRange = {this.state.sliderRange}
+            allStreams = {this.state.allStreams}
+            masterTime = {this.state.masterTime}
+            
+          />
           
         </div>
         <div>
 
-          {this.state.streams.map( (thisStream) => {
+          {/* {this.state.allStreams.map( (thisStream) => {
 
             var keyGen = [
               thisStream.getDate(), 
@@ -395,14 +295,18 @@ class App extends Component {
                 masterTime = {this.state.masterTime}
               />
             );
-          })}
+          })} */}
 
         </div>
             
         <div>
-          <button onClick={this.addStream1}>Click to add Stream #1</button>
-          <button onClick={this.addStream2}>Click to add Stream #2</button>
-          <button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>Click to add Stream #3</button>
+          <button onClick={() => this.addStream("2014-02-19", "PS A", "gopro")}>02/19 - A/gopro</button>
+          <br/>
+          <button onClick={() => this.addStream("2014-02-20", "Huddle", "Unknown")}>02/20 - Huddle</button>
+          <button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>02/20 - B/gopro</button>
+          <button onClick={() => this.addStream("2014-02-20", "PS F", "gopro")}>02/20 - C/gopro</button>
+          <br/>
+          <button onClick={() => this.addStream("2014-02-21", "PS C", "zoom")}>02/21 - C/zoom</button>
         </div>
 
         <div>
