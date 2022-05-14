@@ -2,8 +2,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
-import timelines from './lib/timelines.js'; //examples = https://codepen.io/manglass/pen/MvLBRz
-import ReactPlayer from 'react-player'
 
 // Styling 
 import './App.css';
@@ -16,8 +14,21 @@ import Stream from './Classes/Stream.js';
 import MediaPlayer from './Components/MediaPlayer.js';
 import StreamTimelines from './Components/StreamTimelines';
 import MainSlider from './Components/MainSlider';
+import StreamManager from './Components/StreamManager';
 
 const rootDir = "http://localhost:8080/static/";
+
+
+// TODO: try this object
+// allStreams = [
+//   {
+//     id: 0,
+//     stream: new Stream(),
+//     timelineInput: this.streamToTimeline(stream),
+//     playerRef: React.createRef(),
+//     playing: false
+//   }
+// ]
 
 class App extends Component {
   constructor() {
@@ -31,7 +42,8 @@ class App extends Component {
       },
       masterTime: 0,
       allStreams: [],
-      localFiles: []
+      localFiles: [],
+      playbackIntervalObject: null
     };
   }
 
@@ -39,6 +51,30 @@ class App extends Component {
   componentDidMount() {
     // console.log(this.state.streams);
     // this.updateMasterSliderRange();
+  }
+
+  startPlayback = (speedFactor) => {
+    //start repeating functio to move scrubber line
+    // by speedfactor*1sec(or 1000ms) per 1sec
+    var intervalObject = setInterval(() => {this.firePlaybackEvent(speedFactor)}, 1000);
+    this.setState({ playbackIntervalObject: intervalObject });
+
+    //start all streams
+  }
+
+  firePlaybackEvent = (speedFactor) => {
+    console.log(this.state.masterTime);
+    this.setState(prevState => ({
+      masterTime: prevState.masterTime + (1000*speedFactor)
+    }));
+  }
+
+  stopPlayback = () => {
+    //clear the repeating function
+    clearInterval(this.state.playbackIntervalObject);
+    this.setState({ playbackIntervalObject: null });
+
+    //stop all streams 
   }
 
   addStream = (streamDate, streamLocation, streamEquipment) => {
@@ -215,7 +251,7 @@ class App extends Component {
       }
     }
 
-    // console.log(this.state.masterSlider.minTime + "< >" + this.state.masterSlider.maxTime);
+    
 
     // var fileURL = URL.createObjectURL("C:/Users/Irene/Desktop/BeamCoffer/2014-02-19/PS%20A/gopro/GOPR0045-320.mp4")
     
@@ -224,7 +260,9 @@ class App extends Component {
       <div style={{padding: 50}}>
         
         <div>
-          <h2>masterSlider</h2>
+          <h2>masterSlider</h2> 
+          <button onClick={() => {this.startPlayback(1)}}>start playback</button>
+          <button onClick={this.stopPlayback}>stop playback</button>
           
           <MainSlider
             sliderRange = {this.state.sliderRange}
@@ -240,30 +278,6 @@ class App extends Component {
           />
           
         </div>
-        <div>
-
-          {/* {this.state.allStreams.map( (thisStream) => {
-
-            var keyGen = [
-              thisStream.getDate(), 
-              thisStream.getLocation(), 
-              thisStream.getEquipment()
-            ];
-
-            return (
-              <RepBar 
-                key = {keyGen.join('|')}
-                str = {thisStream}
-                overallStartTime = {this.state.masterSlider.minTime}
-                overallEndTime = {this.state.masterSlider.maxTime}
-                masterTime = {this.state.masterTime}
-              />
-            );
-          })} */}
-
-        </div>
-            
-        
 
         <div>
           
@@ -292,24 +306,6 @@ class App extends Component {
         
         
         </div>
-        
-      
-        {/* <h2>File Import</h2>
-        <input 
-          type="file" 
-          id="files" 
-          name="files[]" 
-          style={{color: 'transparent'}} 
-          multiple 
-          onChange={this.selectVideo}
-          onClick={(event)=> {event.target.value = null}}
-        />
-        <div id="list">
-          <ul>{output}</ul>
-        </div>
-        <button onClick={this.addVideo}>IMPORT video</button>
-        <button onClick={this.clearSelectedFiles}>cancel import</button>
-        <h2>videos</h2> */}
 
         <div id="media-container">
           {/* <p><button onClick={this.togglePlayAll}>toggle play ALL</button></p> */}
@@ -319,20 +315,25 @@ class App extends Component {
               thisStream.getLocation(), 
               thisStream.getEquipment()
             ];
-            console.log(this.state.masterTime);
-            var media = thisStream.getMediaAtTime(this.state.masterTime);
-            if (media !== null) {
-              console.log(media.getSource());
-            }
-            return <MediaPlayer 
+
+            return <StreamManager
               key = {keyGen.join('|')}
               stream = {thisStream}
               masterTime = {this.state.masterTime}
               updateMasterTime = {this.updateMasterTime}
-              sliderRange = {this.state.sliderRange}
-              // addPlayerRef = {this.addPlayerRef}
-              // removeVideo = {this.removeVideo}
             />
+            
+            // return <MediaPlayer 
+            //   key = {keyGen.join('|')}
+            //   stream = {thisStream}
+            //   masterTime = {this.state.masterTime}
+            //   updateMasterTime = {this.updateMasterTime}
+            //   sliderRange = {this.state.sliderRange}
+            //   // addPlayerRef = {this.addPlayerRef}
+            //   // removeVideo = {this.removeVideo}
+            // />
+
+            
             }
           )}
           

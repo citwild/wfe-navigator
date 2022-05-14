@@ -87,6 +87,7 @@ class MainSlider extends Component {
   }
 
   render() { 
+    d3.select("#main-slider").property("value", this.props.masterTime);
     return (
       <div id="slider-container">
         <div id="slider-value"></div>

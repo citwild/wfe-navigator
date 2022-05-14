@@ -15,20 +15,21 @@ class MediaPlayer extends Component {
     super(props);
     this.state = {
       url: null,
+      sourceObject: new Media(),
       // pip: false,
       playing: false,
       controls: false,
       // light: false,
       volume: 0.8,
       muted: false,
-      played: 0.5,
+      played: 0,
       loaded: 0,
       duration: 0,
       playbackRate: 1.0,
       loop: false,
       progressInterval: 1000
     };
-    this.player = React.createRef();
+    // this.player = React.createRef();
   }
 
   componentDidMount() {
@@ -112,6 +113,10 @@ class MediaPlayer extends Component {
   handlePause = () => {
     console.log('onPause')
     this.setState({ playing: false })
+
+    var seekPosition = this.findSeekPosition(this.state.sourceObject, this.props.masterTime);
+    this.player.seekTo(seekPosition, "seconds")
+    
   }
 
   handleSeekMouseDown = e => {
@@ -130,6 +135,9 @@ class MediaPlayer extends Component {
   handleProgress = state => {
     console.log('onProgress', state)
     // We only want to update time slider if we are not currently seeking
+    // var newTime = state.playedSeconds*1000 + this.state.sourceObject.startTime;
+    // this.props.updateMasterTime(newTime);
+
     if (!this.state.seeking) {
       this.setState(state)
     }
@@ -137,7 +145,10 @@ class MediaPlayer extends Component {
 
   handleEnded = () => {
     console.log('onEnded')
-    this.setState({ playing: this.state.loop })
+    this.setState({ 
+      // playing: this.state.loop,
+      sourceObject: null
+    })
   }
 
   handleDuration = (duration) => {
@@ -154,7 +165,7 @@ class MediaPlayer extends Component {
   // }
 
   ref = (player) => {
-    this.player = player
+    this.player = player;
   }
 
   setURL = () => {
@@ -166,21 +177,22 @@ class MediaPlayer extends Component {
     } else {
       this.setState({ url: null });
     }
-    
-    
+
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     var sourceAtNewMasterTime = nextProps.stream.getMediaAtTime(nextProps.masterTime);
-    if(sourceAtNewMasterTime !== prevState.url){
+    if(sourceAtNewMasterTime !== prevState.sourceObject){
       //Change in props
       if(sourceAtNewMasterTime !== null) {
         return {
-          url: sourceAtNewMasterTime.getSource()
+          url: rootDir + sourceAtNewMasterTime.getSource(),
+          sourceObject: sourceAtNewMasterTime
         };
       } else {
         return {
-          url: null
+          url: null,
+          sourceObject: null
         };
       }
       
@@ -188,17 +200,28 @@ class MediaPlayer extends Component {
     return null; // No change to state
   }
 
+  findSeekPosition = () => {
+    // mediaObject must not be NULL 
+    if (this.state.sourceObject == null) {
+      return 0;
+    }
+    var secondsFromStart = this.props.masterTime - this.state.sourceObject.startTime;
+    console.log(secondsFromStart / 1000);
+    return secondsFromStart / 1000;
+  }
+
   Player = () => {
+    // this.player.seekTo(seekPosition, "seconds")
     
     return (
       <React.Fragment>
-        {ReactPlayer.canPlay(rootDir + this.state.url) ? 
+        <button onClick={() => this.player.seekTo(this.findSeekPosition(), "seconds")}>seek test</button>
         <ReactPlayer
           ref={this.ref}
           className='react-player'
           width='100%'
-          height='100%'
-          url={rootDir + this.state.url}
+          height='144px'
+          url={this.state.url}
           // pip={this.state.pip}
           playing={this.state.playing}
           controls={this.state.controls}
@@ -221,9 +244,8 @@ class MediaPlayer extends Component {
           onProgress={this.handleProgress}
           onDuration={this.handleDuration}
         />
-        : <div>{console.log("Master time = " + this.props.masterTime + " | URL state = " +  this.state.url)}</div> }
-        {/* <button onClick={this.handlePlayPause}>toggle play</button>
-        <button onClick={this.handleToggleMuted}>toggle mute</button> */}
+        <button onClick={this.handlePlayPause}>toggle play</button>
+        <button onClick={this.handleToggleMuted}>toggle mute</button>
       {/* <button onClick={() => this.props.removeVideo(this.props.videoInfo.id)}>remove video</button> */}
 
       </React.Fragment>
@@ -243,9 +265,8 @@ class MediaPlayer extends Component {
 
   render() {
     // access through {this.props.videoInfo}
-    var str = this.props.stream.getMediaAtTime(this.props.masterTime);
-    console.log(str == null ? "no" : str.getSource());
-    <div>{console.log("Master time = " + this.props.masterTime + " | URL state = " +  this.state.url)}</div>
+    // console.log(this.state.sourceObject == null ? "no" : this.state.sourceObject.getSource());
+    <div>Master time = {this.props.masterTime} | URL state = {this.state.url}</div>
     return (
       <div className='player-wrapper' style={{display: 'inline-block', marginLeft: '2px',  padding: 2}}>
         {this.props.stream.getLocation()}<br/>
