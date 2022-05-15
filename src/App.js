@@ -58,12 +58,18 @@ class App extends Component {
     // by speedfactor*1sec(or 1000ms) per 1sec
     var intervalObject = setInterval(() => {this.firePlaybackEvent(speedFactor)}, 1000);
     this.setState({ playbackIntervalObject: intervalObject });
+    
+    var playButtons = document.getElementsByClassName('toggle-play');
+    
+    //forEach should work with NodeList but did not
+    for (var i = 0; i < playButtons.length ; i++) {
+      playButtons[i].click();
+    }
 
     //start all streams
   }
 
   firePlaybackEvent = (speedFactor) => {
-    console.log(this.state.masterTime);
     this.setState(prevState => ({
       masterTime: prevState.masterTime + (1000*speedFactor)
     }));
@@ -73,8 +79,11 @@ class App extends Component {
     //clear the repeating function
     clearInterval(this.state.playbackIntervalObject);
     this.setState({ playbackIntervalObject: null });
-
     //stop all streams 
+    var playButtons = document.getElementsByClassName('toggle-play');
+    for (var i = 0; i < playButtons.length ; i++) {
+      playButtons[i].click();
+    }
   }
 
   addStream = (streamDate, streamLocation, streamEquipment) => {

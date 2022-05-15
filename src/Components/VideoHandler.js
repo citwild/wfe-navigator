@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 
+const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
+
+
 class VideoHandler extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +22,9 @@ class VideoHandler extends Component {
       loop: false,
       lastPlayed: null
     }
+    this.playerRef = React.createRef();
   }
- 
+
   load = url => {
     this.setState({
       url,
@@ -91,24 +95,22 @@ class VideoHandler extends Component {
 
   handlePause = (e) => {
     console.log('onPause')
-    if (this.state.playing == true) {
-      //from playing to pause
-      this.syncWithMasterTime();
-    }
-    this.player.seekTo(this.findSeekPosition(), "seconds");
     this.setState({ playing: false });
+    this.syncWithMasterTime();
+    // this.player.seekTo(this.findSeekPosition(), "seconds");
+    
   }
 
   syncWithMasterTime = () => {
-    this.player.seekTo(this.findSeekPosition(), "seconds");
-    this.setState({ lastPlayed: this.state.played });
+    this.playerRef.seekTo(this.findSeekPosition(), "seconds");
+    this.setState(prevState => ({ lastPlayed: prevState.played }));
   }
 
   findSeekPosition = () => {
     // this.props.media is never NULL 
-    var secondsFromStart = this.props.masterTime - this.props.media.startTime;
-    console.log(secondsFromStart / 1000);
-    return secondsFromStart / 1000;
+    var msFromStart = this.props.masterTime - this.props.media.startTime;
+    console.log({msFromStart});
+    return msFromStart / 1000;
   }
 
   handleSeekMouseDown = e => {
@@ -138,8 +140,7 @@ class VideoHandler extends Component {
 
     // remove source video from player 
     this.setState({ url: null });
-    this.syncWithMasterTime();
-
+    
   }
 
   handleDuration = (duration) => {
@@ -164,20 +165,37 @@ class VideoHandler extends Component {
   }
 
   ref = player => {
-    this.player = player
+    this.playerRef = player
   }
 
+  //TODO: 
+  // after masterTime is updated
+  // re-seek video
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   var msFromStart = nextProps.masterTime - nextProps.media.startTime;
+  //   console.log("s from start = " +msFromStart);
+  //   var playedFraction = parseFloat(msFromStart / 1000 / prevState.duration);
+    
+  //   return {
+  //     played: playedFraction
+  //   };
+  // }
+
+
   render() { 
-    console.log(this.state.played, this.state.lastPlayed);
+    // console.log(this.state.played, this.state.lastPlayed);
+    
+    console.log("MASTER TIME = " + this.props.masterTime);
     return (
-      <div className='player-wrapper'>
-        <button onClick={() => this.player.seekTo(this.findSeekPosition(), "seconds")}>seek test</button>
+      <React.Fragment>
+        
         <ReactPlayer
           ref={this.ref}
           className='react-player'
           width='100%'
           height='100%'
-          url={this.props.url}
+          url={rootDir + this.props.media.getSource()}
           pip={this.state.pip}
           playing={this.state.playing}
           controls={this.state.controls}
@@ -200,10 +218,11 @@ class VideoHandler extends Component {
           onProgress={this.handleProgress}
           onDuration={this.handleDuration}
         />
-        <button onClick={this.handlePlayPause}>toggle play</button>
+        <button className="toggle-play" onClick={this.handlePlayPause}>toggle play</button>
         <button onClick={this.handleToggleMuted}>toggle mute</button>
-      </div>
-
+        <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button>
+      
+        </React.Fragment>
     );
   }
 }

@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+/* Stream && Player */
+#media-container {
+  position: relative;
+}
+
+.player-wrapper {
+  display: inline-block;
+  padding: 5px;
+}
+
+.no-media {
+  display: inline-block;
+  overflow: hidden;
+  background-color: black;
+  color: white;
+  text-align: center;
+  line-height: calc(150px);
+  height: 150px;
+  width: calc(150px*16/9);
+}

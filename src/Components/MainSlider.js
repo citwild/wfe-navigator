@@ -51,11 +51,16 @@ class MainSlider extends Component {
         d3.select('#slider-value').text(new Date(val));
         // d3.select('#value').text(val);
         
+        
       })
       .on('end', (value) => {
         this.props.updateMasterTime(value);
         // d3.select('rect#scrubber-line')
         // .attr('x', xScale.invert(this.props.masterTime))
+        var seekButtons = document.getElementsByClassName('seek');
+        for (var i = 0; i < seekButtons.length ; i++) {
+          seekButtons[i].click();
+        }
       });
 
     var g = d3
@@ -87,7 +92,9 @@ class MainSlider extends Component {
   }
 
   render() { 
-    d3.select("#main-slider").property("value", this.props.masterTime);
+
+    d3.select('#slider-value')
+      .text(new Date(this.props.masterTime));
     return (
       <div id="slider-container">
         <div id="slider-value"></div>

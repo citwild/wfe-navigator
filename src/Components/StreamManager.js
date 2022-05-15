@@ -9,14 +9,16 @@ class StreamManager extends Component {
     super(props);
     this.state = {  
       mediaAtMasterTime: null,
-      play: true
+      playing: false
     }
   }
   
+  componentDidUpdate() {
+  }
 
   NoMedia = () => {
     return (
-      <div style={{ backgroundColor: 'black', color: 'white', textAlign: 'center', width: '240px'}}>
+      <div className="no-media">
         [ no media to display ]
       </div>
     );
@@ -24,25 +26,28 @@ class StreamManager extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     var sourceAtNewMasterTime = nextProps.stream.getMediaAtTime(nextProps.masterTime);
-    if(sourceAtNewMasterTime !== prevState.mediaAtMasterTime){
-      //Change in props
-      if(sourceAtNewMasterTime !== null) {
-        return {
-          mediaAtMasterTime: sourceAtNewMasterTime
-        };
-      } else {
-        return {
-          mediaAtMasterTime: null
-        };
-      }
+    // if(sourceAtNewMasterTime !== prevState.mediaAtMasterTime){
+    // }
+
+    if(sourceAtNewMasterTime !== null) {
+      return {
+        mediaAtMasterTime: sourceAtNewMasterTime
+      };
+    } else {
+      return {
+        mediaAtMasterTime: null
+      };
     }
     return null; // No change to state
   }
 
 
   render() { 
+    console.log("MASTER TIME = " + this.props.masterTime);
     return (
-      <React.Fragment>
+      <div className='player-wrapper'>
+        <p>{this.props.stream.getLocation()}</p>
+        {this.state.mediaAtMasterTime === null ? "" : this.state.mediaAtMasterTime.name}
         {
           this.state.mediaAtMasterTime === null 
           ? <this.NoMedia/> 
@@ -53,7 +58,7 @@ class StreamManager extends Component {
               updateMasterTime = {this.props.updateMasterTime}
             />
         }
-      </React.Fragment>
+      </div>
     );
   }
 }
