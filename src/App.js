@@ -19,14 +19,15 @@ import StreamManager from './Components/StreamManager';
 const rootDir = "http://localhost:8080/static/";
 
 
-// TODO: try this object
+// TODO: potentially new central object structure
 // allStreams = [
 //   {
 //     id: 0,
 //     stream: new Stream(),
-//     timelineInput: this.streamToTimeline(stream),
+//     timelineInput: this.streamToTimeline(stream), <= transform stream object to timeline input's foprmat
 //     playerRef: React.createRef(),
-//     playing: false
+//     showMedia: true,    <= user can toggle hide the player without removing stream
+//     playing: false   <= this should water fall down through stream and video component
 //   }
 // ]
 
@@ -260,11 +261,7 @@ class App extends Component {
       }
     }
 
-    
-
-    // var fileURL = URL.createObjectURL("C:/Users/Irene/Desktop/BeamCoffer/2014-02-19/PS%20A/gopro/GOPR0045-320.mp4")
-    
-    // this.createSlider();
+  
     return (
       <div style={{padding: 50}}>
         
@@ -352,14 +349,22 @@ class App extends Component {
         <div>
 
           <h4>Sample inputs</h4>
-          <button onClick={() => this.addStream("2014-02-19", "PS A", "gopro")}>02/19 - A/gopro</button>
-          <button onClick={() => this.addStream("2014-02-19", "Huddle", "Unknown")}>02/20 - Huddle</button>
-          <br/>
-          
-          <button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>02/20 - B/gopro</button>
-          <button onClick={() => this.addStream("2014-02-20", "PS F", "gopro")}>02/20 - C/gopro</button>
-          <br/>
-          <button onClick={() => this.addStream("2014-02-21", "PS C", "gopro")}>02/21 - C/zoom</button>
+          <ul>
+            <li><button onClick={() => this.addStream("2014-02-19", "PS A", "gopro")}>02/19 - A/gopro</button></li>
+            <li><button onClick={() => this.addStream("2014-02-19", "Huddle", "Unknown")}>02/19 - Huddle</button></li>
+          </ul>
+          <ul>
+            <li><button onClick={() => this.addStream("2014-02-20", "PS A", "gopro")}>02/20 - A/gopro</button></li>
+            <li><button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>02/20 - B/gopro</button></li>
+            <li><button onClick={() => this.addStream("2014-02-20", "PS C", "gopro")}>02/20 - C/gopro</button></li>
+            <li><button onClick={() => this.addStream("2014-02-20", "PS F", "gopro")}>02/20 - F/gopro</button></li>
+            <li><button onClick={() => this.addStream("2014-02-20", "PS G", "gopro")}>02/20 - G/gopro</button></li>
+            <li><button onClick={() => this.addStream("2014-02-20", "Huddle", "Unknown")}>02/20 - Huddle</button></li>
+          </ul>
+          <ul>
+            <li><button onClick={() => this.addStream("2014-02-21", "PS C", "gopro")}>02/21 - C/gopro</button></li>
+          </ul>
+
         </div>
         
       </div>

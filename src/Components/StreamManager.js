@@ -1,4 +1,3 @@
-import { randomIrwinHall } from 'd3';
 import React, { Component } from 'react';
 import VideoHandler from './VideoHandler';
 
@@ -38,7 +37,6 @@ class StreamManager extends Component {
         mediaAtMasterTime: null
       };
     }
-    return null; // No change to state
   }
 
 
@@ -46,7 +44,7 @@ class StreamManager extends Component {
     console.log("MASTER TIME = " + this.props.masterTime);
     return (
       <div className='player-wrapper'>
-        <p>{this.props.stream.getLocation()}</p>
+        <div><b>{this.props.stream.getLocation()}</b></div>
         {this.state.mediaAtMasterTime === null ? "" : this.state.mediaAtMasterTime.name}
         {
           this.state.mediaAtMasterTime === null 

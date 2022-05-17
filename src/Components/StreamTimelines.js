@@ -101,12 +101,9 @@ class StreamTimelines extends Component {
       bottom: 0
     };
     const svgWidth = 1000;
-    const svgHeight = this.state.transformedStreams.length == 0 ? 0 : (this.state.transformedStreams.length + 2) * (itemHeight + itemMargin);
+    const svgHeight = this.state.transformedStreams.length === 0 ? 0 : (this.state.transformedStreams.length + 2) * (itemHeight + itemMargin);
 
 
-    //TODO:
-    //  add scrubber line 
-    //  add eventlistener to get value from slider
     var chart = timelines()
       .stack()
       .orient("bottom")
@@ -137,16 +134,18 @@ class StreamTimelines extends Component {
       .attr('x', xScale(this.props.masterTime))
       .style('fill', "red");
     
-      d3.selectAll("rect[id^='timelineItem']")
-      .style("fill", (d) => {
-        if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
-          return "magenta"
-        }
-        return itemColor;
-      })
+    //Add indicator of currently playing media
+    d3.selectAll("rect[id^='timelineItem']")
+    .style("fill", (d) => {
+      if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
+        return "purple";
+      }
+      return itemColor;
+    })
   }
 
 
+  //
   static getDerivedStateFromProps(nextProps, prevState) {
     //adapt Stream object into d3-timelines format to display
     if(nextProps.allStreams !== prevState.streams){

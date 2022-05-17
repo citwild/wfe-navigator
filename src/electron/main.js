@@ -15,8 +15,9 @@ const knex = require('knex')({
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    title: "WFE Navigator",
+    width: 1300,
+    height: 1000,
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),

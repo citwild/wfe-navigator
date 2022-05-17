@@ -186,10 +186,14 @@ class VideoHandler extends Component {
   render() { 
     // console.log(this.state.played, this.state.lastPlayed);
     
-    console.log("MASTER TIME = " + this.props.masterTime);
+    
     return (
       <React.Fragment>
-        
+        <div>
+          <button className="toggle-play" onClick={this.handlePlayPause}>toggle play</button>
+          <button onClick={this.handleToggleMuted}>toggle mute</button>
+          <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button>
+        </div>
         <ReactPlayer
           ref={this.ref}
           className='react-player'
@@ -218,9 +222,7 @@ class VideoHandler extends Component {
           onProgress={this.handleProgress}
           onDuration={this.handleDuration}
         />
-        <button className="toggle-play" onClick={this.handlePlayPause}>toggle play</button>
-        <button onClick={this.handleToggleMuted}>toggle mute</button>
-        <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button>
+        
       
         </React.Fragment>
     );

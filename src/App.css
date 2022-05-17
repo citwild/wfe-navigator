@@ -40,6 +40,7 @@
 /* Stream && Player */
 #media-container {
   position: relative;
+  /* border: cornflowerblue 2px solid; */
 }
 
 .player-wrapper {
@@ -48,12 +49,14 @@
 }
 
 .no-media {
+  --noMedia-height: 175px;
+
   display: inline-block;
   overflow: hidden;
   background-color: black;
   color: white;
   text-align: center;
-  line-height: calc(150px);
-  height: 150px;
-  width: calc(150px*16/9);
+  line-height: var(--noMedia-height);
+  height: var(--noMedia-height);
+  width: calc(var(--noMedia-height)*16/9);
 }
