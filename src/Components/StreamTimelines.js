@@ -136,7 +136,14 @@ class StreamTimelines extends Component {
       .attr("height", '100%')
       .attr('x', xScale(this.props.masterTime))
       .style('fill', "red");
-
+    
+      d3.selectAll("rect[id^='timelineItem']")
+      .style("fill", (d) => {
+        if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
+          return "magenta"
+        }
+        return itemColor;
+      })
   }
 
 
