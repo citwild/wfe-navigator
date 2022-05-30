@@ -10,6 +10,10 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.1",
+    "@types/node": "^17.0.36",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.5",
     "better-sqlite3": "^7.5.1",
     "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
@@ -55,5 +59,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^4.7.2"
   }
 }

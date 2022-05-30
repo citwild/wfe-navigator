@@ -18,7 +18,7 @@ class StreamManager extends Component {
   NoMedia = () => {
     return (
       <div className="no-media">
-        [ no media to display ]
+        <i>no media to display</i>
       </div>
     );
   }

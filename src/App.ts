@@ -7,11 +7,10 @@ import * as d3Slider from 'd3-simple-slider';
 import './App.css';
 
 // Class objects
-import Media from './Classes/Media.js';
-import Stream from './Classes/Stream.js';
+import Media from './Classes/Media';
+import Stream from './Classes/Stream';
 
 // Components
-import MediaPlayer from './Components/MediaPlayer.js';
 import StreamTimelines from './Components/StreamTimelines';
 import MainSlider from './Components/MainSlider';
 import StreamManager from './Components/StreamManager';
@@ -27,6 +26,7 @@ const rootDir = "http://localhost:8080/static/";
 //     timelineInput: this.streamToTimeline(stream), <= transform stream object to timeline input's foprmat
 //     playerRef: React.createRef(),
 //     showMedia: true,    <= user can toggle hide the player without removing stream
+//     muteMedia: false,
 //     playing: false   <= this should water fall down through stream and video component
 //   }
 // ]
@@ -35,6 +35,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      //TODO: save to and load from JSON config file?
+      // configuration: {
+      //   rootDir: "http://localhost:8080/static/",
+      //   allStreams: [],
+      //   masterTime: 0
+      // },
       sliderRange: {
         minTime: null,
         maxTime: null,
@@ -50,8 +56,8 @@ class App extends Component {
 
 
   componentDidMount() {
-    // console.log(this.state.streams);
-    // this.updateMasterSliderRange();
+    // initialize some states from config file when applicable 
+
   }
 
   startPlayback = (speedFactor) => {
@@ -66,9 +72,9 @@ class App extends Component {
     for (var i = 0; i < playButtons.length ; i++) {
       playButtons[i].click();
     }
-
     //start all streams
   }
+
 
   firePlaybackEvent = (speedFactor) => {
     this.setState(prevState => ({
@@ -76,6 +82,7 @@ class App extends Component {
     }));
   }
 
+  
   stopPlayback = () => {
     //clear the repeating function
     clearInterval(this.state.playbackIntervalObject);
@@ -87,8 +94,8 @@ class App extends Component {
     }
   }
 
-  addStream = (streamDate, streamLocation, streamEquipment) => {
 
+  addStream = (streamDate, streamLocation, streamEquipment) => {
     ///// TEMP path creator, based on COMPRESSED VERSION of files
     var path = [streamDate];
     if (streamLocation !== "Unknown") { 
@@ -133,7 +140,6 @@ class App extends Component {
       });
     });
     window.api.send("getFiles", [streamDate, streamLocation, streamEquipment]);
- 
   }
 
   // execute every time a video is added

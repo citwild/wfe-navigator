@@ -25,7 +25,7 @@ class MediaPlayer extends Component {
       played: 0,
       loaded: 0,
       duration: 0,
-      playbackRate: 1.0,
+      playbackRate: 10,
       loop: false,
       progressInterval: 1000
     };

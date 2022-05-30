@@ -1,0 +1,15 @@
+{
+  "config": {
+    "rootDir": "http://localhost:8080/static/",
+    "streams": [],
+    "masterTime": 0,
+    "mode": {
+      "files": "compressed",
+      "audio": {
+        "zoom": "MS-64"
+      },
+      "video": {},
+      "images": {}
+    }
+  }
+}
