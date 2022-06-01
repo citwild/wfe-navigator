@@ -17,31 +17,31 @@ import StreamManager from './Components/StreamManager';
 const rootDir = "http://localhost:8080/static/";
 
 interface IState {
-  configuration: any,
+  configuration:          any,
   sliderRange: {
-    minTime: number,
-    maxTime: number
+    minTime:              number,
+    maxTime:              number
   },
-  masterTime: number, 
-  playing: boolean,
-  allStreams: any, //TODO: StreamChannel[]
+  masterTime:             number, 
+  playing:                boolean,
+  allStreams:             any, //TODO: StreamChannel[]
   playbackIntervalObject: ReturnType<typeof setInterval>
 }
 
 interface StreamChannel {
-    id: number,
-    stream: Stream,
-    timelineInput: StreamTimeline[],
-    playerRef: HTMLInputElement,
-    showMedia: boolean,
-    muteMedia: boolean,
-    playing: boolean
+    id:             number,
+    stream:         Stream,
+    timelineInput:  StreamTimeline[],
+    playerRef:      HTMLInputElement,
+    showMedia:      boolean,
+    muteMedia:      boolean,
+    playing:        boolean
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
 type TimeSegment = {
-  starting_time: number,
-  ending_time: number
+  starting_time:  number,
+  ending_time:    number
 }
 
 /////////////////////////////////////////////////////////////
@@ -83,6 +83,9 @@ class App extends Component<{}, IState> {
   componentDidMount() {
     // initialize some states from config file when applicable 
 
+    if (this.state.sliderRange.minTime !== null) {
+      this.updateMasterTime(this.state.sliderRange.minTime);
+    }
   }
 
 
@@ -136,11 +139,11 @@ class App extends Component<{}, IState> {
     var path: string = pathConstruct.join('/') + "/";
 
     var fileSuffix = "";
-    if (streamLocation == 'Huddle') {
+    if (streamLocation === 'Huddle') {
       fileSuffix = "-320";
-    } else if (streamEquipment == 'gopro') {
+    } else if (streamEquipment === 'gopro') {
       fileSuffix = "-320";
-    } else if (streamEquipment == 'zoom') {
+    } else if (streamEquipment === 'zoom') {
       fileSuffix = "-128";
     }
     ////////////////////////////////////////////////////////////

@@ -8,27 +8,27 @@ const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 
 interface IProps {
-  media: Media,
-  url: string,
-  masterTime: number,
+  media:            Media,
+  url:              string,
+  masterTime:       number,
   updateMasterTime: any
 }
 
 interface IState {
-  url: string | null,
-  pip: boolean,
-  playing: boolean,
-  controls: boolean,
-  light: boolean,
-  volume: number ,
-  muted: boolean,
-  played: number ,
-  loaded: number ,
-  duration: number ,
-  playbackRate: number ,
-  loop: boolean,
-  seeking: boolean,
-  lastPlayed: number | null
+  url:          string | null,
+  pip:          boolean,
+  playing:      boolean,
+  controls:     boolean,
+  light:        boolean,
+  volume:       number,
+  muted:        boolean,
+  played:       number,
+  loaded:       number,
+  duration:     number,
+  playbackRate: number,
+  loop:         boolean,
+  seeking:      boolean,
+  lastPlayed:   number | null
 }
 
 

@@ -14,14 +14,14 @@ interface IProps {
 }
 
 interface IState {
-  streams: Array<Stream>,
+  streams:            Array<Stream>,
   transformedStreams: Array<StreamTimeline>
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
 type TimeSegment = {
-  starting_time: number,
-  ending_time: number
+  starting_time:  number,
+  ending_time:    number
 }
 
 /////////////////////////////////////////////////////////////

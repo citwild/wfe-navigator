@@ -1,13 +1,13 @@
-import React, { Component, PropsWithChildren } from 'react';
+import React, { Component } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
 
 interface IProps {
   sliderRange: {
-    minTime: number,
-    maxTime: number
+    minTime:        number,
+    maxTime:        number
   },
-  masterTime: number,
+  masterTime:       number,
   updateMasterTime: any
 }
 

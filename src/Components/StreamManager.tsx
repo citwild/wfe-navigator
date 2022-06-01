@@ -6,16 +6,18 @@ import Stream from '../Classes/Stream';
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 interface IProps {
-  key: string,
-  stream: Stream,
-  masterTime: number,
+  key:              string,
+  stream:           Stream,
+  masterTime:       number,
   updateMasterTime: any
 }
 
 interface IState {
-  mediaAtMasterTime: Media,
-  playing: boolean
+  mediaAtMasterTime:  Media,
+  playing:            boolean
 }
+
+/////////////////////////////////////////////////////////////
 
 class StreamManager extends Component<IProps, IState> {
   constructor(props: IProps) {
