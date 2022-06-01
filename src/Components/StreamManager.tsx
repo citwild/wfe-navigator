@@ -1,5 +1,10 @@
+// Libraries
 import React, { Component } from 'react';
+
+// Components
 import VideoHandler from './VideoHandler';
+
+// Class objects
 import Media from '../Classes/Media';
 import Stream from '../Classes/Stream';
 

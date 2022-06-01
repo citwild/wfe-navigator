@@ -1,7 +1,10 @@
 //@ts-nocheck
 
+// Libraries
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
+
+// Class objects
 import Media from '../Classes/Media';
 
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";

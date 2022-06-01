@@ -49,15 +49,16 @@ class MainSlider extends Component<IProps, IState> {
 
     const sliderHeight: number = 80;
     const sliderWidth: number = 1700;
-    var dayAxisColor: string = "#89CFF0";
+    const sideMargin: number = 20;
+    const dayAxisColor: string = "#89CFF0";
 
     var xScale = d3.scaleLinear()
       .domain([this.state.minTime, this.state.maxTime])
-      .range([20, sliderWidth]);
+      .range([sideMargin, sliderWidth]);
 
     var xTimeScale = d3.scaleTime()
     .domain([this.state.minTime, this.state.maxTime])
-    .range([20, sliderWidth - 20]);
+    .range([sideMargin, sliderWidth - sideMargin]);
 
     var dayAxis = d3
       .axisTop(xTimeScale)
@@ -70,7 +71,7 @@ class MainSlider extends Component<IProps, IState> {
       .max(this.state.maxTime)
       .step(1)
       .default(this.props.masterTime)
-      .width(sliderWidth - (2 * 20))
+      .width(sliderWidth - (2 * sideMargin))
       .displayValue(false)
       .tickFormat(d3.timeFormat("%H:%M:%S")) //time zone based on system settings
       .on('onchange', (val: number) => {
@@ -97,7 +98,7 @@ class MainSlider extends Component<IProps, IState> {
 
     svg
       .append('g')
-      .attr('transform', 'translate(20,70)')
+      .attr('transform', 'translate(' + sideMargin + ',70)')
       .call(slider);
 
     
