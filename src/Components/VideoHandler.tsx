@@ -6,6 +6,7 @@ import Media from '../Classes/Media';
 
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
+
 interface IProps {
   media: Media,
   url: string,
@@ -30,6 +31,10 @@ interface IState {
   lastPlayed: number | null
 }
 
+
+type playerRef = HTMLInputElement;
+
+/////////////////////////////////////////////////////////////
 
 class VideoHandler extends Component<IProps, IState> {
   constructor(props: IProps) {

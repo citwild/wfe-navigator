@@ -15,11 +15,11 @@ interface IProps {
 
 interface IState {
   streams: Array<Stream>,
-  transformedStreams: Array<Times>
+  transformedStreams: Array<StreamTimeline>
 }
 
-type Times = { times: Array<TimeRange> }
-type TimeRange = {
+type StreamTimeline = { times: Array<TimeSegment> }
+type TimeSegment = {
   starting_time: number,
   ending_time: number
 }
@@ -84,7 +84,7 @@ class StreamTimelines extends Component<IProps, IState> {
     // ];
     
 
-    const itemHeight: number = 10;
+    const itemHeight: number = 12;
     const itemMargin: number = 3;
     const itemColor: string = "lightpink";
     const backgroundColor: string = "#f2f2f2";
@@ -94,7 +94,7 @@ class StreamTimelines extends Component<IProps, IState> {
       top: 0, 
       bottom: 0
     };
-    const svgWidth: number = 1000;
+    const svgWidth: number = 1200;
     const svgHeight: number = 
         this.state.transformedStreams.length === 0 
         ? 0 
@@ -114,7 +114,7 @@ class StreamTimelines extends Component<IProps, IState> {
 
     var xScale: any = d3.scaleLinear()
       .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
-      .range([margin.left, 1000 - margin.right]);
+      .range([margin.left, svgWidth - margin.right]);
 
     //TODO: 
     //  make height dynamic
@@ -134,7 +134,7 @@ class StreamTimelines extends Component<IProps, IState> {
     
     //Add indicator of currently playing media
     d3.selectAll("rect[id^='timelineItem']")
-    .style("fill", (d: TimeRange) => {
+    .style("fill", (d: TimeSegment) => {
       if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
         return "purple";
       }
@@ -149,9 +149,9 @@ class StreamTimelines extends Component<IProps, IState> {
     if(nextProps.allStreams !== prevState.streams){
       //Change in props
 
-      let newTransformedStreams: Array<Times> = [];
+      let newTransformedStreams: Array<StreamTimeline> = [];
       nextProps.allStreams.map( (thisStream) => {
-        let channel: Times = {
+        let channel: StreamTimeline = {
           times: []
         };
         thisStream.media.map( thisMedia => {

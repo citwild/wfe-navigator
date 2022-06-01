@@ -29,7 +29,7 @@ class StreamManager extends Component<IProps, IState> {
   componentDidUpdate() {
   }
 
-  NoMedia = () => {
+  NoMedia = (): React.ReactElement => {
     return (
       <div className="no-media">
         <i>no media to display</i>

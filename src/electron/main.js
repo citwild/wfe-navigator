@@ -16,8 +16,8 @@ function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     title: "WFE Navigator",
-    width: 1300,
-    height: 1000,
+    width: 1280,
+    height: 720,
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
@@ -66,7 +66,7 @@ function createWindow () {
   serveLocalFiles();
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function(){
     app.quit();

@@ -48,7 +48,7 @@ class MainSlider extends Component<IProps, IState> {
     d3.select("#main-slider > svg").remove();
 
     const sliderHeight: number = 50;
-    const sliderWidth: number = 1000;
+    const sliderWidth: number = 1200;
 
     var xScale = d3.scaleLinear()
       .domain([this.state.minTime, this.state.maxTime])
@@ -64,7 +64,7 @@ class MainSlider extends Component<IProps, IState> {
       .displayValue(false)
       .tickFormat(d3.timeFormat("%H:%M:%S")) //time zone based on system settings
       .on('onchange', (val: number) => {
-        d3.select('#slider-value').text(new Date(val).toString);
+        d3.select('#slider-value').text(new Date(val).toString());
         // d3.select('#value').text(val);
         
         
@@ -110,7 +110,7 @@ class MainSlider extends Component<IProps, IState> {
   render() { 
 
     d3.select('#slider-value')
-      .text(new Date(this.props.masterTime).toString);
+      .text(new Date(this.props.masterTime).toString());
     return (
       <div id="slider-container">
         <div id="slider-value"></div>
