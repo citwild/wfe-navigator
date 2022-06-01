@@ -207,10 +207,6 @@ class App extends Component<{}, IState> {
       <div style={{padding: 50}}>
         
         <div>
-          <h2>masterSlider</h2> 
-          <button onClick={() => {this.startPlayback(1)}}>start playback</button>
-          <button onClick={this.stopPlayback}>stop playback</button>
-          
           <MainSlider
             sliderRange = {this.state.sliderRange}
             masterTime = {this.state.masterTime}
@@ -223,7 +219,8 @@ class App extends Component<{}, IState> {
             masterTime = {this.state.masterTime}
             
           />
-          
+          <button onClick={() => {this.startPlayback(1)}}>start playback</button>
+          <button onClick={this.stopPlayback}>stop playback</button>
         </div>
 
         <div>

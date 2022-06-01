@@ -47,12 +47,22 @@ class MainSlider extends Component<IProps, IState> {
     
     d3.select("#main-slider > svg").remove();
 
-    const sliderHeight: number = 50;
-    const sliderWidth: number = 1200;
+    const sliderHeight: number = 80;
+    const sliderWidth: number = 1700;
+    var dayAxisColor: string = "#89CFF0";
 
     var xScale = d3.scaleLinear()
       .domain([this.state.minTime, this.state.maxTime])
-      .range([20, 1000]);
+      .range([20, sliderWidth]);
+
+    var xTimeScale = d3.scaleTime()
+    .domain([this.state.minTime, this.state.maxTime])
+    .range([20, sliderWidth - 20]);
+
+    var dayAxis = d3
+      .axisTop(xTimeScale)
+      .tickFormat(d3.timeFormat("%d %b"))
+      .ticks(d3.timeDay, 1);
     
     var slider = d3Slider
       .sliderTop()
@@ -79,15 +89,33 @@ class MainSlider extends Component<IProps, IState> {
         }
       });
 
-    var g = d3
+    var svg = d3
       .select('#main-slider')
       .append('svg')
       .attr('width', sliderWidth)
-      .attr('height', sliderHeight)
+      .attr('height', sliderHeight);
+
+    svg
       .append('g')
-      .attr('transform', 'translate(20,40)');
+      .attr('transform', 'translate(20,70)')
+      .call(slider);
+
     
-    g.call(slider);
+    svg
+      .append("g")
+      .attr("class", "day-axis")
+      .attr("transform", "translate(0, 30)")
+      .call(dayAxis)
+      .call(g => g.select(".domain")
+        .remove())
+      .call(g => g.selectAll("line")
+        .attr('y2', 35)
+        .attr('stroke', dayAxisColor))
+      .call(g => g.selectAll("text")
+        // .attr('y', 18)
+        .attr('fill', dayAxisColor));
+
+    // svg.call(slider);
   }
 
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
@@ -113,7 +141,7 @@ class MainSlider extends Component<IProps, IState> {
       .text(new Date(this.props.masterTime).toString());
     return (
       <div id="slider-container">
-        <div id="slider-value"></div>
+        <strong>Current playback time: </strong><text id="slider-value"></text>
         <div id="main-slider"></div>
       </div>
     );

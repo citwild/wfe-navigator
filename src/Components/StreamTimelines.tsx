@@ -24,6 +24,7 @@ type TimeSegment = {
   ending_time: number
 }
 
+/////////////////////////////////////////////////////////////
 
 class StreamTimelines extends Component<IProps, IState> {
   constructor(props: IProps) {
@@ -94,7 +95,7 @@ class StreamTimelines extends Component<IProps, IState> {
       top: 0, 
       bottom: 0
     };
-    const svgWidth: number = 1200;
+    const svgWidth: number = 1700;
     const svgHeight: number = 
         this.state.transformedStreams.length === 0 
         ? 0 

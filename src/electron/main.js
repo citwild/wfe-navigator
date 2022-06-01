@@ -16,8 +16,8 @@ function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     title: "WFE Navigator",
-    width: 1280,
-    height: 720,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
