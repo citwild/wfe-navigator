@@ -1,12 +1,35 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import timelines from '../lib/timelines.js'; //examples = https://codepen.io/manglass/pen/MvLBRz
+import Stream from '../Classes/Stream';
 
-class StreamTimelines extends Component {
-  constructor(props) {
+
+interface IProps {
+  sliderRange: {
+    minTime: number,
+    maxTime: number
+  },
+  masterTime: number,
+  allStreams: Stream[]
+}
+
+interface IState {
+  streams: Array<Stream>,
+  transformedStreams: Array<Times>
+}
+
+type Times = { times: Array<TimeRange> }
+type TimeRange = {
+  starting_time: number,
+  ending_time: number
+}
+
+
+class StreamTimelines extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      streams: [],
+      streams: new Array<Stream>(),
       transformedStreams: []
     }
   }
@@ -28,7 +51,7 @@ class StreamTimelines extends Component {
   }
 
 
-  createTimelines = () => {
+  createTimelines = (): void => {
     // var testData = [
     //   {label: "stream a", 
     //     times: [
@@ -61,23 +84,27 @@ class StreamTimelines extends Component {
     // ];
     
 
-    const itemHeight = 10;
-    const itemMargin = 3;
-    const itemColor = "lightpink";
-    const backgroundColor = "#f2f2f2";
+    const itemHeight: number = 10;
+    const itemMargin: number = 3;
+    const itemColor: string = "lightpink";
+    const backgroundColor: string = "#f2f2f2";
     const margin = {
       left: 20, 
       right: 20, 
       top: 0, 
       bottom: 0
     };
-    const svgWidth = 1000;
-    const svgHeight = this.state.transformedStreams.length === 0 ? 0 : (this.state.transformedStreams.length + 2) * (itemHeight + itemMargin);
+    const svgWidth: number = 1000;
+    const svgHeight: number = 
+        this.state.transformedStreams.length === 0 
+        ? 0 
+        : (this.state.transformedStreams.length + 2) * (itemHeight + itemMargin);
 
-
-    var chart = timelines()
+    
+    var chart: any = timelines()
       .stack()
       .orient("bottom")
+      //@ts-expect-error
       .itemHeight(itemHeight)
       .itemMargin(itemMargin)
       .margin(margin)
@@ -85,7 +112,7 @@ class StreamTimelines extends Component {
       .background(backgroundColor)
       .showTimeAxis();
 
-    var xScale = d3.scaleLinear()
+    var xScale: any = d3.scaleLinear()
       .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
       .range([margin.left, 1000 - margin.right]);
 
@@ -107,7 +134,7 @@ class StreamTimelines extends Component {
     
     //Add indicator of currently playing media
     d3.selectAll("rect[id^='timelineItem']")
-    .style("fill", (d) => {
+    .style("fill", (d: TimeRange) => {
       if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
         return "purple";
       }
@@ -117,14 +144,14 @@ class StreamTimelines extends Component {
 
 
   //
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     //adapt Stream object into d3-timelines format to display
     if(nextProps.allStreams !== prevState.streams){
       //Change in props
 
-      let newTransformedStreams = [];
+      let newTransformedStreams: Array<Times> = [];
       nextProps.allStreams.map( (thisStream) => {
-        let channel = {
+        let channel: Times = {
           times: []
         };
         thisStream.media.map( thisMedia => {
@@ -137,7 +164,7 @@ class StreamTimelines extends Component {
         });
         newTransformedStreams.push(channel);
       }) 
-      console.log({newTransformedStreams});
+      // console.log({newTransformedStreams});
 
       return {
         streams: nextProps.allStreams,

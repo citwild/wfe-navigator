@@ -1,11 +1,38 @@
+//@ts-nocheck
+
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
+import Media from '../Classes/Media';
 
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
+interface IProps {
+  media: Media,
+  url: string,
+  masterTime: number,
+  updateMasterTime: any
+}
 
-class VideoHandler extends Component {
-  constructor(props) {
+interface IState {
+  url: string | null,
+  pip: boolean,
+  playing: boolean,
+  controls: boolean,
+  light: boolean,
+  volume: number ,
+  muted: boolean,
+  played: number ,
+  loaded: number ,
+  duration: number ,
+  playbackRate: number ,
+  loop: boolean,
+  seeking: boolean,
+  lastPlayed: number | null
+}
+
+
+class VideoHandler extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       url: null,
@@ -20,19 +47,12 @@ class VideoHandler extends Component {
       duration: 0,
       playbackRate: 1.0,
       loop: false,
+      seeking: false,
       lastPlayed: null
     }
     this.playerRef = React.createRef();
   }
 
-  load = url => {
-    this.setState({
-      url,
-      played: 0,
-      loaded: 0,
-      pip: false
-    })
-  }
 
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing })
@@ -42,13 +62,13 @@ class VideoHandler extends Component {
     this.setState({ url: null, playing: false })
   }
 
-  handleToggleControls = () => {
-    const url = this.state.url
-    this.setState({
-      controls: !this.state.controls,
-      url: null
-    }, () => this.load(url))
-  }
+  // handleToggleControls = () => {
+  //   const url = this.state.url
+  //   this.setState({
+  //     controls: !this.state.controls,
+  //     url: null
+  //   }, () => this.load(url))
+  // }
 
   handleToggleLight = () => {
     this.setState({ light: !this.state.light })
@@ -70,7 +90,7 @@ class VideoHandler extends Component {
     this.setState({ playbackRate: parseFloat(e.target.value) })
   }
 
-  handleOnPlaybackRateChange = (speed) => {
+  handleOnPlaybackRateChange = (speed: number) => {
     this.setState({ playbackRate: parseFloat(speed) })
   }
 
@@ -93,7 +113,7 @@ class VideoHandler extends Component {
     this.setState({ pip: false })
   }
 
-  handlePause = (e) => {
+  handlePause = (e: Event) => {
     console.log('onPause')
     this.setState({ playing: false });
     this.syncWithMasterTime();
@@ -143,7 +163,7 @@ class VideoHandler extends Component {
     
   }
 
-  handleDuration = (duration) => {
+  handleDuration = (duration: number) => {
     console.log('onDuration', duration)
     this.setState({ duration })
   }
@@ -156,15 +176,15 @@ class VideoHandler extends Component {
     
   }
 
-  renderLoadButton = (url, label) => {
-    return (
-      <button onClick={() => this.load(url)}>
-        {label}
-      </button>
-    )
-  }
+  // renderLoadButton = (url, label) => {
+  //   return (
+  //     <button onClick={() => this.load(url)}>
+  //       {label}
+  //     </button>
+  //   )
+  // }
 
-  ref = player => {
+  ref = (player: any) => {
     this.playerRef = player
   }
 
@@ -183,6 +203,7 @@ class VideoHandler extends Component {
   // }
 
 
+  
   render() { 
     // console.log(this.state.played, this.state.lastPlayed);
     

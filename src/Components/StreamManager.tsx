@@ -1,10 +1,24 @@
 import React, { Component } from 'react';
 import VideoHandler from './VideoHandler';
+import Media from '../Classes/Media';
+import Stream from '../Classes/Stream';
 
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
-class StreamManager extends Component {
-  constructor(props) {
+interface IProps {
+  key: string,
+  stream: Stream,
+  masterTime: number,
+  updateMasterTime: any
+}
+
+interface IState {
+  mediaAtMasterTime: Media,
+  playing: boolean
+}
+
+class StreamManager extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {  
       mediaAtMasterTime: null,
@@ -23,8 +37,8 @@ class StreamManager extends Component {
     );
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    var sourceAtNewMasterTime = nextProps.stream.getMediaAtTime(nextProps.masterTime);
+  static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
+    var sourceAtNewMasterTime: Media = nextProps.stream.getMediaAtTime(nextProps.masterTime);
     // if(sourceAtNewMasterTime !== prevState.mediaAtMasterTime){
     // }
 
