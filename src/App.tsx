@@ -2,6 +2,10 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
+// Libraries - styling
+import Checkbox from '@mui/material/Checkbox';
+
+
 // Styling 
 import './App.css';
 
@@ -14,7 +18,9 @@ import MainSlider from './Components/MainSlider';
 import StreamTimelines from './Components/StreamTimelines';
 import StreamManager from './Components/StreamManager';
 
-const rootDir = "http://localhost:8080/static/";
+// const rootDir = "http://localhost:8080/static/";
+const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
+
 
 interface IState {
   configuration:          any,
@@ -24,6 +30,7 @@ interface IState {
   },
   masterTime:             number, 
   playing:                boolean,
+  playbackSpeed:          number,
   allStreams:             StreamChannel[],
   playbackIntervalObject: ReturnType<typeof setInterval>
 }
@@ -49,9 +56,9 @@ class App extends Component<{}, IState> {
   constructor() {
     super({});
     this.state = {
-      //TODO: save to and load from JSON config file?
+      //TODO: save to and load from JSON config file
       configuration: {
-        rootDir: "http://localhost:8080/static/",
+        rootDir: "",
         allStreams: [],
         masterTime: 0
       },
@@ -60,23 +67,12 @@ class App extends Component<{}, IState> {
         maxTime: null,
       },
       masterTime: 0,
-      playing: false,   //<= this should water fall down through stream and video component
+      playing: false,
+      playbackSpeed: 1,   
       allStreams: [],
       playbackIntervalObject: null
     };
   }
-
-// TODO: potentially new central object structure
-// allStreams = [
-//   {
-//     stream: new Stream(),
-//     timelineInput: this.streamToTimeline(stream), <= transform stream object to timeline input's foprmat
-//     playerRef: React.createRef(),
-//     showMedia: true,    <= user can toggle hide the player without removing stream
-//     muteMedia: false,
-//   }
-// ]
-
 
   componentDidMount() {
     // initialize some states from config file when applicable 
@@ -89,17 +85,24 @@ class App extends Component<{}, IState> {
 
   startPlayback = (speedFactor: number): void => {
     //start repeating functio to move scrubber line
-    // by speedfactor*1sec(or 1000ms) per 1sec
+    //by speedfactor*1sec(or 1000ms) per 1sec
     var intervalObject: ReturnType<typeof setInterval> = setInterval(() => {this.firePlaybackEvent(speedFactor)}, 1000);
-    this.setState({ playbackIntervalObject: intervalObject });
+    this.setState({ 
+      playbackIntervalObject: intervalObject,
+      playing: true,
+      playbackSpeed: speedFactor
+    });
+
     
-    var playButtons: HTMLCollection = document.getElementsByClassName('toggle-play');
+
+
+    // var playButtons: HTMLCollection = document.getElementsByClassName('toggle-play');
     
-    //forEach should work with NodeList but did not
-    for (var i = 0; i < playButtons.length ; i++) {
-      //@ts-expect-error
-      playButtons[i].click();
-    }
+    // //forEach should work with NodeList but did not
+    // for (var i = 0; i < playButtons.length ; i++) {
+    //   //@ts-expect-error
+    //   playButtons[i].click();
+    // }
     //start all streams
   }
 
@@ -114,15 +117,44 @@ class App extends Component<{}, IState> {
   stopPlayback = (): void => {
     //clear the repeating function
     clearInterval(this.state.playbackIntervalObject);
-    this.setState({ playbackIntervalObject: null });
-    //stop all streams 
-    var playButtons: HTMLCollection = document.getElementsByClassName('toggle-play');
-    for (var i = 0; i < playButtons.length ; i++) {
-      //@ts-expect-error
-      playButtons[i].click();
-    }
+    this.setState({ 
+      playbackIntervalObject: null,
+      playing: false
+    });
+    // //stop all streams 
+    // var playButtons: HTMLCollection = document.getElementsByClassName('toggle-play');
+    // for (var i = 0; i < playButtons.length ; i++) {
+    //   //@ts-expect-error
+    //   playButtons[i].click();
+    // }
   }
 
+
+  showMediaToggle = (streamID: number): void => {
+    var newState = this.state.allStreams.map( eachStream => {
+      if (eachStream.uniqueId === streamID) {
+        return {...eachStream, showMedia: !eachStream.showMedia};
+      } else {
+        return eachStream;
+      }
+    });
+    this.setState({
+      allStreams: newState
+    })
+  } 
+
+  muteMediaToggle = (streamID: number): void => {
+    var newState = this.state.allStreams.map( eachStream => {
+      if (eachStream.uniqueId === streamID) {
+        return {...eachStream, muteMedia: !eachStream.muteMedia};
+      } else {
+        return eachStream;
+      }
+    });
+    this.setState({
+      allStreams: newState
+    })
+  }
 
   addStream = (streamDate: string, streamLocation: string, streamEquipment: string): void => {
 
@@ -183,6 +215,14 @@ class App extends Component<{}, IState> {
     window.api.send("getFiles", [streamDate, streamLocation, streamEquipment]);
   }
 
+
+  showFileInDir = (filePath: string): void => {
+    console.log( rootDir + filePath);
+    //@ts-expect-error
+    window.api.send("selectFileInDir", rootDir + filePath);
+  }
+
+
   // MAY be able to pass this as props to StreamTimelines
   transformStreamToTimelineFormat = (thisStream: Stream): StreamTimeline => {
     let channel: StreamTimeline = {
@@ -226,7 +266,6 @@ class App extends Component<{}, IState> {
     // 60,000 ms = 1 min
     // 3,600,000 ms = 1 hr
     // 86,400,000 ms = 1 day
-
  
     return (
       <div style={{padding: 50}}>
@@ -244,8 +283,32 @@ class App extends Component<{}, IState> {
             masterTime = {this.state.masterTime}
             
           />
-          <button onClick={() => {this.startPlayback(1)}}>start playback</button>
-          <button onClick={this.stopPlayback}>stop playback</button>
+          <button disabled={this.state.playing} onClick={() => {this.startPlayback(1)}}>start playback</button>
+          <button disabled={this.state.playing} onClick={() => {this.startPlayback(4)}}>start playback 4x</button>
+          <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
+          {this.state.allStreams.map((thisChannel: StreamChannel) => {
+            return <div>
+              video
+              <Checkbox  
+                size="small"
+                checked={thisChannel.showMedia} 
+                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
+                style={{padding: 0}}
+                />
+              audio
+              <Checkbox  
+                size="small"
+                checked={!thisChannel.muteMedia}
+                disabled={!thisChannel.showMedia}
+                onChange={() => this.muteMediaToggle(thisChannel.uniqueId)}
+                style={{padding: 0}}
+                />
+            </div>
+
+            }
+          )}
+          
+          
         </div>
 
         <div>
@@ -287,9 +350,12 @@ class App extends Component<{}, IState> {
 
             return <StreamManager
               key = {thisChannel.uniqueId.toString()}
-              stream = {thisChannel.stream}
+              stream = {thisChannel}
               masterTime = {this.state.masterTime}
               updateMasterTime = {this.updateMasterTime}
+              playing = {this.state.playing}
+              showFileInDir = {this.showFileInDir}
+              playbackSpeed = {this.state.playbackSpeed}
             />
             
             }

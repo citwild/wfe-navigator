@@ -1,3 +1,4 @@
+// Libraries
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
@@ -110,7 +111,7 @@ class MainSlider extends Component<IProps, IState> {
       .call(g => g.select(".domain")
         .remove())
       .call(g => g.selectAll("line")
-        .attr('y2', 35)
+        .attr('y2', 30)
         .attr('stroke', dayAxisColor))
       .call(g => g.selectAll("text")
         // .attr('y', 18)

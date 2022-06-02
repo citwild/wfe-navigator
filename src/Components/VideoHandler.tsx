@@ -14,7 +14,10 @@ interface IProps {
   media:            Media,
   url:              string,
   masterTime:       number,
-  updateMasterTime: any
+  updateMasterTime: any,
+  playing:          boolean,
+  playbackSpeed:    number,
+  muteMedia:        boolean
 }
 
 interface IState {
@@ -48,7 +51,7 @@ class VideoHandler extends Component<IProps, IState> {
       playing: false,
       controls: false,
       light: false,
-      volume: 0.8,
+      volume: 1,
       muted: false,
       played: 0,
       loaded: 0,
@@ -61,6 +64,25 @@ class VideoHandler extends Component<IProps, IState> {
     this.playerRef = React.createRef();
   }
 
+  componentDidMount(): void {
+    this.setState({ 
+      playing: this.props.playing,
+      muted: this.props.muteMedia,
+      playbackRate: this.props.playbackSpeed
+    });
+  }
+
+  static getDerivedStateFromProps(nextProps: IProps, prevState: IState): any {
+    var newState = {};
+    
+    if(nextProps.playing !== prevState.playing) {
+      newState.playing = nextProps.playing;
+    } 
+    if(nextProps.muteMedia !== prevState.muted) {
+      newState.muted = nextProps.muteMedia;
+    } 
+    return newState;
+  }
 
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing })
@@ -215,13 +237,11 @@ class VideoHandler extends Component<IProps, IState> {
   render() { 
     // console.log(this.state.played, this.state.lastPlayed);
     
-    
     return (
       <React.Fragment>
         <div>
-          <button className="toggle-play" onClick={this.handlePlayPause}>toggle play</button>
-          <button onClick={this.handleToggleMuted}>toggle mute</button>
           <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button>
+          {this.state.playing ? " playing..." : " paused"}
         </div>
         <ReactPlayer
           ref={this.ref}
@@ -230,13 +250,13 @@ class VideoHandler extends Component<IProps, IState> {
           height='100%'
           url={rootDir + this.props.media.getSource()}
           pip={this.state.pip}
-          playing={this.state.playing}
+          playing={this.props.playing}
           controls={this.state.controls}
           light={this.state.light}
           loop={this.state.loop}
-          playbackRate={this.state.playbackRate}
+          playbackRate={this.props.playbackSpeed}
           volume={this.state.volume}
-          muted={this.state.muted}
+          muted={this.props.muteMedia}
           onReady={this.handleReady}
           onStart={() => console.log('onStart')}
           onPlay={this.handlePlay}

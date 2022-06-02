@@ -5,14 +5,14 @@ contextBridge.exposeInMainWorld(
   "api", {
     send: (channel, data) => {
         // whitelist channels
-        let validChannels = ["toMain", "getFiles"];
+        let validChannels = ["toMain", "getFiles", "reqFileInDir"];
 
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
         }
     },
     receive: (channel, func) => {
-        let validChannels = ["fromMain", "sendFiles"];
+        let validChannels = ["fromMain", "sendFiles", "selectFileInDir"];
 
         if (validChannels.includes(channel)) {
             // Deliberately strip event as it includes `sender` 

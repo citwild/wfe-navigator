@@ -53,10 +53,18 @@
 
   display: inline-block;
   overflow: hidden;
-  background-color: black;
+  
   color: white;
   text-align: center;
   line-height: var(--noMedia-height);
   height: var(--noMedia-height);
   width: calc(var(--noMedia-height)*16/9);
+}
+
+.no-source {
+  background-color: black;
+}
+
+.hidden-media {
+  background-color: darkgray;
 }

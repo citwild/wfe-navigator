@@ -1,15 +1,26 @@
 {
   "config": {
-    "rootDir": "http://localhost:8080/static/",
-    "streams": [],
-    "masterTime": 0,
+    "rootDir": "http://localhost:8080/static/ OR local_path",
+    "database": {
+      "type": "sqlite",
+      "location": "database-path/database-file"
+    },
     "mode": {
+      "viewport": [1920, 1080],
       "files": "compressed",
       "audio": {
         "zoom": "MS-64"
       },
-      "video": {},
+      "video": {
+        "huddle": "-320",
+        "gopro": "-320",
+        "zoom": "-128"
+      },
       "images": {}
+    },
+    "appState": {
+      "streams": [],
+      "masterTime": 0
     }
   }
 }
