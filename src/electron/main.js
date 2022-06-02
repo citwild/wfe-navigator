@@ -1,7 +1,8 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron')
 
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 
 let mainWindow;
 
@@ -16,11 +17,12 @@ function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     title: "WFE Navigator",
-    width: 1300,
-    height: 1000,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
       webSecurity: false
     }
   })
@@ -52,12 +54,17 @@ function createWindow () {
         })
         .orderBy('time_begin');
       result.then( (res) => {
-        console.log({res});
+        // console.log({res});
         mainWindow.webContents.send("sendFiles", res); // Send result back to renderer process
       })
     })
 
-
+    ipcMain.on("reqFileInDir",  (event, data) => {
+      console.log(data);
+      shell.showItem(data);
+      shell.showItemInFolder(data);
+    })
+    
 
 
 
@@ -66,7 +73,7 @@ function createWindow () {
   serveLocalFiles();
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function(){
     app.quit();

@@ -1,3 +1,6 @@
+// this file is an updated version of denisemauldin's 
+// this version is fixed to be compatible with D3v7
+
 // credit: https://github.com/denisemauldin/d3-timeline/
 
 // import { axisBottom, axisTop } from 'd3-axis';

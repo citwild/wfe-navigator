@@ -1,11 +1,49 @@
+//@ts-nocheck
+
+// Libraries
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
+
+// Class objects
+import Media from '../Classes/Media';
 
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 
-class VideoHandler extends Component {
-  constructor(props) {
+interface IProps {
+  media:            Media,
+  url:              string,
+  masterTime:       number,
+  updateMasterTime: any,
+  playing:          boolean,
+  playbackSpeed:    number,
+  muteMedia:        boolean
+}
+
+interface IState {
+  url:          string | null,
+  pip:          boolean,
+  playing:      boolean,
+  controls:     boolean,
+  light:        boolean,
+  volume:       number,
+  muted:        boolean,
+  played:       number,
+  loaded:       number,
+  duration:     number,
+  playbackRate: number,
+  loop:         boolean,
+  seeking:      boolean,
+  lastPlayed:   number | null
+}
+
+
+type playerRef = HTMLInputElement;
+
+/////////////////////////////////////////////////////////////
+
+class VideoHandler extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       url: null,
@@ -13,25 +51,37 @@ class VideoHandler extends Component {
       playing: false,
       controls: false,
       light: false,
-      volume: 0.8,
+      volume: 1,
       muted: false,
       played: 0,
       loaded: 0,
       duration: 0,
       playbackRate: 1.0,
       loop: false,
+      seeking: false,
       lastPlayed: null
     }
     this.playerRef = React.createRef();
   }
 
-  load = url => {
-    this.setState({
-      url,
-      played: 0,
-      loaded: 0,
-      pip: false
-    })
+  componentDidMount(): void {
+    this.setState({ 
+      playing: this.props.playing,
+      muted: this.props.muteMedia,
+      playbackRate: this.props.playbackSpeed
+    });
+  }
+
+  static getDerivedStateFromProps(nextProps: IProps, prevState: IState): any {
+    var newState = {};
+    
+    if(nextProps.playing !== prevState.playing) {
+      newState.playing = nextProps.playing;
+    } 
+    if(nextProps.muteMedia !== prevState.muted) {
+      newState.muted = nextProps.muteMedia;
+    } 
+    return newState;
   }
 
   handlePlayPause = () => {
@@ -42,13 +92,13 @@ class VideoHandler extends Component {
     this.setState({ url: null, playing: false })
   }
 
-  handleToggleControls = () => {
-    const url = this.state.url
-    this.setState({
-      controls: !this.state.controls,
-      url: null
-    }, () => this.load(url))
-  }
+  // handleToggleControls = () => {
+  //   const url = this.state.url
+  //   this.setState({
+  //     controls: !this.state.controls,
+  //     url: null
+  //   }, () => this.load(url))
+  // }
 
   handleToggleLight = () => {
     this.setState({ light: !this.state.light })
@@ -70,7 +120,7 @@ class VideoHandler extends Component {
     this.setState({ playbackRate: parseFloat(e.target.value) })
   }
 
-  handleOnPlaybackRateChange = (speed) => {
+  handleOnPlaybackRateChange = (speed: number) => {
     this.setState({ playbackRate: parseFloat(speed) })
   }
 
@@ -93,7 +143,7 @@ class VideoHandler extends Component {
     this.setState({ pip: false })
   }
 
-  handlePause = (e) => {
+  handlePause = (e: Event) => {
     console.log('onPause')
     this.setState({ playing: false });
     this.syncWithMasterTime();
@@ -143,7 +193,7 @@ class VideoHandler extends Component {
     
   }
 
-  handleDuration = (duration) => {
+  handleDuration = (duration: number) => {
     console.log('onDuration', duration)
     this.setState({ duration })
   }
@@ -156,15 +206,15 @@ class VideoHandler extends Component {
     
   }
 
-  renderLoadButton = (url, label) => {
-    return (
-      <button onClick={() => this.load(url)}>
-        {label}
-      </button>
-    )
-  }
+  // renderLoadButton = (url, label) => {
+  //   return (
+  //     <button onClick={() => this.load(url)}>
+  //       {label}
+  //     </button>
+  //   )
+  // }
 
-  ref = player => {
+  ref = (player: any) => {
     this.playerRef = player
   }
 
@@ -183,16 +233,15 @@ class VideoHandler extends Component {
   // }
 
 
+  
   render() { 
     // console.log(this.state.played, this.state.lastPlayed);
-    
     
     return (
       <React.Fragment>
         <div>
-          <button className="toggle-play" onClick={this.handlePlayPause}>toggle play</button>
-          <button onClick={this.handleToggleMuted}>toggle mute</button>
           <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button>
+          {this.state.playing ? " playing..." : " paused"}
         </div>
         <ReactPlayer
           ref={this.ref}
@@ -201,13 +250,13 @@ class VideoHandler extends Component {
           height='100%'
           url={rootDir + this.props.media.getSource()}
           pip={this.state.pip}
-          playing={this.state.playing}
+          playing={this.props.playing}
           controls={this.state.controls}
           light={this.state.light}
           loop={this.state.loop}
-          playbackRate={this.state.playbackRate}
+          playbackRate={this.props.playbackSpeed}
           volume={this.state.volume}
-          muted={this.state.muted}
+          muted={this.props.muteMedia}
           onReady={this.handleReady}
           onStart={() => console.log('onStart')}
           onPlay={this.handlePlay}

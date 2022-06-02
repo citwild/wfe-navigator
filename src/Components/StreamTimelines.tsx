@@ -1,13 +1,47 @@
+// Libraries
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import timelines from '../lib/timelines.js'; //examples = https://codepen.io/manglass/pen/MvLBRz
 
-class StreamTimelines extends Component {
-  constructor(props) {
+// Class objects
+import Stream from '../Classes/Stream';
+
+
+interface IProps {
+  sliderRange: {
+    minTime: number,
+    maxTime: number
+  },
+  masterTime: number,
+  allStreams: StreamChannel[]
+}
+
+interface IState {
+  allTimelineInput: Array<StreamTimeline>
+}
+
+interface StreamChannel {
+  uniqueId:       number,
+  stream:         Stream,
+  timelineInput:  StreamTimeline,
+  playerRef:      HTMLInputElement,
+  showMedia:      boolean,
+  muteMedia:      boolean
+}
+
+type StreamTimeline = { times: Array<TimeSegment> }
+type TimeSegment = {
+  starting_time:  number,
+  ending_time:    number
+}
+
+/////////////////////////////////////////////////////////////
+
+class StreamTimelines extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      streams: [],
-      transformedStreams: []
+      allTimelineInput: new Array<StreamTimeline>()
     }
   }
   
@@ -28,7 +62,7 @@ class StreamTimelines extends Component {
   }
 
 
-  createTimelines = () => {
+  createTimelines = (): void => {
     // var testData = [
     //   {label: "stream a", 
     //     times: [
@@ -52,61 +86,36 @@ class StreamTimelines extends Component {
     //       {"starting_time": 1355761910000, "ending_time": 1355763910000}
     //     ]
     //   },
-    //   {label: "stream c", 
-    //     times: [
-    //       {"starting_time": 1355761910000, "ending_time": 1355763910000}
-    //     ]
-    //   },
-    //   {label: "stream a", 
-    //     times: [
-    //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
-    //     ]
-    //   },
-    //   {label: "stream a", 
-    //     times: [
-    //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
-    //     ]
-    //   },
-    //   {label: "stream audio only", 
-    //     times: [
-    //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
-    //     ]
-    //   },
-    //   {label: "stream audio only", 
-    //     times: [
-    //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
-    //     ]
-    //   },
     //   {label: "stream audio only", 
     //     times: [
     //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
     //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
     //     ]
     //   }
-    //   ];
+    // ];
     
 
-    const itemHeight = 10;
-    const itemMargin = 3;
-    const itemColor = "lightpink";
-    const backgroundColor = "#f2f2f2";
+    const itemHeight: number = 12;
+    const itemMargin: number = 3;
+    const itemColor: string = "lightpink";
+    const backgroundColor: string = "#f2f2f2";
     const margin = {
       left: 20, 
       right: 20, 
       top: 0, 
       bottom: 0
     };
-    const svgWidth = 1000;
-    const svgHeight = this.state.transformedStreams.length === 0 ? 0 : (this.state.transformedStreams.length + 2) * (itemHeight + itemMargin);
+    const svgWidth: number = 1700;
+    const svgHeight: number = 
+        this.state.allTimelineInput.length === 0 
+        ? 0 
+        : (this.state.allTimelineInput.length + 2) * (itemHeight + itemMargin);
 
-
-    var chart = timelines()
+    
+    var chart: any = timelines()
       .stack()
       .orient("bottom")
+      //@ts-expect-error
       .itemHeight(itemHeight)
       .itemMargin(itemMargin)
       .margin(margin)
@@ -114,9 +123,9 @@ class StreamTimelines extends Component {
       .background(backgroundColor)
       .showTimeAxis();
 
-    var xScale = d3.scaleLinear()
+    var xScale: any = d3.scaleLinear()
       .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
-      .range([margin.left, 1000 - margin.right]);
+      .range([margin.left, svgWidth - margin.right]);
 
     //TODO: 
     //  make height dynamic
@@ -125,7 +134,7 @@ class StreamTimelines extends Component {
       // .attr("id", "timeline-svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight) //needs to make dynamic
-      .datum(this.state.transformedStreams)
+      .datum(this.state.allTimelineInput)
       .call(chart)
       .append('rect')
       .classed("scrubber-line", true)
@@ -136,7 +145,7 @@ class StreamTimelines extends Component {
     
     //Add indicator of currently playing media
     d3.selectAll("rect[id^='timelineItem']")
-    .style("fill", (d) => {
+    .style("fill", (d: TimeSegment) => {
       if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
         return "purple";
       }
@@ -146,32 +155,41 @@ class StreamTimelines extends Component {
 
 
   //
-  static getDerivedStateFromProps(nextProps, prevState) {
-    //adapt Stream object into d3-timelines format to display
-    if(nextProps.allStreams !== prevState.streams){
+  static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
+    let newTimelineInput: StreamTimeline[] = [];
+      nextProps.allStreams.map( (eachChannel: StreamChannel) => {
+        newTimelineInput.push(eachChannel.timelineInput);
+      }) ;
+
+    if(newTimelineInput !== prevState.allTimelineInput){
       //Change in props
 
-      let newTransformedStreams = [];
-      nextProps.allStreams.map( (thisStream) => {
-        let channel = {
-          times: []
-        };
-        thisStream.media.map( thisMedia => {
-          channel.times.push(
-            {
-              "starting_time": thisMedia.startTime, 
-              "ending_time": thisMedia.endTime
-            }
-          );
-        });
-        newTransformedStreams.push(channel);
-      }) 
-      console.log({newTransformedStreams});
-
       return {
-        streams: nextProps.allStreams,
-        transformedStreams: newTransformedStreams
+        allTimelineInput: newTimelineInput
       };
+
+
+      // let newTransformedStreams: Array<StreamTimeline> = [];
+      // nextProps.allStreams.map( (thisStream) => {
+      //   let channel: StreamTimeline = {
+      //     times: []
+      //   };
+      //   thisStream.media.map( thisMedia => {
+      //     channel.times.push(
+      //       {
+      //         "starting_time": thisMedia.startTime, 
+      //         "ending_time": thisMedia.endTime
+      //       }
+      //     );
+      //   });
+      //   newTransformedStreams.push(channel);
+      // }) 
+      // // console.log({newTransformedStreams});
+
+      // return {
+      //   streams: nextProps.allStreams,
+      //   transformedStreams: newTransformedStreams
+      // };
     }
     return null; // No change to state
   }
