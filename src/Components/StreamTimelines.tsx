@@ -1,6 +1,9 @@
+// Libraries
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import timelines from '../lib/timelines.js'; //examples = https://codepen.io/manglass/pen/MvLBRz
+
+// Class objects
 import Stream from '../Classes/Stream';
 
 
@@ -10,12 +13,20 @@ interface IProps {
     maxTime: number
   },
   masterTime: number,
-  allStreams: Stream[]
+  allStreams: StreamChannel[]
 }
 
 interface IState {
-  streams:            Array<Stream>,
-  transformedStreams: Array<StreamTimeline>
+  allTimelineInput: Array<StreamTimeline>
+}
+
+interface StreamChannel {
+  uniqueId:       number,
+  stream:         Stream,
+  timelineInput:  StreamTimeline,
+  playerRef:      HTMLInputElement,
+  showMedia:      boolean,
+  muteMedia:      boolean
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
@@ -30,8 +41,7 @@ class StreamTimelines extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      streams: new Array<Stream>(),
-      transformedStreams: []
+      allTimelineInput: new Array<StreamTimeline>()
     }
   }
   
@@ -97,9 +107,9 @@ class StreamTimelines extends Component<IProps, IState> {
     };
     const svgWidth: number = 1700;
     const svgHeight: number = 
-        this.state.transformedStreams.length === 0 
+        this.state.allTimelineInput.length === 0 
         ? 0 
-        : (this.state.transformedStreams.length + 2) * (itemHeight + itemMargin);
+        : (this.state.allTimelineInput.length + 2) * (itemHeight + itemMargin);
 
     
     var chart: any = timelines()
@@ -124,7 +134,7 @@ class StreamTimelines extends Component<IProps, IState> {
       // .attr("id", "timeline-svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight) //needs to make dynamic
-      .datum(this.state.transformedStreams)
+      .datum(this.state.allTimelineInput)
       .call(chart)
       .append('rect')
       .classed("scrubber-line", true)
@@ -146,31 +156,40 @@ class StreamTimelines extends Component<IProps, IState> {
 
   //
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
-    //adapt Stream object into d3-timelines format to display
-    if(nextProps.allStreams !== prevState.streams){
+    let newTimelineInput: StreamTimeline[] = [];
+      nextProps.allStreams.map( (eachChannel: StreamChannel) => {
+        newTimelineInput.push(eachChannel.timelineInput);
+      }) ;
+
+    if(newTimelineInput !== prevState.allTimelineInput){
       //Change in props
 
-      let newTransformedStreams: Array<StreamTimeline> = [];
-      nextProps.allStreams.map( (thisStream) => {
-        let channel: StreamTimeline = {
-          times: []
-        };
-        thisStream.media.map( thisMedia => {
-          channel.times.push(
-            {
-              "starting_time": thisMedia.startTime, 
-              "ending_time": thisMedia.endTime
-            }
-          );
-        });
-        newTransformedStreams.push(channel);
-      }) 
-      // console.log({newTransformedStreams});
-
       return {
-        streams: nextProps.allStreams,
-        transformedStreams: newTransformedStreams
+        allTimelineInput: newTimelineInput
       };
+
+
+      // let newTransformedStreams: Array<StreamTimeline> = [];
+      // nextProps.allStreams.map( (thisStream) => {
+      //   let channel: StreamTimeline = {
+      //     times: []
+      //   };
+      //   thisStream.media.map( thisMedia => {
+      //     channel.times.push(
+      //       {
+      //         "starting_time": thisMedia.startTime, 
+      //         "ending_time": thisMedia.endTime
+      //       }
+      //     );
+      //   });
+      //   newTransformedStreams.push(channel);
+      // }) 
+      // // console.log({newTransformedStreams});
+
+      // return {
+      //   streams: nextProps.allStreams,
+      //   transformedStreams: newTransformedStreams
+      // };
     }
     return null; // No change to state
   }

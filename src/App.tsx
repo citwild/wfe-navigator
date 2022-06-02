@@ -24,18 +24,17 @@ interface IState {
   },
   masterTime:             number, 
   playing:                boolean,
-  allStreams:             any, //TODO: StreamChannel[]
+  allStreams:             StreamChannel[],
   playbackIntervalObject: ReturnType<typeof setInterval>
 }
 
 interface StreamChannel {
-    id:             number,
+    uniqueId:       number,
     stream:         Stream,
-    timelineInput:  StreamTimeline[],
+    timelineInput:  StreamTimeline,
     playerRef:      HTMLInputElement,
     showMedia:      boolean,
-    muteMedia:      boolean,
-    playing:        boolean
+    muteMedia:      boolean
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
@@ -70,7 +69,6 @@ class App extends Component<{}, IState> {
 // TODO: potentially new central object structure
 // allStreams = [
 //   {
-//     id: 0,
 //     stream: new Stream(),
 //     timelineInput: this.streamToTimeline(stream), <= transform stream object to timeline input's foprmat
 //     playerRef: React.createRef(),
@@ -166,8 +164,16 @@ class App extends Component<{}, IState> {
         );
       })
       // console.log({stream});
+      var newStreamChannel: StreamChannel = {
+        uniqueId: Date.now(),
+        stream: stream,
+        timelineInput:  this.transformStreamToTimelineFormat(stream),
+        playerRef: null,
+        showMedia: true,
+        muteMedia: false
+      };
       this.setState({
-        allStreams: [...this.state.allStreams, stream]
+        allStreams: [...this.state.allStreams, newStreamChannel]
       }, () => {
         console.log(this.state.allStreams);
         this.updateMasterSliderRange(); 
@@ -177,10 +183,26 @@ class App extends Component<{}, IState> {
     window.api.send("getFiles", [streamDate, streamLocation, streamEquipment]);
   }
 
+  // MAY be able to pass this as props to StreamTimelines
+  transformStreamToTimelineFormat = (thisStream: Stream): StreamTimeline => {
+    let channel: StreamTimeline = {
+      times: []
+    };
+    thisStream.media.map( thisMedia => {
+      channel.times.push(
+        {
+          "starting_time": thisMedia.startTime, 
+          "ending_time": thisMedia.endTime
+        }
+      );
+    });
+    return channel;
+  }
+
   // execute every time a video is added
   updateMasterSliderRange = (): void => {
-    var getAllMins: number[] = this.state.allStreams.map( (thisStream: Stream) => thisStream.getEarliestTime() );
-    var getAllMaxs: number[] = this.state.allStreams.map( (thisStream: Stream) => thisStream.getLatestTime() );
+    var getAllMins: number[] = this.state.allStreams.map( (thisChannel: StreamChannel) => thisChannel.stream.getEarliestTime() );
+    var getAllMaxs: number[] = this.state.allStreams.map( (thisChannel: StreamChannel) => thisChannel.stream.getLatestTime() );
     var newMin: number = d3.min(getAllMins);
     var newMax: number = d3.max(getAllMaxs);
     // console.log("MIN/MAX: " + newMin + "-" + newMax);
@@ -256,16 +278,16 @@ class App extends Component<{}, IState> {
 
         <div id="media-container">
           {/* <p><button onClick={this.togglePlayAll}>toggle play ALL</button></p> */}
-          {this.state.allStreams.map( (thisStream: Stream) => {
-            var keyGen = [
-              thisStream.getDate(), 
-              thisStream.getLocation(), 
-              thisStream.getEquipment()
-            ];
+          {this.state.allStreams.map( (thisChannel: StreamChannel) => {
+            // var keyGen = [
+            //   thisStream.getDate(), 
+            //   thisStream.getLocation(), 
+            //   thisStream.getEquipment()
+            // ];
 
             return <StreamManager
-              key = {keyGen.join('|')}
-              stream = {thisStream}
+              key = {thisChannel.uniqueId.toString()}
+              stream = {thisChannel.stream}
               masterTime = {this.state.masterTime}
               updateMasterTime = {this.updateMasterTime}
             />
