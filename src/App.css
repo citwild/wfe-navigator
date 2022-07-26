@@ -62,9 +62,42 @@
 }
 
 .no-source {
-  background-color: black;
+  background-color: black; 
 }
 
 .hidden-media {
-  background-color: darkgray;
+  background-color: lightgray;
+  color: black;
+}
+
+#stream-controllers {
+  padding-bottom: 18px;
+}
+
+#playback-controller {
+  padding: 20px 0 50px 0;
+}
+
+.controller-row > td {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+button.controller {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+input[type=checkbox] {
+  padding: 0;
+  margin: 0;
+}
+
+input[type=checkbox], button.controller, .controller-row > td {
+    font-size: 12px;
 }

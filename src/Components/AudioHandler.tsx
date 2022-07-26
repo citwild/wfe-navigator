@@ -316,7 +316,7 @@ class AudioHandler extends Component<IProps, IState> {
     const sliceWidth = (width * 1.0) / this.state.audioData.length;
 
     context.lineWidth = 2;
-    context.strokeStyle = '#000000';
+    context.strokeStyle = '#00147e';
     context.clearRect(0, 0, width, height);
 
     context.beginPath();
@@ -342,14 +342,9 @@ class AudioHandler extends Component<IProps, IState> {
     return (
       <React.Fragment>
         <div id={"player-" + this.props.keyID}>
-          <div id={"panner-container-" + this.props.keyID}>
-            <input id={"panning-control-" + this.props.keyID} type="range" min="-1" max="1" step="0.05" value={this.state.audioPannerValue} onChange={this.pannerControl}></input>
-            <label id={"panner-value-" + this.props.keyID}>
-            {Math.floor(50 - this.state.audioPannerValue*50) + "%"}/{Math.ceil(this.state.audioPannerValue*50+50) + "%"}
-            </label>
-          </div>
+          
           {/* <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button> */}
-        {this.props.media.mediaType === 'Audio' && <canvas ref={this.canvas} id="myCanvas" width="300" height="175"></canvas>}
+        {this.props.media.mediaType === 'Audio' && <canvas ref={this.canvas} id="myCanvas" width="320" height="175"></canvas>}
         <ReactPlayer
           ref={this.ref}
           className='react-player'
@@ -379,6 +374,12 @@ class AudioHandler extends Component<IProps, IState> {
           onDuration={this.handleDuration}
           onLoadedData={this.connectWebAudioAPI}
         />
+        </div>
+        <div id={"panner-container-" + this.props.keyID}>
+          <input id={"panning-control-" + this.props.keyID} type="range" min="-1" max="1" step="0.05" value={this.state.audioPannerValue} onChange={this.pannerControl}></input>
+          <label id={"panner-value-" + this.props.keyID}>
+          {Math.floor(50 - this.state.audioPannerValue*50) + "%"}/{Math.ceil(this.state.audioPannerValue*50+50) + "%"}
+          </label>
         </div>
       
         </React.Fragment>

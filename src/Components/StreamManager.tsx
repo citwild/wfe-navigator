@@ -93,9 +93,7 @@ class StreamManager extends Component<IProps, IState> {
     // console.log("Key = " + this.props.stream.uniqueId);
     return (
       <div className='player-wrapper'>
-        {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia
-          && this.state.mediaAtMasterTime.name}
-
+    
         {this.state.mediaAtMasterTime === null && this.props.stream.showMedia 
           && <this.NoMedia/>}
         { (this.state.mediaAtMasterTime === null || this.state.mediaAtMasterTime !== null) && !this.props.stream.showMedia 
@@ -114,7 +112,7 @@ class StreamManager extends Component<IProps, IState> {
                 audioContext = {this.props.audioContext}
               /> }
 
-        <div><b>{this.props.stream.stream.getLocation()}</b></div>
+        <div><b>{this.props.stream.stream.getLocation()}</b> {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia && this.state.mediaAtMasterTime.name}</div>
         
       </div>
     );

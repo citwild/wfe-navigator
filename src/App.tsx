@@ -2,6 +2,9 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
+
+
+
 // Libraries - styling
 import Checkbox from '@mui/material/Checkbox';
 
@@ -18,6 +21,8 @@ import MainSlider from './Components/MainSlider';
 import StreamTimelines from './Components/StreamTimelines';
 import StreamManager from './Components/StreamManager';
 import VideoHandler from './Components/VideoHandler';
+import StreamTimelineController from './Components/StreamTimelineController';
+
 import { lightBlue } from '@mui/material/colors';
 
 // const rootDir = "http://localhost:8080/static/";
@@ -498,7 +503,62 @@ class App extends Component<{}, IState> {
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
         
-        <div>
+        
+
+        <div id="stream-controllers" style={{display: 'inline-block'}}>
+
+          {this.state.allStreams.length > 0 &&
+          <StreamTimelineController
+            allStreams = {this.state.allStreams}
+            showMediaToggle = {this.showMediaToggle}
+            muteMediaToggle = {this.muteMediaToggle}
+            moveStreamUp = {this.moveStreamUp}
+            moveStreamDown = {this.moveStreamDown}
+            removeStream = {this.removeStream}
+          />}
+          {/* {this.state.allStreams.map((thisChannel: StreamChannel, index: number) => {
+            return <div style={{textAlign: 'right'}}>
+              <label>{thisChannel.stream.getLocation()}: </label>
+              👁
+              <Checkbox  
+                key = {'stream-checkbox-' + thisChannel.uniqueId.toString()}
+                size="small"
+                checked={thisChannel.showMedia} 
+                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
+                style={{padding: 0}}
+                />
+              📽
+              <Checkbox  
+                key = {'video-checkbox-' + thisChannel.uniqueId.toString()}
+                size="small"
+                checked
+                // ={thisChannel.showMedia} 
+                disabled
+                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
+                style={{padding: 0}}
+                />
+              🔊
+              <Checkbox  
+                key = {'audio-checkbox-' + thisChannel.uniqueId.toString()}
+                size="small"
+                checked={!thisChannel.muteMedia}
+                disabled={!thisChannel.showMedia}
+                onChange={() => this.muteMediaToggle(thisChannel.uniqueId)}
+                style={{padding: 0}}
+                />
+              <button onClick={() => {this.removeStream(thisChannel.uniqueId, index)}}>
+                ❌
+              </button>
+
+              <button onClick={() => {this.moveStreamUp(index)}} disabled={index === 0}>↑</button>
+              <button onClick={() => {this.moveStreamDown(index)}} disabled={index === this.state.allStreams.length - 1}>↓</button>
+              <button onClick={() => {this.setFocusStream(index)}} disabled={index === this.state.focusStream}>focus</button>
+            </div>
+            })
+          } */}
+        </div>
+
+        <div style={{display: 'inline-block'}}>
           <MainSlider
             sliderRange = {this.state.sliderRange}
             masterTime = {this.state.masterTime}
@@ -511,6 +571,10 @@ class App extends Component<{}, IState> {
             masterTime = {this.state.masterTime}
             
           />
+        </div>
+          
+        
+        <div id="playback-controller">
           <label>Playback speed multiplier: </label>
           <input 
             type="number" 
@@ -524,7 +588,7 @@ class App extends Component<{}, IState> {
           <button disabled={this.state.playing} onClick={() => {this.startPlayback(0)}}>start playback</button>
           <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
           
-
+        
           {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
             <div style={{width: '800px'}}>
               {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) === null && this.state.allStreams[this.state.focusStream].showMedia 
@@ -604,49 +668,9 @@ class App extends Component<{}, IState> {
           })}
         </div>
 
-        {this.state.allStreams.map((thisChannel: StreamChannel, index: number) => {
-            return <div>
-              <label>#{index + 1}: </label>
-              stream
-              <Checkbox  
-                key = {'stream-checkbox-' + thisChannel.uniqueId.toString()}
-                size="small"
-                checked={thisChannel.showMedia} 
-                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
-                style={{padding: 0}}
-                />
-              video
-              <Checkbox  
-                key = {'video-checkbox-' + thisChannel.uniqueId.toString()}
-                size="small"
-                checked
-                // ={thisChannel.showMedia} 
-                disabled
-                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
-                style={{padding: 0}}
-                />
-              audio
-              <Checkbox  
-                key = {'audio-checkbox-' + thisChannel.uniqueId.toString()}
-                size="small"
-                checked={!thisChannel.muteMedia}
-                disabled={!thisChannel.showMedia}
-                onChange={() => this.muteMediaToggle(thisChannel.uniqueId)}
-                style={{padding: 0}}
-                />
-              <button onClick={() => {this.removeStream(thisChannel.uniqueId, index)}}>
-                Remove
-              </button>
-
-              <button onClick={() => {this.moveStreamUp(index)}} disabled={index === 0}>◄</button>
-              <button onClick={() => {this.moveStreamDown(index)}} disabled={index === this.state.allStreams.length - 1}>►</button>
-              <button onClick={() => {this.setFocusStream(index)}} disabled={index === this.state.focusStream}>focus</button>
-            </div>
-            }
-          )
-        }
         
-        <div style={{position: 'fixed', top: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
+        
+        <div style={{position: 'fixed', bottom: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
           <h4>Sample inputs</h4>
           <ul>
           {allGroupings2.map((g) => 

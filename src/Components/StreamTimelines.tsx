@@ -95,8 +95,8 @@ class StreamTimelines extends Component<IProps, IState> {
     // ];
     
 
-    const itemHeight: number = 12;
-    const itemMargin: number = 3;
+    const itemHeight: number = 14;
+    const itemMargin: number = 4;
     const itemColor: string = "lightpink";
     const backgroundColor: string = "#f2f2f2";
     const margin = {
