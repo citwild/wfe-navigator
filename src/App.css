@@ -133,9 +133,9 @@ input[type=checkbox], button.controller, .controller-row > td {
 /*////////////////////////////*/
 /* native input sliders preset for multiple browsers*/
 input[type=range] {
-  height: 25px;
+  /* height: 25px; */
   -webkit-appearance: none;
-  margin: 10px 0;
+  /* margin: 10px 0; */
   /* width: 100%; */
 }
 input[type=range]:focus {
