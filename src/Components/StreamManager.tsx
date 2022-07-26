@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 // Components
 import VideoHandler from './VideoHandler';
+import AudioHandler from './AudioHandler';
 
 // Class objects
 import Media from '../Classes/Media';
@@ -11,13 +12,13 @@ import Stream from '../Classes/Stream';
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 interface IProps {
-  key:              string,
   stream:           StreamChannel,
   masterTime:       number,
   updateMasterTime: any,
   playing:          boolean,
   playbackSpeed:    number,
-  showFileInDir:    any
+  showFileInDir:    any,
+  audioContext:     any
 }
 
 interface IState {
@@ -88,10 +89,10 @@ class StreamManager extends Component<IProps, IState> {
 
 
   render() { 
-    console.log("MASTER TIME = " + this.props.masterTime);
+    // console.log("MASTER TIME = " + this.props.masterTime);
+    // console.log("Key = " + this.props.stream.uniqueId);
     return (
       <div className='player-wrapper'>
-        <div><b>{this.props.stream.stream.getLocation()}</b></div>
         {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia
           && this.state.mediaAtMasterTime.name}
 
@@ -100,7 +101,9 @@ class StreamManager extends Component<IProps, IState> {
         { (this.state.mediaAtMasterTime === null || this.state.mediaAtMasterTime !== null) && !this.props.stream.showMedia 
           && <this.HiddenMedia/>}
         {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia 
-          && <VideoHandler
+          && <AudioHandler
+                key = {this.props.stream.uniqueId}
+                keyID = {this.props.stream.uniqueId}
                 media = {this.state.mediaAtMasterTime}
                 url = {rootDir + this.state.mediaAtMasterTime.getSource()}
                 masterTime = {this.props.masterTime}
@@ -108,7 +111,11 @@ class StreamManager extends Component<IProps, IState> {
                 playing = {this.props.playing}
                 muteMedia = {this.props.stream.muteMedia}
                 playbackSpeed = {this.props.playbackSpeed}
+                audioContext = {this.props.audioContext}
               /> }
+
+        <div><b>{this.props.stream.stream.getLocation()}</b></div>
+        
       </div>
     );
   }

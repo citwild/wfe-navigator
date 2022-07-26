@@ -54,7 +54,7 @@ function createWindow () {
         })
         .orderBy('time_begin');
       result.then( (res) => {
-        // console.log({res});
+        console.log({res});
         mainWindow.webContents.send("sendFiles", res); // Send result back to renderer process
       })
     })

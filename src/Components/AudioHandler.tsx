@@ -46,7 +46,7 @@ type playerRef = HTMLInputElement;
 
 /////////////////////////////////////////////////////////////
 
-class VideoHandler extends Component<IProps, IState> {
+class AudioHandler extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -66,8 +66,13 @@ class VideoHandler extends Component<IProps, IState> {
       lastPlayed: null,
       audioPannerValue: 0,
       pannerNode: null,
+      audioData: new Uint8Array(0)
     }
     this.playerRef = React.createRef();
+    this.freqArray = null;
+    this.canvas = React.createRef()
+    this.analyser = null;
+    this.gainNode = null;
   }
 
   componentDidMount(): void {
@@ -77,11 +82,24 @@ class VideoHandler extends Component<IProps, IState> {
       muted: this.props.muteMedia,
       playbackRate: this.props.playbackSpeed
     });    
+    this.analyser = this.props.audioContext.createAnalyser();
+    // this.gainNode = this.props.audioContext.createGain();
+    //could add gain node in the future for higher volume
+    this.freqArray = new Uint8Array(this.analyser.frequencyBinCount);
+    this.rafId = requestAnimationFrame(this.tick);
+  }
+
+  componentDidUpdate(): void {
+    if (this.props.media.mediaType === 'Audio') {
+      this.draw();
+    }
+
   }
 
   componentWillUnmount(): void {
     if (this.state.pannerNode)  {
       this.state.pannerNode.disconnect();
+      this.analyser.disconnect();
     }
 
   }
@@ -145,6 +163,7 @@ class VideoHandler extends Component<IProps, IState> {
   handlePlay = () => {
     console.log('onPlay')
     this.setState({ playing: true })
+    this.rafId = requestAnimationFrame(this.tick);
   }
 
   handleEnablePIP = () => {
@@ -161,6 +180,7 @@ class VideoHandler extends Component<IProps, IState> {
     console.log('onPause')
     this.setState({ playing: false });
     this.syncWithMasterTime();
+    cancelAnimationFrame(this.rafId);
     // this.player.seekTo(this.findSeekPosition(), "seconds");
     
   }
@@ -173,7 +193,7 @@ class VideoHandler extends Component<IProps, IState> {
   findSeekPosition = () => {
     // this.props.media is never NULL 
     var msFromStart = this.props.masterTime - this.props.media.startTime;
-    // console.log({msFromStart});
+    console.log({msFromStart});
     return msFromStart / 1000;
   }
 
@@ -191,7 +211,7 @@ class VideoHandler extends Component<IProps, IState> {
   }
 
   handleProgress = state => {
-    // console.log('onProgress', state)
+    console.log('onProgress', state)
     // We only want to update time slider if we are not currently seeking
     if (!this.state.seeking) {
       this.setState(state)
@@ -208,16 +228,24 @@ class VideoHandler extends Component<IProps, IState> {
   }
 
   handleDuration = (duration: number) => {
-    // console.log('onDuration', duration)
+    console.log('onDuration', duration)
     this.setState({ duration })
   }
 
   handleReady = () => {
-    // console.log('onReady');
+    console.log('onReady');
     if (this.state.lastPlayed !== this.state.played) {
       this.syncWithMasterTime();  
     }
   }
+
+  // renderLoadButton = (url, label) => {
+  //   return (
+  //     <button onClick={() => this.load(url)}>
+  //       {label}
+  //     </button>
+  //   )
+  // }
 
   ref = (player: any) => {
     this.playerRef = player
@@ -230,6 +258,14 @@ class VideoHandler extends Component<IProps, IState> {
       this.setState({ audioPannerValue: e.target.value });
       this.state.pannerNode.pan.value = this.state.audioPannerValue;
     }
+  }
+
+  renderFrame = () => {
+    requestAnimationFrame(renderFrame);
+    // update data in frequencyData
+    analyser.getByteFrequencyData(frequencyData);
+    // render frame based on values in frequencyData
+    // console.log(frequencyData)
   }
 
   connectWebAudioAPI = () => {
@@ -246,6 +282,14 @@ class VideoHandler extends Component<IProps, IState> {
     // const panValue = document.querySelector('.panning-value');
 
     let source = audioCxt.createMediaElementSource(thisVideoSource);
+
+    /////////////////
+    //for visualizing AUDIO
+    source.connect(this.analyser);
+    this.rafId = requestAnimationFrame(this.tick);
+   
+   //////////////////////////
+
     this.setState({ pannerSource: source });
 
     // Create a stereo panner
@@ -257,12 +301,44 @@ class VideoHandler extends Component<IProps, IState> {
     // connect the AudioBufferSourceNode to the gainNode
     // and the gainNode to the destination, so we can play the
     // music and adjust the panning using the controls
-    source.connect(panNode);
+    this.analyser.connect(panNode);
+    // source.connect(panNode);
     panNode.connect(audioCxt.destination);
+
   }
   
-  render() { 
+  draw() {
+    const canvas = this.canvas.current;
+    const height = canvas.height;
+    const width = canvas.width;
+    const context = canvas.getContext('2d');
+    let x = 0;
+    const sliceWidth = (width * 1.0) / this.state.audioData.length;
 
+    context.lineWidth = 2;
+    context.strokeStyle = '#000000';
+    context.clearRect(0, 0, width, height);
+
+    context.beginPath();
+    context.moveTo(0, height / 2);
+    for (const item of this.state.audioData) {
+      const y = (item / 255.0) * height;
+      context.lineTo(x, y);
+      x += sliceWidth;
+    }
+    context.lineTo(x, height / 2);
+    context.stroke();
+  }
+
+  tick = () => {
+    this.analyser.getByteTimeDomainData(this.freqArray);
+    this.setState({ audioData: this.freqArray });
+    this.rafId = requestAnimationFrame(this.tick);
+  }
+
+
+
+  render() { 
     return (
       <React.Fragment>
         <div id={"player-" + this.props.keyID}>
@@ -273,8 +349,7 @@ class VideoHandler extends Component<IProps, IState> {
             </label>
           </div>
           {/* <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button> */}
-          {this.state.playing ? " playing..." : " paused"}
-        
+        {this.props.media.mediaType === 'Audio' && <canvas ref={this.canvas} id="myCanvas" width="300" height="175"></canvas>}
         <ReactPlayer
           ref={this.ref}
           className='react-player'
@@ -311,4 +386,4 @@ class VideoHandler extends Component<IProps, IState> {
   }
 }
  
-export default VideoHandler;
+export default AudioHandler;

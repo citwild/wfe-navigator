@@ -75,9 +75,10 @@ class MainSlider extends Component<IProps, IState> {
       .width(sliderWidth - (2 * sideMargin))
       .displayValue(false)
       .tickFormat(d3.timeFormat("%H:%M:%S")) //time zone based on system settings
-      .on('onchange', (val: number) => {
-        d3.select('#slider-value').text(new Date(val).toString());
+      .on('onchange', (value: number) => {
+        // d3.select('#slider-value').text(new Date(value).toString());
         // d3.select('#value').text(val);
+        // this.props.updateMasterTime(value);
         
         
       })
@@ -85,10 +86,10 @@ class MainSlider extends Component<IProps, IState> {
         this.props.updateMasterTime(value);
         // d3.select('rect#scrubber-line')
         // .attr('x', xScale.invert(this.props.masterTime))
-        var seekButtons: any = document.getElementsByClassName('seek');
-        for (var i = 0; i < seekButtons.length ; i++) {
-          seekButtons[i].click();
-        }
+        // var seekButtons: any = document.getElementsByClassName('seek');
+        // for (var i = 0; i < seekButtons.length ; i++) {
+        //   seekButtons[i].click();
+        // }
       });
 
     var svg = d3
@@ -139,11 +140,10 @@ class MainSlider extends Component<IProps, IState> {
 
   render() { 
 
-    d3.select('#slider-value')
-      .text(new Date(this.props.masterTime).toString());
+
     return (
       <div id="slider-container">
-        <strong>Current playback time: </strong><text id="slider-value"></text>
+        <strong>Current playback time: </strong><span id="slider-value">{this.props.masterTime !== 0 && new Date(this.props.masterTime).toString()}</span>
         <div id="main-slider"></div>
       </div>
     );
