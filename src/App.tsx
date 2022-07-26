@@ -499,57 +499,55 @@ class App extends Component<{}, IState> {
 
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
-        
-        <div>
-          <strong>Current playback time: </strong><span id="slider-value">{this.state.masterTime !== 0 && new Date(this.state.masterTime).toString()}</span>
-        </div>
+        <div id="timeline-area">
+          <div>
+            <strong>Current playback time: </strong><span id="slider-value">{this.state.masterTime !== 0 && new Date(this.state.masterTime).toString()}</span>
+          </div>
 
-        <div id="stream-controllers" style={{display: 'inline-block'}}>
+          <div id="stream-controllers">
+            {this.state.allStreams.length > 0 &&
+            <StreamTimelineController
+              allStreams = {this.state.allStreams}
+              showMediaToggle = {this.showMediaToggle}
+              muteMediaToggle = {this.muteMediaToggle}
+              moveStreamUp = {this.moveStreamUp}
+              moveStreamDown = {this.moveStreamDown}
+              removeStream = {this.removeStream}
+            />}
+          </div>
 
-          {this.state.allStreams.length > 0 &&
-          <StreamTimelineController
-            allStreams = {this.state.allStreams}
-            showMediaToggle = {this.showMediaToggle}
-            muteMediaToggle = {this.muteMediaToggle}
-            moveStreamUp = {this.moveStreamUp}
-            moveStreamDown = {this.moveStreamDown}
-            removeStream = {this.removeStream}
-          />}
-        </div>
-
-        <div style={{display: 'inline-block'}}>
-          <MainSlider
-            sliderRange = {this.state.sliderRange}
-            masterTime = {this.state.masterTime}
-            updateMasterTime = {this.updateMasterTime}
-            
-          />
-          <StreamTimelines
-            sliderRange = {this.state.sliderRange}
-            allStreams = {this.state.allStreams}
-            masterTime = {this.state.masterTime}
-            
-          />
-        </div>
-        <div id="timeline-tooltip">
-          tooltip
-        </div>
-        
-        <div id="playback-controller">
-          <label>Playback speed multiplier: </label>
-          <input 
-            type="number" 
-            min="0.25"
-            style={{width: 50}}
-            id="speed-multiplier" 
-            // name="speed-multiplier" 
-            value={this.state.playbackSpeed} 
-            disabled={this.state.playing}
-            onChange={this.handlePlaybackSpeedChange}/>
-          <button disabled={this.state.playing} onClick={() => {this.startPlayback(0)}}>start playback</button>
-          <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
+          <div id="timelines">
+            <MainSlider
+              sliderRange = {this.state.sliderRange}
+              masterTime = {this.state.masterTime}
+              updateMasterTime = {this.updateMasterTime}
+            />
+            <StreamTimelines
+              sliderRange = {this.state.sliderRange}
+              allStreams = {this.state.allStreams}
+              masterTime = {this.state.masterTime}
+            />
+          </div>
+          <div id="timeline-tooltip">tooltip</div>
           
-        
+          <div id="playback-controller">
+            <label>Playback speed multiplier: </label>
+            <input 
+              type="number" 
+              min="0.25"
+              style={{width: 50}}
+              id="speed-multiplier" 
+              // name="speed-multiplier" 
+              value={this.state.playbackSpeed} 
+              disabled={this.state.playing}
+              onChange={this.handlePlaybackSpeedChange}/>
+            <button disabled={this.state.playing} onClick={() => {this.startPlayback(0)}}>start playback</button>
+            <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
+            
+          </div>
+        </div>
+
+
           {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
             <div style={{width: '800px'}}>
               {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) === null && this.state.allStreams[this.state.focusStream].showMedia 
@@ -577,7 +575,7 @@ class App extends Component<{}, IState> {
                     /> }
             </div>
           }
-        </div>
+        
 
         <div id="media-container">
           {this.state.focusStream !== null &&

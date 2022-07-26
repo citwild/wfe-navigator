@@ -75,8 +75,15 @@
 }
 
 #stream-controllers {
+  /* position: absolute; */
   padding-bottom: 18px;
+  display: inline-block;
 }
+
+#timelines {
+  display: inline-block;
+}
+
 
 #playback-controller {
   padding: 20px 0 50px 0;
@@ -132,6 +139,7 @@ input[type=checkbox], button.controller, .controller-row > td {
 
 /*////////////////////////////*/
 /* native input sliders preset for multiple browsers*/
+
 input[type=range] {
   /* height: 25px; */
   -webkit-appearance: none;
