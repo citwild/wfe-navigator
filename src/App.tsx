@@ -2,9 +2,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
-
-
-
 // Libraries - styling
 import Checkbox from '@mui/material/Checkbox';
 
@@ -503,7 +500,9 @@ class App extends Component<{}, IState> {
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
         
-        
+        <div>
+          <strong>Current playback time: </strong><span id="slider-value">{this.state.masterTime !== 0 && new Date(this.state.masterTime).toString()}</span>
+        </div>
 
         <div id="stream-controllers" style={{display: 'inline-block'}}>
 
@@ -516,46 +515,6 @@ class App extends Component<{}, IState> {
             moveStreamDown = {this.moveStreamDown}
             removeStream = {this.removeStream}
           />}
-          {/* {this.state.allStreams.map((thisChannel: StreamChannel, index: number) => {
-            return <div style={{textAlign: 'right'}}>
-              <label>{thisChannel.stream.getLocation()}: </label>
-              👁
-              <Checkbox  
-                key = {'stream-checkbox-' + thisChannel.uniqueId.toString()}
-                size="small"
-                checked={thisChannel.showMedia} 
-                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
-                style={{padding: 0}}
-                />
-              📽
-              <Checkbox  
-                key = {'video-checkbox-' + thisChannel.uniqueId.toString()}
-                size="small"
-                checked
-                // ={thisChannel.showMedia} 
-                disabled
-                onChange={() => this.showMediaToggle(thisChannel.uniqueId)}
-                style={{padding: 0}}
-                />
-              🔊
-              <Checkbox  
-                key = {'audio-checkbox-' + thisChannel.uniqueId.toString()}
-                size="small"
-                checked={!thisChannel.muteMedia}
-                disabled={!thisChannel.showMedia}
-                onChange={() => this.muteMediaToggle(thisChannel.uniqueId)}
-                style={{padding: 0}}
-                />
-              <button onClick={() => {this.removeStream(thisChannel.uniqueId, index)}}>
-                ❌
-              </button>
-
-              <button onClick={() => {this.moveStreamUp(index)}} disabled={index === 0}>↑</button>
-              <button onClick={() => {this.moveStreamDown(index)}} disabled={index === this.state.allStreams.length - 1}>↓</button>
-              <button onClick={() => {this.setFocusStream(index)}} disabled={index === this.state.focusStream}>focus</button>
-            </div>
-            })
-          } */}
         </div>
 
         <div style={{display: 'inline-block'}}>
@@ -572,7 +531,9 @@ class App extends Component<{}, IState> {
             
           />
         </div>
-          
+        <div id="timeline-tooltip">
+          tooltip
+        </div>
         
         <div id="playback-controller">
           <label>Playback speed multiplier: </label>
@@ -618,33 +579,6 @@ class App extends Component<{}, IState> {
           }
         </div>
 
-
-        <div>
-          {/* <h1>query filters</h1>
-          <form action="#" method="post" className="query" id="query-fields">
-            <div>
-              <h3>location</h3>
-              <p><label><input type="checkbox" name="location[]" value="PS A" />PS A</label></p>
-              <p><label><input type="checkbox" name="location[]" value="Hub" />Hub</label></p>
-            </div>
-
-            <div>
-              <h3>equipment</h3>
-              <p><label><input type="checkbox" name="equipment[]" value="GoPro" />GoPro</label></p>
-              <p><label><input type="checkbox" name="equipment[]" value="Zoom" />Zoom</label></p>
-            </div>
-
-            <div>
-              <h3>date</h3>
-              <p><label><input type="checkbox" name="date[]" value="2014-03-19" />2014-03-19</label></p>
-              <p><label><input type="checkbox" name="date[]" value="2014-03-20" />2014-03-20</label></p>
-            </div>
-            
-          </form>
-          <h2>query result</h2> */}
-        </div>
-
-
         <div id="media-container">
           {this.state.focusStream !== null &&
             <this.FocusStream/>
@@ -669,7 +603,6 @@ class App extends Component<{}, IState> {
         </div>
 
         
-        
         <div style={{position: 'fixed', bottom: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
           <h4>Sample inputs</h4>
           <ul>
@@ -681,21 +614,6 @@ class App extends Component<{}, IState> {
             }>{g.toString()}</button></li>
             )}
           </ul>
-          {/* <ul>
-            <li><button onClick={() => this.addStream("2014-02-19", "PS A", "gopro")}>02/19 - A/gopro</button></li>
-            <li><button onClick={() => this.addStream("2014-02-19", "Huddle", "Unknown")}>02/19 - Huddle</button></li>
-          </ul>
-          <ul>
-            <li><button onClick={() => this.addStream("2014-02-20", "PS A", "gopro")}>02/20 - A/gopro</button></li>
-            <li><button onClick={() => this.addStream("2014-02-20", "PS B", "gopro")}>02/20 - B/gopro</button></li>
-            <li><button onClick={() => this.addStream("2014-02-20", "PS C", "gopro")}>02/20 - C/gopro</button></li>
-            <li><button onClick={() => this.addStream("2014-02-20", "PS F", "gopro")}>02/20 - F/gopro</button></li>
-            <li><button onClick={() => this.addStream("2014-02-20", "PS G", "gopro")}>02/20 - G/gopro</button></li>
-            <li><button onClick={() => this.addStream("2014-02-20", "Huddle", "Unknown")}>02/20 - Huddle</button></li>
-          </ul>
-          <ul>
-            <li><button onClick={() => this.addStream("2014-02-21", "PS C", "gopro")}>02/21 - C/gopro</button></li>
-          </ul> */}
 
         </div>
         

@@ -143,7 +143,6 @@ class MainSlider extends Component<IProps, IState> {
 
     return (
       <div id="slider-container">
-        <strong>Current playback time: </strong><span id="slider-value">{this.props.masterTime !== 0 && new Date(this.props.masterTime).toString()}</span>
         <div id="main-slider"></div>
       </div>
     );

@@ -73,8 +73,6 @@ class StreamManager extends Component<IProps, IState> {
 
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     var sourceAtNewMasterTime: Media = nextProps.stream.stream.getMediaAtTime(nextProps.masterTime);
-    // if(sourceAtNewMasterTime !== prevState.mediaAtMasterTime){
-    // }
 
     if(sourceAtNewMasterTime !== null) {
       return {
@@ -89,8 +87,6 @@ class StreamManager extends Component<IProps, IState> {
 
 
   render() { 
-    // console.log("MASTER TIME = " + this.props.masterTime);
-    // console.log("Key = " + this.props.stream.uniqueId);
     return (
       <div className='player-wrapper'>
     

@@ -63,38 +63,6 @@ class StreamTimelines extends Component<IProps, IState> {
 
 
   createTimelines = (): void => {
-    // var testData = [
-    //   {label: "stream a", 
-    //     times: [
-    //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
-    //     ]
-    //   },
-    //   {label: "stream b", 
-    //     times: [
-    //       {"starting_time": 1355759910000, "ending_time": 1355761900000},
-    //       {"starting_time": 1355761960000, "ending_time": 1355762020000}
-    //     ]
-    //   },
-    //   {label: "stream c", 
-    //     times: [
-    //       {"starting_time": 1355761910000, "ending_time": 1355763910000}
-    //     ]
-    //   },
-    //   {label: "stream F", 
-    //     times: [
-    //       {"starting_time": 1355761910000, "ending_time": 1355763910000}
-    //     ]
-    //   },
-    //   {label: "stream audio only", 
-    //     times: [
-    //       {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    //       {"starting_time": 1355767900000, "ending_time": 1355774400000}
-    //     ]
-    //   }
-    // ];
-    
-
     const itemHeight: number = 14;
     const itemMargin: number = 4;
     const itemColor: string = "lightpink";
@@ -112,6 +80,10 @@ class StreamTimelines extends Component<IProps, IState> {
         : (this.state.allTimelineInput.length + 2) * (itemHeight + itemMargin);
 
     
+    var xScale: any = d3.scaleLinear()
+      .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
+      .range([margin.left, svgWidth - margin.right]);
+
     var chart: any = timelines()
       .stack()
       .orient("bottom")
@@ -121,11 +93,18 @@ class StreamTimelines extends Component<IProps, IState> {
       .margin(margin)
       .colors(() => {return itemColor})
       .background(backgroundColor)
-      .showTimeAxis();
+      .showTimeAxis()
+      .hover((d: any, i: number, datum: any) =>  {
+        const timeAtHover = xScale.invert(d.offsetX);
+        const fileName = this.props.allStreams[i].stream.getMediaAtTime(timeAtHover).getName();
+        d3.select('#timeline-tooltip').text(fileName);
+        var tooltip = document.getElementById('timeline-tooltip');
+        tooltip.style.left  = d.clientX - tooltip.offsetWidth - 2 + "px";
+        tooltip.style.top = d.clientY - tooltip.offsetHeight - 2 + "px";
 
-    var xScale: any = d3.scaleLinear()
-      .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
-      .range([margin.left, svgWidth - margin.right]);
+      });
+
+    
 
     //TODO: 
     //  make height dynamic
@@ -151,6 +130,7 @@ class StreamTimelines extends Component<IProps, IState> {
       }
       return itemColor;
     })
+    
   }
 
 
@@ -163,33 +143,12 @@ class StreamTimelines extends Component<IProps, IState> {
 
     if(newTimelineInput !== prevState.allTimelineInput){
       //Change in props
-
       return {
         allTimelineInput: newTimelineInput
       };
 
 
-      // let newTransformedStreams: Array<StreamTimeline> = [];
-      // nextProps.allStreams.map( (thisStream) => {
-      //   let channel: StreamTimeline = {
-      //     times: []
-      //   };
-      //   thisStream.media.map( thisMedia => {
-      //     channel.times.push(
-      //       {
-      //         "starting_time": thisMedia.startTime, 
-      //         "ending_time": thisMedia.endTime
-      //       }
-      //     );
-      //   });
-      //   newTransformedStreams.push(channel);
-      // }) 
-      // // console.log({newTransformedStreams});
-
-      // return {
-      //   streams: nextProps.allStreams,
-      //   transformedStreams: newTransformedStreams
-      // };
+      
     }
     return null; // No change to state
   }
@@ -197,7 +156,7 @@ class StreamTimelines extends Component<IProps, IState> {
 
   render() { 
     return (
-      <div id='stream-timelines'></div>
+      <div id='stream-timelines' onMouseEnter={() => document.getElementById("timeline-tooltip").style.visibility = 'visible'} onMouseLeave={() => document.getElementById("timeline-tooltip").style.visibility = 'hidden'}></div>
     );
   }
 }

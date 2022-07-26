@@ -38,7 +38,6 @@ duration:           number,
   seeking:          boolean,
   lastPlayed:       number | null,
   audioPannerValue: number,
-  pannerNode:       any,
 }
 
 
@@ -65,14 +64,16 @@ class AudioHandler extends Component<IProps, IState> {
       seeking: false,
       lastPlayed: null,
       audioPannerValue: 0,
-      pannerNode: null,
       audioData: new Uint8Array(0)
     }
     this.playerRef = React.createRef();
+    this.canvas = React.createRef();
+
     this.freqArray = null;
-    this.canvas = React.createRef()
-    this.analyser = null;
+    this.analyserNode = null;
+    this.pannerNode = null;
     this.gainNode = null;
+    this.audioSource = null;
   }
 
   componentDidMount(): void {
@@ -82,10 +83,10 @@ class AudioHandler extends Component<IProps, IState> {
       muted: this.props.muteMedia,
       playbackRate: this.props.playbackSpeed
     });    
-    this.analyser = this.props.audioContext.createAnalyser();
+    this.analyserNode = this.props.audioContext.createAnalyser();
     // this.gainNode = this.props.audioContext.createGain();
     //could add gain node in the future for higher volume
-    this.freqArray = new Uint8Array(this.analyser.frequencyBinCount);
+    this.freqArray = new Uint8Array(this.analyserNode.frequencyBinCount);
     this.rafId = requestAnimationFrame(this.tick);
   }
 
@@ -93,15 +94,14 @@ class AudioHandler extends Component<IProps, IState> {
     if (this.props.media.mediaType === 'Audio') {
       this.draw();
     }
-
   }
 
   componentWillUnmount(): void {
-    if (this.state.pannerNode)  {
-      this.state.pannerNode.disconnect();
-      this.analyser.disconnect();
+    if (this.audioSource)  {
+      this.audioSource.disconnect();
+      this.pannerNode.disconnect();
+      this.analyserNode.disconnect();
     }
-
   }
 
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState): any {
@@ -123,14 +123,6 @@ class AudioHandler extends Component<IProps, IState> {
   handleStop = () => {
     this.setState({ url: null, playing: false })
   }
-
-  // handleToggleControls = () => {
-  //   const url = this.state.url
-  //   this.setState({
-  //     controls: !this.state.controls,
-  //     url: null
-  //   }, () => this.load(url))
-  // }
 
   handleToggleLight = () => {
     this.setState({ light: !this.state.light })
@@ -211,7 +203,7 @@ class AudioHandler extends Component<IProps, IState> {
   }
 
   handleProgress = state => {
-    console.log('onProgress', state)
+    // console.log('onProgress', state)
     // We only want to update time slider if we are not currently seeking
     if (!this.state.seeking) {
       this.setState(state)
@@ -239,72 +231,39 @@ class AudioHandler extends Component<IProps, IState> {
     }
   }
 
-  // renderLoadButton = (url, label) => {
-  //   return (
-  //     <button onClick={() => this.load(url)}>
-  //       {label}
-  //     </button>
-  //   )
-  // }
-
   ref = (player: any) => {
     this.playerRef = player
   }
 
   pannerControl = (e) => {
-    console.log("PAN CONTROL changed");
-    // console.log(this.state.pannerNode);
     if (this.state.pannerNode !== null) {
       this.setState({ audioPannerValue: e.target.value });
       this.state.pannerNode.pan.value = this.state.audioPannerValue;
     }
   }
 
-  renderFrame = () => {
-    requestAnimationFrame(renderFrame);
-    // update data in frequencyData
-    analyser.getByteFrequencyData(frequencyData);
-    // render frame based on values in frequencyData
-    // console.log(frequencyData)
-  }
-
   connectWebAudioAPI = () => {
-    console.log("executing... connectWebAudioAPI Method");
     let audioCxt = this.props.audioContext;
 
     // Create a MediaElementAudioSourceNode
     // Feed the HTMLMediaElement into it\
     const sourceType = this.props.media.mediaType;
-    const thisVideoSource = document.querySelector('#player-' + this.props.keyID + ' > div.react-player > ' + sourceType);
-    // console.log("VIDEO SOURCE " + thisVideoSource.outerHTML);
+    const thisAudioSource = document.querySelector('#player-' + this.props.keyID + ' > div.react-player > ' + sourceType);
+    this.audioSource = audioCxt.createMediaElementSource(thisAudioSource);
 
-    // const panControl = document.querySelector('#panning-control-' + this.props.keyID);
-    // const panValue = document.querySelector('.panning-value');
-
-    let source = audioCxt.createMediaElementSource(thisVideoSource);
-
-    /////////////////
     //for visualizing AUDIO
-    source.connect(this.analyser);
     this.rafId = requestAnimationFrame(this.tick);
    
-   //////////////////////////
-
-    this.setState({ pannerSource: source });
-
     // Create a stereo panner
-    let panNode = audioCxt.createStereoPanner();
-    console.log(panNode);
-    panNode.pan.value = this.state.audioPannerValue;
-    this.setState({ pannerNode: panNode });
+    this.pannerNode = audioCxt.createStereoPanner();
+    this.pannerNode.pan.value = this.state.audioPannerValue;
 
     // connect the AudioBufferSourceNode to the gainNode
     // and the gainNode to the destination, so we can play the
     // music and adjust the panning using the controls
-    this.analyser.connect(panNode);
-    // source.connect(panNode);
-    panNode.connect(audioCxt.destination);
-
+    this.audioSource.connect(this.analyserNode);
+    this.analyserNode.connect(this.pannerNode);
+    this.pannerNode.connect(audioCxt.destination);
   }
   
   draw() {
@@ -331,7 +290,7 @@ class AudioHandler extends Component<IProps, IState> {
   }
 
   tick = () => {
-    this.analyser.getByteTimeDomainData(this.freqArray);
+    this.analyserNode.getByteTimeDomainData(this.freqArray);
     this.setState({ audioData: this.freqArray });
     this.rafId = requestAnimationFrame(this.tick);
   }
@@ -342,8 +301,6 @@ class AudioHandler extends Component<IProps, IState> {
     return (
       <React.Fragment>
         <div id={"player-" + this.props.keyID}>
-          
-          {/* <button className="seek" onClick={() => this.playerRef.seekTo(this.findSeekPosition(), "seconds")}>seek</button> */}
         {this.props.media.mediaType === 'Audio' && <canvas ref={this.canvas} id="myCanvas" width="320" height="175"></canvas>}
         <ReactPlayer
           ref={this.ref}
@@ -360,14 +317,14 @@ class AudioHandler extends Component<IProps, IState> {
           volume={this.state.volume}
           muted={this.props.muteMedia}
           onReady={this.handleReady}
-          onStart={() => console.log('onStart')}
+          // onStart={() => console.log('onStart')}
           onPlay={this.handlePlay}
           onEnablePIP={this.handleEnablePIP}
           onDisablePIP={this.handleDisablePIP}
           onPause={this.handlePause}
-          onBuffer={() => console.log('onBuffer')}
+          // onBuffer={() => console.log('onBuffer')}
           onPlaybackRateChange={this.handleOnPlaybackRateChange}
-          onSeek={e => console.log('onSeek', e)}
+          // onSeek={e => console.log('onSeek', e)}
           onEnded={this.handleEnded}
           onError={e => console.log('onError', e)}
           onProgress={this.handleProgress}
@@ -376,10 +333,11 @@ class AudioHandler extends Component<IProps, IState> {
         />
         </div>
         <div id={"panner-container-" + this.props.keyID}>
+          {Math.floor(50 - this.state.audioPannerValue*50) + "%"}
           <input id={"panning-control-" + this.props.keyID} type="range" min="-1" max="1" step="0.05" value={this.state.audioPannerValue} onChange={this.pannerControl}></input>
-          <label id={"panner-value-" + this.props.keyID}>
-          {Math.floor(50 - this.state.audioPannerValue*50) + "%"}/{Math.ceil(this.state.audioPannerValue*50+50) + "%"}
-          </label>
+          {/* <label className="panner" id={"panner-value-" + this.props.keyID}> */}
+          {Math.ceil(this.state.audioPannerValue*50+50) + "%"}
+          {/* </label> */}
         </div>
       
         </React.Fragment>
