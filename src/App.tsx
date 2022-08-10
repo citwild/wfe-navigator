@@ -2,11 +2,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
-
-// Libraries - styling
-import Checkbox from '@mui/material/Checkbox';
-
-
 // Styling 
 import './App.css';
 
@@ -20,9 +15,6 @@ import StreamTimelines from './Components/StreamTimelines';
 import StreamManager from './Components/StreamManager';
 import StreamTimelineController from './Components/StreamTimelineController';
 import QueryController from './Components/QueryController';
-
-
-import { lightBlue } from '@mui/material/colors';
 import TimelineValueDisplay from './Components/TimelineValueDisplay';
 
 // const rootDir = "http://localhost:8080/static/";
@@ -31,6 +23,7 @@ const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 interface IState {
   configuration:          any,
+  dbconfig:               any,
   sliderRange: {
     minTime:              number,
     maxTime:              number
@@ -71,6 +64,7 @@ class App extends Component<{}, IState> {
         allStreams: [],
         masterTime: 0
       },
+      dbconfig: {},
       sliderRange: {
         minTime: null,
         maxTime: null,
@@ -133,9 +127,6 @@ class App extends Component<{}, IState> {
 
 
   firePlaybackEvent = (speedFactor: number): void => {
-    // this.setState(prevState => ({
-    //   masterTime: prevState.masterTime + (1000*speedFactor)
-    // }));
     this.updateMasterTime(this.state.masterTime + (1000*speedFactor));
   }
 
@@ -147,12 +138,6 @@ class App extends Component<{}, IState> {
       playbackIntervalObject: null,
       playing: false
     });
-    // //stop all streams 
-    // var playButtons: HTMLCollection = document.getElementsByClassName('toggle-play');
-    // for (var i = 0; i < playButtons.length ; i++) {
-    //   //@ts-expect-error
-    //   playButtons[i].click();
-    // }
   }
 
 
@@ -183,7 +168,6 @@ class App extends Component<{}, IState> {
   }
 
   addStream = (streamDate: string, streamLocation: string, streamEquipment: string): void => {
-
     ///// TEMP path creator, based on COMPRESSED VERSION of files
     var pathConstruct: string[] = [streamDate];
     if (streamLocation !== "Unknown") { 
@@ -253,7 +237,6 @@ class App extends Component<{}, IState> {
         focusStream: prevState.focusStream - 1 
       }));
     }
-
     // about to delete the last one 
     if (this.state.allStreams.length == 1) {
       this.stopPlayback();
@@ -271,7 +254,6 @@ class App extends Component<{}, IState> {
         this.updateMasterSliderRange();
       });
     }
-    
   }
 
 
@@ -360,7 +342,6 @@ class App extends Component<{}, IState> {
     var getAllMaxs: number[] = this.state.allStreams.map( (thisChannel: StreamChannel) => thisChannel.stream.getLatestTime() );
     var newMin: number = d3.min(getAllMins);
     var newMax: number = d3.max(getAllMaxs);
-    // console.log("MIN/MAX: " + newMin + "-" + newMax);
     this.setState({
       sliderRange: {
         minTime: newMin,
@@ -370,13 +351,12 @@ class App extends Component<{}, IState> {
   }
 
   updateMasterTime = (newMasterTime: number): void => {
-    // console.log(newMasterTime + " " +  this.state.sliderRange.minTime);
+    console.log(newMasterTime);
     if (this.state.sliderRange.minTime === null) {
       this.setState({
         masterTime: 0
       });
-    }
-    else if (this.state.sliderRange.minTime !== null && newMasterTime < this.state.sliderRange.minTime) {
+    } else if (this.state.sliderRange.minTime !== null && newMasterTime < this.state.sliderRange.minTime) {
       this.stopPlayback();
       this.setState({
         masterTime: this.state.sliderRange.minTime
@@ -394,14 +374,6 @@ class App extends Component<{}, IState> {
   }
 
 
-  FocusStream = (): React.ReactElement => {
-    return (
-      <div id="focus-area">
-        <div id ="focus-stream"></div>
-      </div>
-    )
-  }
-
   setFocusStream = (streamIndex: number) => {
     this.setState({ focusStream: streamIndex });
   }
@@ -413,12 +385,6 @@ class App extends Component<{}, IState> {
   handlePlaybackSpeedChange = (e: any) => {
     this.setState({ playbackSpeed: e.target.value});
   }
-
-
-  getQueryFields = () => {
-    //dynamically gets all distinct fields from db 
-  }
-
 
   render() {
     // 1,000 ms = 1 sec
@@ -467,16 +433,12 @@ class App extends Component<{}, IState> {
       // ["2014-02-21", "Unknown", "Unknown"]
     ];
 
-    // const currentTime = new Date(this.state.masterTime);
-    // const dateFormat = d3.timeFormat('%B %e, %Y (%a)');
-    // const timeFormat = d3.timeFormat('%H:%M:%S');
-    // const timeZoneFormat = d3.timeFormat('GMT%Z');
-
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
         
 
         <div id="timeline-area">
+          
           <div id="stream-controllers">
             {this.state.allStreams.length > 0 &&
             <StreamTimelineController
@@ -507,22 +469,13 @@ class App extends Component<{}, IState> {
                 textColor = {"lightgrey"}
               />
             </div>
-            {/* <div id="slider-value">
-              <u><b>Current playback time:</b></u><span>{this.state.masterTime !== 0 && 
-              <div>
-                {dateFormat(currentTime)}
-                <br/>
-                <strong>{timeFormat(currentTime)}</strong>
-                <br/>
-                {timeZoneFormat(currentTime)}
-              </div> 
-            }</span>
-            </div> */}
+
             <MainSlider
               sliderRange = {this.state.sliderRange}
               masterTime = {this.state.masterTime}
               updateMasterTime = {this.updateMasterTime}
             />
+
             <StreamTimelines
               sliderRange = {this.state.sliderRange}
               allStreams = {this.state.allStreams}
@@ -532,7 +485,8 @@ class App extends Component<{}, IState> {
           
           
           
-          <div id="playback-controller">
+        </div>
+        <div id="playback-controller">
             <label>Playback speed multiplier: </label>
             <input 
               type="number" 
@@ -547,7 +501,6 @@ class App extends Component<{}, IState> {
             <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
             
           </div>
-        </div>
 
 
           {/* {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
@@ -579,10 +532,11 @@ class App extends Component<{}, IState> {
           } */}
         
 
+        {this.state.focusStream !== null &&
+          <div id="focus-Stream"></div>
+        }
+          
         <div id="media-container">
-          {this.state.focusStream !== null &&
-            <this.FocusStream/>
-          }
           {this.state.allStreams.map( (thisChannel: StreamChannel, index: number) => {
             return (
               <React.Fragment>
@@ -602,7 +556,20 @@ class App extends Component<{}, IState> {
           })}
         </div>
 
+        <div id="query-area">
+          <QueryController
+            allStreams = {this.state.allStreams}
+            masterTime = {this.state.masterTime}
+            updateMasterTime = {this.updateMasterTime}
+            playing = {this.state.playing}
+            showFileInDir = {this.showFileInDir}
+            playbackSpeed = {this.state.playbackSpeed}
+            audioContext = {this.state.audioContext}
+          />
+        </div>
         
+
+
         <div style={{position: 'fixed', bottom: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
           <h4>Sample inputs</h4>
           <ul>
@@ -614,19 +581,8 @@ class App extends Component<{}, IState> {
             }>{g.toString()}</button></li>
             )}
           </ul>
-
         </div>
         
-        <QueryController
-          allStreams = {this.state.allStreams}
-          masterTime = {this.state.masterTime}
-          updateMasterTime = {this.updateMasterTime}
-          playing = {this.state.playing}
-          showFileInDir = {this.showFileInDir}
-          playbackSpeed = {this.state.playbackSpeed}
-          audioContext = {this.state.audioContext}
-        />
-
       </div>
     );
   }

@@ -63,7 +63,8 @@ class VideoAudioHandler extends Component<IProps, IState> {
       // playbackRate: 1.0,
       loop: false,
       seeking: false,
-      lastPlayed: null,
+      lastPlayed: 0,
+      previousMasterTime: this.props.masterTime,
       audioPannerValue: 0,
       audioGainValue: 1,
       audioData: new Uint8Array(0)
@@ -80,11 +81,11 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   componentDidMount(): void {
     this.syncWithMasterTime();
-    this.setState({ 
-      playing: this.props.playing,
-      muted: this.props.muteMedia,
-      playbackRate: this.props.playbackSpeed
-    });    
+    // this.setState({ 
+    //   playing: this.props.playing,
+    //   muted: this.props.muteMedia,
+    //   playbackRate: this.props.playbackSpeed
+    // });    
     this.analyserNode = this.props.audioContext.createAnalyser();
     this.gainNode = this.props.audioContext.createGain();
     //could add gain node in the future for higher volume
@@ -93,6 +94,11 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   componentDidUpdate(): void {
+    
+    if (Math.abs(this.state.previousMasterTime - this.props.masterTime) > 2000) {
+      this.setState({ previousMasterTime: this.props.masterTime });
+      this.syncWithMasterTime();
+    }
     if (this.props.media.mediaType === 'Audio') {
       this.draw();
     }
@@ -107,17 +113,17 @@ class VideoAudioHandler extends Component<IProps, IState> {
     }
   }
 
-  static getDerivedStateFromProps(nextProps: IProps, prevState: IState): any {
-    var newState = {};
+  // static getDerivedStateFromProps(nextProps: IProps, prevState: IState): any {
+  //   var newState = {};
     
-    if(nextProps.playing !== prevState.playing) {
-      newState.playing = nextProps.playing;
-    } 
-    if(nextProps.muteMedia !== prevState.muted) {
-      newState.muted = nextProps.muteMedia;
-    } 
-    return newState;
-  }
+  //   if(nextProps.playing !== prevState.playing) {
+  //     newState.playing = nextProps.playing;
+  //   } 
+  //   if(nextProps.muteMedia !== prevState.muted) {
+  //     newState.muted = nextProps.muteMedia;
+  //   } 
+  //   return newState;
+  // }
 
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing })
@@ -182,7 +188,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   syncWithMasterTime = () => {
     this.playerRef.seekTo(this.findSeekPosition(), "seconds");
-    this.setState(prevState => ({ lastPlayed: prevState.played }));
+    // this.setState(prevState => ({ lastPlayed: prevState.played }));
   }
 
   findSeekPosition = () => {
@@ -206,11 +212,12 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   handleProgress = state => {
-    // console.log('onProgress', state)
+    console.log('onProgress', state)
     // We only want to update time slider if we are not currently seeking
-    if (!this.state.seeking) {
-      this.setState(state)
-    }
+    // if (!this.state.seeking) {
+    //   this.setState(state)
+    // }
+    this.setState({ previousMasterTime: this.props.masterTime });
   }
 
   handleEnded = () => {
@@ -229,9 +236,9 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   handleReady = () => {
     console.log('onReady');
-    if (this.state.lastPlayed !== this.state.played) {
-      this.syncWithMasterTime();  
-    }
+    // if (this.state.lastPlayed !== this.state.played) {
+    //   this.syncWithMasterTime();  
+    // }
   }
 
   ref = (player: any) => {
@@ -350,13 +357,31 @@ class VideoAudioHandler extends Component<IProps, IState> {
             <tr>
               <td className='range-pre-label'>{Math.floor(50 - this.state.audioPannerValue * 50) + "%"}</td>
               <td>
-                <input id={"panning-control-" + this.props.keyID} type="range" min="-1" max="1" step="0.05" value={this.state.audioPannerValue} onChange={this.pannerControl}></input>
+                <input id={"panning-control-" + this.props.keyID} 
+                  type="range" 
+                  min="-1" 
+                  max="1" 
+                  step="0.05" 
+                  value={this.state.audioPannerValue} 
+                  onChange={this.pannerControl}
+                  disabled={this.props.muteMedia}
+                ></input>
               </td>
               <td>{Math.ceil(this.state.audioPannerValue * 50 + 50) + "%"}</td>
             </tr>
             <tr>
               <td className='range-pre-label'>Volume</td>
-              <td><input id={"gain-control-" + this.props.keyID} type="range" min="0" max="5" step="0.01" value={this.state.audioGainValue} onChange={this.gainControl}></input></td>
+              <td>
+                <input id={"gain-control-" + this.props.keyID} 
+                  type="range" 
+                  min="0" 
+                  max="5" 
+                  step="0.01" 
+                  value={this.state.audioGainValue} 
+                  onChange={this.gainControl}
+                  disabled={this.props.muteMedia}
+                ></input>
+              </td>
               <td>{Math.round(this.state.audioGainValue * 100) + "%"}</td>
             </tr>
           </table>

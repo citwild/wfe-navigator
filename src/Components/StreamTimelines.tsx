@@ -108,8 +108,6 @@ class StreamTimelines extends Component<IProps, IState> {
 
     
 
-    //TODO: 
-    //  make height dynamic
     d3.select("#stream-timelines")
       .append("svg")
       // .attr("id", "timeline-svg")
@@ -126,7 +124,7 @@ class StreamTimelines extends Component<IProps, IState> {
     
     //Add indicator of currently playing media
     d3.selectAll("rect[id^='timelineItem']")
-    .style("fill", (d: TimeSegment) => {
+    .style("fill", (d: TimeSegment, index: number) => {
       if (this.props.masterTime >= d.starting_time && this.props.masterTime <= d.ending_time) {
         return "purple";
       }
@@ -137,6 +135,13 @@ class StreamTimelines extends Component<IProps, IState> {
     })
     .on("mouseleave", (d: any, i: number) => {
       d3.select('#timeline-tooltip').style('visibility', 'hidden');
+    });
+
+    this.props.allStreams.map((thisStream: StreamChannel, index: number) => {
+      if (!thisStream.showMedia) {
+        d3.selectAll("rect.timelineSeries_" + index)
+          .style("fill", "#999999");
+      }
     });
 
   }
@@ -166,8 +171,6 @@ class StreamTimelines extends Component<IProps, IState> {
     return (
       <div id='stream-timelines'>
         <div id="timeline-tooltip">tooltip</div>
-          {/* // onMouseEnter={() => document.getElementById("timeline-tooltip").style.visibility = 'visible'} 
-          // onMouseLeave={() => document.getElementById("timeline-tooltip").style.visibility = 'hidden'} */}
       </div>
     );
   }

@@ -55,6 +55,11 @@ class QueryController extends Component<IProps, IState> {
 
 
 
+  getQueryFields = () => {
+    //dynamically gets all distinct fields from db 
+  }
+
+
   render() { 
     const fields: Field[] = [
       { name: 'date', label: 'Date' },

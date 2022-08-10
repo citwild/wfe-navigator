@@ -5,6 +5,7 @@
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: flex-start;
+  background-color: #d3d3d3;
 }
 
 .player-wrapper {
@@ -38,10 +39,23 @@ div[id^='panner-container'], div[id^='gain-container']{
 }
 
 
+/* ---------------------------------------------- Focus Stream */
+#focus-stream {
+  padding: 100px;
+}
+
+
 
 /*---------------------------------------------- Timeline Display */
+#timeline-area {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+
 #timelines {
-  display: inline-block;
+  /* display: inline-block; */
 }
 
 #slider-value {
@@ -82,7 +96,7 @@ table.center {
 /* ---------------------------------------------- Timeline Controls */
 #stream-controllers {
   padding-bottom: 18px;
-  display: inline-block;
+  /* display: inline-block; */
 }
 
 .controller-row > td {
@@ -135,6 +149,20 @@ input[type=checkbox], button.controller, .controller-row > td {
 
 /*////////////////////////////*/
 /* native input sliders preset for multiple browsers*/
+input[type=range]:disabled::-webkit-slider-runnable-track {
+  background: #6e6e6e;
+}
+input[type=range]:disabled::-webkit-slider-thumb {
+  box-shadow: 0px 0px 0px #000000;
+  border: 1px solid #6e6e6e;
+  height: 15px;
+  width: 15px;
+  border-radius: 25px;
+  background: #b9b9b9;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
 
 input[type=range] {
   /* height: 25px; */
