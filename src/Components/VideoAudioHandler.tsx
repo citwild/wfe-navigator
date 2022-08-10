@@ -346,7 +346,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
         />
         </div>
         <div>
-          <table className='range-table'>
+          <table className='range-table center'>
             <tr>
               <td className='range-pre-label'>{Math.floor(50 - this.state.audioPannerValue * 50) + "%"}</td>
               <td>

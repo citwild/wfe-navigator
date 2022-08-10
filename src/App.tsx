@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
+
 // Libraries - styling
 import Checkbox from '@mui/material/Checkbox';
 
@@ -20,7 +21,9 @@ import StreamManager from './Components/StreamManager';
 import StreamTimelineController from './Components/StreamTimelineController';
 import QueryController from './Components/QueryController';
 
+
 import { lightBlue } from '@mui/material/colors';
+import TimelineValueDisplay from './Components/TimelineValueDisplay';
 
 // const rootDir = "http://localhost:8080/static/";
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
@@ -464,24 +467,14 @@ class App extends Component<{}, IState> {
       // ["2014-02-21", "Unknown", "Unknown"]
     ];
 
-    const currentTime = new Date(this.state.masterTime);
-    const dateFormat = d3.timeFormat('%B %e, %Y (%a)');
-    const timeFormat = d3.timeFormat('%H:%M:%S');
-    const timeZoneFormat = d3.timeFormat('GMT%Z');
+    // const currentTime = new Date(this.state.masterTime);
+    // const dateFormat = d3.timeFormat('%B %e, %Y (%a)');
+    // const timeFormat = d3.timeFormat('%H:%M:%S');
+    // const timeZoneFormat = d3.timeFormat('GMT%Z');
 
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
-        <div id="slider-value">
-            <u><b>Current playback time:</b></u><span>{this.state.masterTime !== 0 && 
-            <div>
-              {dateFormat(currentTime)}
-              <br/>
-              <strong>{timeFormat(currentTime)}</strong>
-              <br/>
-              {timeZoneFormat(currentTime)}
-            </div> 
-          }</span>
-        </div>
+        
 
         <div id="timeline-area">
           <div id="stream-controllers">
@@ -497,6 +490,34 @@ class App extends Component<{}, IState> {
           </div>
 
           <div id="timelines">
+            <div id="slider-value">
+              <TimelineValueDisplay
+                datetimeMS = {this.state.sliderRange.minTime}
+                text = {"slider starts at..."}
+                textColor = {"lightgrey"}
+              />
+              <TimelineValueDisplay
+                datetimeMS = {this.state.masterTime}
+                text = {"Current playback time:"}
+                textColor = {"auto"}
+              />
+              <TimelineValueDisplay
+                datetimeMS = {this.state.sliderRange.maxTime}
+                text = {"slider ends at..."}
+                textColor = {"lightgrey"}
+              />
+            </div>
+            {/* <div id="slider-value">
+              <u><b>Current playback time:</b></u><span>{this.state.masterTime !== 0 && 
+              <div>
+                {dateFormat(currentTime)}
+                <br/>
+                <strong>{timeFormat(currentTime)}</strong>
+                <br/>
+                {timeZoneFormat(currentTime)}
+              </div> 
+            }</span>
+            </div> */}
             <MainSlider
               sliderRange = {this.state.sliderRange}
               masterTime = {this.state.masterTime}
@@ -597,8 +618,7 @@ class App extends Component<{}, IState> {
         </div>
         
         <QueryController
-          key = {}
-          stream = {}
+          allStreams = {this.state.allStreams}
           masterTime = {this.state.masterTime}
           updateMasterTime = {this.updateMasterTime}
           playing = {this.state.playing}

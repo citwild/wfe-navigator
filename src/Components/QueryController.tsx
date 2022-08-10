@@ -12,7 +12,7 @@ import Stream from '../Classes/Stream';
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 interface IProps {
-  stream:           StreamChannel,
+  allStreams:       StreamChannel[],
   masterTime:       number,
   updateMasterTime: any,
   playing:          boolean,
@@ -46,7 +46,7 @@ class QueryController extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {  
-      query: 
+      query: null
     }
   }
   
