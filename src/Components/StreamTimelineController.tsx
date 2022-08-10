@@ -78,8 +78,8 @@ class StreamTimelineController extends Component<IProps, IState> {
             <tr>
               <th></th>
               <th></th>
+              <th><img style={{width: "10pt"}} src="onoff.svg" alt="availability"></img></th> 
               <th>👁</th>
-              <th>📽</th>
               <th>🔊</th>
               <th></th>
               <th></th>

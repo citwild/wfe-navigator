@@ -45,7 +45,8 @@
 
 .player-wrapper {
   display: inline-block;
-  padding: 5px;
+  vertical-align: top;
+  padding: 10px 5px;
 }
 
 .no-media {
@@ -70,7 +71,7 @@
   color: black;
 }
 
-.panner {
+div[id^='panner-container'], div[id^='gain-container']{
   font-size: small;
 }
 
@@ -83,6 +84,7 @@
 #timelines {
   display: inline-block;
 }
+
 
 
 #playback-controller {
@@ -114,6 +116,18 @@ input[type=checkbox], button.controller, .controller-row > td {
 }
 
 
+
+
+
+
+
+
+#slider-value {
+  text-align: center;
+}
+
+
+
 #timeline-tooltip {
   padding: 10px;
   background-color: black;
@@ -124,7 +138,13 @@ input[type=checkbox], button.controller, .controller-row > td {
   z-index: 9999;
 }
 
+table.range-table {
+  font-size: small;
+}
 
+td.range-pre-label {
+  text-align: right;
+}
 
 
 
@@ -161,13 +181,13 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type=range]::-webkit-slider-thumb {
   box-shadow: 0px 0px 0px #000000;
   border: 1px solid #2497E3;
-  height: 18px;
-  width: 18px;
+  height: 15px;
+  width: 15px;
   border-radius: 25px;
   background: #A1D0FF;
   cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -7px;
+  margin-top: -5px;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
   background: #2497E3;

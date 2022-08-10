@@ -96,12 +96,14 @@ class StreamTimelines extends Component<IProps, IState> {
       .showTimeAxis()
       .hover((d: any, i: number, datum: any) =>  {
         const timeAtHover = xScale.invert(d.offsetX);
-        const fileName = this.props.allStreams[i].stream.getMediaAtTime(timeAtHover).getName();
-        d3.select('#timeline-tooltip').text(fileName);
         var tooltip = document.getElementById('timeline-tooltip');
         tooltip.style.left  = d.clientX - tooltip.offsetWidth - 2 + "px";
         tooltip.style.top = d.clientY - tooltip.offsetHeight - 2 + "px";
 
+        const fileName = this.props.allStreams[i].stream.getMediaAtTime(timeAtHover).getName();
+        d3.select('#timeline-tooltip')
+          .text(fileName);
+        
       });
 
     
@@ -130,7 +132,13 @@ class StreamTimelines extends Component<IProps, IState> {
       }
       return itemColor;
     })
-    
+    .on("mouseenter", (d: any, i: number) => {
+      d3.select('#timeline-tooltip').style('visibility', 'visible');
+    })
+    .on("mouseleave", (d: any, i: number) => {
+      d3.select('#timeline-tooltip').style('visibility', 'hidden');
+    });
+
   }
 
 
@@ -156,7 +164,11 @@ class StreamTimelines extends Component<IProps, IState> {
 
   render() { 
     return (
-      <div id='stream-timelines' onMouseEnter={() => document.getElementById("timeline-tooltip").style.visibility = 'visible'} onMouseLeave={() => document.getElementById("timeline-tooltip").style.visibility = 'hidden'}></div>
+      <div id='stream-timelines'>
+        <div id="timeline-tooltip">tooltip</div>
+          {/* // onMouseEnter={() => document.getElementById("timeline-tooltip").style.visibility = 'visible'} 
+          // onMouseLeave={() => document.getElementById("timeline-tooltip").style.visibility = 'hidden'} */}
+      </div>
     );
   }
 }

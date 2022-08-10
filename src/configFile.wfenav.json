@@ -1,0 +1,14 @@
+{
+  "config": {
+    "database": {
+      "type": "sqlite",
+      "location": "database-path/database-file"
+    },
+    "app_state": {
+      "all_streams": [],
+      "focus_stream" : 0,
+      "master_time": 0,
+      "playback_speed": 1
+    }
+  }
+}

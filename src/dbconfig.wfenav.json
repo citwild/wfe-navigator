@@ -1,0 +1,29 @@
+{
+  "db_config": {
+    "database": {
+      "type": "sqlite",
+      "location": "database-path/database-file.db"
+    },
+    "files_dir": "root/directory/of/all/files/",
+    "table": "stream",
+    "mode": {
+      "audio": {
+        "file_ext": {
+          "allow": ["mp3", "wav"],
+          "ignore" : []
+        },
+        "prefix": "",
+        "suffix": ""
+      },
+      "video": {
+        "file_ext": {
+          "allow": ["mp4", "mts"],
+          "ignore" : []
+        },
+        "prefix": "",
+        "suffix": ""
+      },
+      "images": {}
+    }
+  }
+}

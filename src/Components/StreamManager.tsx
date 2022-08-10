@@ -2,8 +2,7 @@
 import React, { Component } from 'react';
 
 // Components
-import VideoHandler from './VideoHandler';
-import AudioHandler from './AudioHandler';
+import VideoAudioHandler from './VideoAudioHandler';
 
 // Class objects
 import Media from '../Classes/Media';
@@ -89,13 +88,14 @@ class StreamManager extends Component<IProps, IState> {
   render() { 
     return (
       <div className='player-wrapper'>
-    
+        <div><b>{this.props.stream.stream.getLocation()}</b></div>
+
         {this.state.mediaAtMasterTime === null && this.props.stream.showMedia 
           && <this.NoMedia/>}
         { (this.state.mediaAtMasterTime === null || this.state.mediaAtMasterTime !== null) && !this.props.stream.showMedia 
           && <this.HiddenMedia/>}
         {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia 
-          && <AudioHandler
+          && <VideoAudioHandler
                 key = {this.props.stream.uniqueId}
                 keyID = {this.props.stream.uniqueId}
                 media = {this.state.mediaAtMasterTime}
@@ -108,8 +108,7 @@ class StreamManager extends Component<IProps, IState> {
                 audioContext = {this.props.audioContext}
               /> }
 
-        <div><b>{this.props.stream.stream.getLocation()}</b> {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia && this.state.mediaAtMasterTime.name}</div>
-        
+
       </div>
     );
   }

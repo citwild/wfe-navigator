@@ -17,8 +17,8 @@ import Stream from './Classes/Stream';
 import MainSlider from './Components/MainSlider';
 import StreamTimelines from './Components/StreamTimelines';
 import StreamManager from './Components/StreamManager';
-import VideoHandler from './Components/VideoHandler';
 import StreamTimelineController from './Components/StreamTimelineController';
+import QueryController from './Components/QueryController';
 
 import { lightBlue } from '@mui/material/colors';
 
@@ -411,51 +411,18 @@ class App extends Component<{}, IState> {
     this.setState({ playbackSpeed: e.target.value});
   }
 
+
+  getQueryFields = () => {
+    //dynamically gets all distinct fields from db 
+  }
+
+
   render() {
     // 1,000 ms = 1 sec
     // 60,000 ms = 1 min
     // 3,600,000 ms = 1 hr
     // 86,400,000 ms = 1 day
  
-    const allGroupings = [
-      ["2014-02-19", "Huddle", "Unknown"],
-      ["2014-02-20", "Huddle", "Unknown"],
-      ["2014-02-21", "Huddle", "Unknown"],
-      ["2014-02-19", "PS A", "gopro"],
-      ["2014-02-20", "PS A", "gopro"],
-      ["2014-02-21", "PS A", "gopro"],
-      ["2014-02-19", "PS A", "zoom"],
-      ["2014-02-20", "PS A", "zoom"],
-      ["2014-02-21", "PS A", "zoom"],
-      ["2014-02-19", "PS B", "gopro"],
-      ["2014-02-20", "PS B", "gopro"],
-      ["2014-02-21", "PS B", "gopro"],
-      ["2014-02-19", "PS B", "zoom"],
-      ["2014-02-20", "PS B", "zoom"],
-      ["2014-02-21", "PS B", "zoom"],
-      ["2014-02-19", "PS C", "gopro"],
-      ["2014-02-20", "PS C", "gopro"],
-      ["2014-02-21", "PS C", "gopro"],
-      ["2014-02-19", "PS C", "zoom"],
-      ["2014-02-20", "PS C", "zoom"],
-      ["2014-02-21", "PS C", "zoom"],
-      ["2014-02-20", "PS D", "zoom"],
-      ["2014-02-19", "PS F", "gopro"],
-      ["2014-02-20", "PS F", "gopro"],
-      ["2014-02-21", "PS F", "gopro"],
-      ["2014-02-19", "PS F", "zoom"],
-      ["2014-02-20", "PS F", "zoom"],
-      ["2014-02-21", "PS F", "zoom"],
-      ["2014-02-19", "PS G", "gopro"],
-      ["2014-02-20", "PS G", "gopro"],
-      ["2014-02-21", "PS G", "gopro"],
-      ["2014-02-19", "PS G", "zoom"],
-      ["2014-02-20", "PS G", "zoom"],
-      ["2014-02-21", "PS G", "zoom"],
-      ["2014-02-19", "Unknown", "Unknown"],
-      ["2014-02-21", "Unknown", "Unknown"]
-    ];
-
     const allGroupings2 = [
       ["2014-02-19", "Huddle", "Unknown"],
       ["2014-02-19", "PS A", "gopro"],
@@ -497,13 +464,26 @@ class App extends Component<{}, IState> {
       // ["2014-02-21", "Unknown", "Unknown"]
     ];
 
+    const currentTime = new Date(this.state.masterTime);
+    const dateFormat = d3.timeFormat('%B %e, %Y (%a)');
+    const timeFormat = d3.timeFormat('%H:%M:%S');
+    const timeZoneFormat = d3.timeFormat('GMT%Z');
+
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
-        <div id="timeline-area">
-          <div>
-            <strong>Current playback time: </strong><span id="slider-value">{this.state.masterTime !== 0 && new Date(this.state.masterTime).toString()}</span>
-          </div>
+        <div id="slider-value">
+            <u><b>Current playback time:</b></u><span>{this.state.masterTime !== 0 && 
+            <div>
+              {dateFormat(currentTime)}
+              <br/>
+              <strong>{timeFormat(currentTime)}</strong>
+              <br/>
+              {timeZoneFormat(currentTime)}
+            </div> 
+          }</span>
+        </div>
 
+        <div id="timeline-area">
           <div id="stream-controllers">
             {this.state.allStreams.length > 0 &&
             <StreamTimelineController
@@ -528,7 +508,8 @@ class App extends Component<{}, IState> {
               masterTime = {this.state.masterTime}
             />
           </div>
-          <div id="timeline-tooltip">tooltip</div>
+          
+          
           
           <div id="playback-controller">
             <label>Playback speed multiplier: </label>
@@ -548,7 +529,7 @@ class App extends Component<{}, IState> {
         </div>
 
 
-          {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
+          {/* {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
             <div style={{width: '800px'}}>
               {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) === null && this.state.allStreams[this.state.focusStream].showMedia 
                 && 
@@ -561,7 +542,7 @@ class App extends Component<{}, IState> {
                   <i>media is hidden by user</i>
                 </div>}
               {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) !== null && this.state.allStreams[this.state.focusStream].showMedia 
-                && <VideoHandler
+                && <VideoAudioHandler
                       key = {this.state.allStreams[this.state.focusStream].uniqueId.toString() + "-focus"}
                       keyID = {this.state.allStreams[this.state.focusStream].uniqueId + 1}
                       media = {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime)}
@@ -574,7 +555,7 @@ class App extends Component<{}, IState> {
                       audioContext = {this.state.audioContext}
                     /> }
             </div>
-          }
+          } */}
         
 
         <div id="media-container">
@@ -615,6 +596,17 @@ class App extends Component<{}, IState> {
 
         </div>
         
+        <QueryController
+          key = {}
+          stream = {}
+          masterTime = {this.state.masterTime}
+          updateMasterTime = {this.updateMasterTime}
+          playing = {this.state.playing}
+          showFileInDir = {this.showFileInDir}
+          playbackSpeed = {this.state.playbackSpeed}
+          audioContext = {this.state.audioContext}
+        />
+
       </div>
     );
   }
