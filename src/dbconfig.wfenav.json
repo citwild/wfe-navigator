@@ -4,8 +4,126 @@
       "type": "sqlite",
       "location": "database-path/database-file.db"
     },
+    "schema": [
+      {
+        "table": "media_files",
+        "fields": [
+          {
+              "name": "media_id",
+              "label": "Media Id",
+              "valueSources": [
+                  "media_id"
+              ],
+              "datatype": "integer"
+          },
+          {
+              "name": "media_type",
+              "label": "Media Type",
+              "valueSources": [
+                  "media_type"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "location",
+              "label": "Location",
+              "valueSources": [
+                  "location"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "equipment",
+              "label": "Equipment",
+              "valueSources": [
+                  "equipment"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "file_name",
+              "label": "File Name",
+              "valueSources": [
+                  "file_name"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "file_ext",
+              "label": "File Ext",
+              "valueSources": [
+                  "file_ext"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "year",
+              "label": "Year",
+              "valueSources": [
+                  "year"
+              ],
+              "datatype": "integer"
+          },
+          {
+              "name": "month",
+              "label": "Month",
+              "valueSources": [
+                  "month"
+              ],
+              "datatype": "integer"
+          },
+          {
+              "name": "date",
+              "label": "Date",
+              "valueSources": [
+                  "date"
+              ],
+              "datatype": "integer"
+          },
+          {
+              "name": "nominal_date",
+              "label": "Nominal Date",
+              "valueSources": [
+                  "nominal_date"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "time_begin",
+              "label": "Time Begin",
+              "valueSources": [
+                  "time_begin"
+              ],
+              "datatype": "integer"
+          },
+          {
+              "name": "time_end",
+              "label": "Time End",
+              "valueSources": [
+                  "time_end"
+              ],
+              "datatype": "integer"
+          },
+          {
+              "name": "file_name_trim",
+              "label": "File Name Trim",
+              "valueSources": [
+                  "file_name_trim"
+              ],
+              "datatype": "text"
+          },
+          {
+              "name": "recording_mode",
+              "label": "Recording Mode",
+              "valueSources": [
+                  "recording_mode"
+              ],
+              "datatype": "text"
+          }
+        ]
+      }
+    ],
     "files_dir": "root/directory/of/all/files/",
-    "table": "stream",
     "mode": {
       "audio": {
         "file_ext": {
@@ -27,3 +145,4 @@
     }
   }
 }
+

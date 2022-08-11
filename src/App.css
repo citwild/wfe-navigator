@@ -6,6 +6,7 @@
   justify-content: space-evenly;
   align-items: flex-start;
   background-color: #d3d3d3;
+  padding: 50px 20px;
 }
 
 .player-wrapper {

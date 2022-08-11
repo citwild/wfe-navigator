@@ -64,6 +64,14 @@ function createWindow () {
       shell.showItem(data);
       shell.showItemInFolder(data);
     })
+
+    ipcMain.on("getFields",  (event, data) => {
+      console.log("retrieving column headers...");
+      let result = knex.select().from(data).columnInfo();
+      result.then( (res) => {
+        mainWindow.webContents.send("allFields", res); // Send result back to renderer process
+      })
+    })
     
 
 

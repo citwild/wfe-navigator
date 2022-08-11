@@ -23,7 +23,7 @@ const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 interface IState {
   configuration:          any,
-  dbconfig:               any,
+  dbConfig:               any,
   sliderRange: {
     minTime:              number,
     maxTime:              number
@@ -64,7 +64,7 @@ class App extends Component<{}, IState> {
         allStreams: [],
         masterTime: 0
       },
-      dbconfig: {},
+      dbConfig: null,
       sliderRange: {
         minTime: null,
         maxTime: null,
@@ -557,15 +557,14 @@ class App extends Component<{}, IState> {
         </div>
 
         <div id="query-area">
-          <QueryController
-            allStreams = {this.state.allStreams}
-            masterTime = {this.state.masterTime}
-            updateMasterTime = {this.updateMasterTime}
-            playing = {this.state.playing}
-            showFileInDir = {this.showFileInDir}
-            playbackSpeed = {this.state.playbackSpeed}
-            audioContext = {this.state.audioContext}
-          />
+          {this.state.dbConfig === null &&
+            <QueryController
+              allStreams = {this.state.allStreams}
+              dbConfig = {this.state.dbConfig}
+              addStream = {this.addStream}
+              removeStream = {this.removeStream}
+            />
+          }
         </div>
         
 
