@@ -26,20 +26,15 @@ interface IProps {
 interface IState {
   url:              string | null,
   pip:              boolean,
-  // playing:       boolean,
   controls:         boolean,
   light:            boolean,
   volume:           number,
-  // muted:          boolean,
   played:           number,
   loaded:           number,
   duration:         number,
-  // playbackRate: number,
   loop:             boolean,
   seeking:          boolean,
   lastPlayed:       number | null,
-  audioPannerValue: number,
-  audioGainValue:   number
 }
 
 
@@ -53,26 +48,18 @@ class VideoAudioHandler extends Component<IProps, IState> {
     this.state = {
       url: null,
       pip: false,
-      // playing: false,
       controls: false,
       light: false,
       volume: 1,
-      // muted: false,
       played: 0,
       loaded: 0,
       duration: 0,
-      // playbackRate: 1.0,
       loop: false,
       seeking: false,
       lastPlayed: 0,
       previousMasterTime: this.props.masterTime,
-      audioPannerValue: 0,
-      audioGainValue: 1,
-      audioData: new Uint8Array(0)
     }
     this.playerRef = React.createRef();
-    this.canvas = React.createRef();
-
     this.audioSource = null;
   }
 
@@ -130,7 +117,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   handlePlay = () => {
-    console.log('onPlay')
+    // console.log('onPlay')
     this.setState({ playing: true })
   }
 
@@ -146,9 +133,8 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   handlePause = (e: Event) => {
     console.log('onPause')
-    this.setState({ playing: false });
+    // this.setState({ playing: false });
     this.syncWithMasterTime();
-    cancelAnimationFrame(this.rafId);
     // this.player.seekTo(this.findSeekPosition(), "seconds");
     
   }
@@ -188,7 +174,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   handleEnded = () => {
-    console.log('onEnded')
+    // console.log('onEnded')
     this.setState({ playing: this.state.loop }) 
 
     // remove source video from player 
@@ -197,12 +183,12 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   handleDuration = (duration: number) => {
-    console.log('onDuration', duration)
+    // console.log('onDuration', duration)
     this.setState({ duration })
   }
 
   handleReady = () => {
-    console.log('onReady');
+    // console.log('onReady');
     // if (this.state.lastPlayed !== this.state.played) {
     //   this.syncWithMasterTime();  
     // }
@@ -212,31 +198,20 @@ class VideoAudioHandler extends Component<IProps, IState> {
     this.playerRef = player
   }
 
-  pannerControl = (e) => {
-    if (this.pannerNode !== null) {
-      this.setState({ audioPannerValue: e.target.value });
-      this.pannerNode.pan.value = this.state.audioPannerValue;
-    }
-  }
-
-  gainControl = (e) => {
-    if (this.gainNode !== null) {
-      this.setState({ audioGainValue: e.target.value });
-      this.gainNode.gain.value = this.state.audioGainValue;
-    }
-  }
-
   connectWebAudioAPI = () => {
     let audioCxt = this.props.audioContext;
 
     // Create a MediaElementAudioSourceNode
     // Feed the HTMLMediaElement into it\
     const sourceType = this.props.media.mediaType;
-    const thisAudioSource = document.querySelector('#player-' + this.props.keyID + ' > div.react-player > ' + sourceType);
-    this.audioSource = audioCxt.createMediaElementSource(thisAudioSource);
+    if (this.audioSource == null) {
+      const thisAudioSource = document.querySelector('#player-' + this.props.keyID + ' > div.react-player > ' + sourceType);
+      this.audioSource = audioCxt.createMediaElementSource(thisAudioSource);
 
-    // connect the AudioBufferSourceNode to the gainNode in StreamManager
-    this.audioSource.connect(this.props.gainNode);
+      // connect the AudioBufferSourceNode to the gainNode in StreamManager
+      this.audioSource.connect(this.props.gainNode);
+    
+    }
     
   }
   
@@ -257,7 +232,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
           light={this.state.light}
           loop={this.state.loop}
           playbackRate={this.props.playbackSpeed}
-          volume={this.state.volume}
+          // volume={this.state.volume}
           muted={this.props.muteMedia}
           onReady={this.handleReady}
           // onStart={() => console.log('onStart')}
@@ -267,7 +242,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
           onPause={this.handlePause}
           // onBuffer={() => console.log('onBuffer')}
           onPlaybackRateChange={this.handleOnPlaybackRateChange}
-          // onSeek={e => console.log('onSeek', e)}
+          onSeek={e => console.log('onSeek', e)}
           onEnded={this.handleEnded}
           onError={e => console.log('onError', e)}
           onProgress={this.handleProgress}

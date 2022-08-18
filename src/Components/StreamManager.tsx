@@ -20,7 +20,8 @@ interface IProps {
   showFileInDir:    any,
   audioContext:     any,
   updateGainValue:  any,
-  updatePannerValue:any
+  updatePannerValue:any,
+  isFocus:          boolean
 }
 
 interface IState {
@@ -133,16 +134,18 @@ class StreamManager extends Component<IProps, IState> {
               playbackSpeed = {this.props.playbackSpeed}
               audioContext = {this.props.audioContext}
               gainNode = {this.gainNode}
-            /> 
-            <AudioController
-              key = {this.props.stream.uniqueId + "-audio-controls"}
-              keyID = {this.props.stream.uniqueId}
-              muteMedia = {this.props.stream.muteMedia}
-              gainValue = {this.props.stream.gainValue}
-              pannerValue = {this.props.stream.pannerValue}
-              updateGainControl = {this.updateGainControl}
-              updatePannerControl = {this.updatePannerControl}
             />
+            {!this.props.isFocus && 
+              <AudioController
+                key = {this.props.stream.uniqueId + "-audio-controls"}
+                keyID = {this.props.stream.uniqueId}
+                muteMedia = {this.props.isFocus ? true : this.props.stream.muteMedia}
+                gainValue = {this.props.stream.gainValue}
+                pannerValue = {this.props.stream.pannerValue}
+                updateGainControl = {this.updateGainControl}
+                updatePannerControl = {this.updatePannerControl}
+              />
+            }
           </>
             : <this.NoMedia/>
           : <this.HiddenMedia/>  

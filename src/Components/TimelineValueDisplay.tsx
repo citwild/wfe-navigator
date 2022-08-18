@@ -47,12 +47,7 @@ class TimelineValueDisplay extends Component<IProps, IState> {
     }
   }
 
-  componentDidMount(): void {
-    
-
-  }
   
-
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     if(nextProps.datetimeMS !== prevState.datetimeMS) {
       return {

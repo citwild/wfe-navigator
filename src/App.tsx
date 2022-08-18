@@ -32,7 +32,6 @@ interface IState {
   playing:                boolean,
   playbackSpeed:          number,
   allStreams:             Array<StreamChannel>,
-  playbackIntervalObject: ReturnType<typeof setInterval>,
   audioContext:           any,
   focusStream:            any
 }
@@ -57,6 +56,7 @@ type TimeSegment = {
 /////////////////////////////////////////////////////////////
 
 class App extends Component<{}, IState> {
+  playbackIntervalObject: ReturnType<typeof setInterval>;
   constructor() {
     super({});
     this.state = {
@@ -75,10 +75,10 @@ class App extends Component<{}, IState> {
       playing: false,
       playbackSpeed: 1,   
       allStreams: [],
-      playbackIntervalObject: null,
       audioContext: new window.AudioContext(),
       focusStream: null
     };
+    this.playbackIntervalObject = null;
   }
 
   componentDidMount() {
@@ -95,36 +95,18 @@ class App extends Component<{}, IState> {
   }
 
   startPlayback = (speedFactor: number): void => {
-    //start repeating functio to move scrubber line
+    //start repeating function to move scrubber line
     //by speedfactor*1sec(or 1000ms) per 1sec
     if (speedFactor === 0) {
       const factorFromState = this.state.playbackSpeed;
-      var intervalObject: ReturnType<typeof setInterval> = setInterval(() => {this.firePlaybackEvent(factorFromState)}, 1000);
-      this.setState({ 
-        playbackIntervalObject: intervalObject,
-        playing: true,
-      });
+      this.playbackIntervalObject = setInterval(() => {this.firePlaybackEvent(factorFromState)}, 1000);
     } else {
-      var intervalObject: ReturnType<typeof setInterval> = setInterval(() => {this.firePlaybackEvent(speedFactor)}, 1000);
-      this.setState({ 
-        playbackIntervalObject: intervalObject,
-        playing: true,
-        // playbackSpeed: speedFactor
-      });
+      // in case of separate buttons with different speedFactor
+      this.playbackIntervalObject = setInterval(() => {this.firePlaybackEvent(speedFactor)}, 1000);
     }
-    
-
-    
-
-
-    // var playButtons: HTMLCollection = document.getElementsByClassName('toggle-play');
-    
-    // //forEach should work with NodeList but did not
-    // for (var i = 0; i < playButtons.length ; i++) {
-    //   //@ts-expect-error
-    //   playButtons[i].click();
-    // }
-    //start all streams
+    this.setState({ 
+      playing: true
+    });
   }
 
 
@@ -135,9 +117,9 @@ class App extends Component<{}, IState> {
   
   stopPlayback = (): void => {
     //clear the repeating function
-    clearInterval(this.state.playbackIntervalObject);
+    clearInterval(this.playbackIntervalObject);
+    this.playbackIntervalObject = null;
     this.setState({ 
-      playbackIntervalObject: null,
       playing: false
     });
   }
@@ -246,9 +228,11 @@ class App extends Component<{}, IState> {
       this.stopPlayback();
       this.updateMasterTime(0);
       this.setState({ 
-        sliderRange: {minTime: null, maxTime: null},
+        sliderRange: {
+          minTime: null, 
+          maxTime: null
+        },
         playing: false,
-        playbackIntervalObject: null,
         allStreams: []
       });
     } else {
@@ -526,7 +510,7 @@ class App extends Component<{}, IState> {
               value={this.state.playbackSpeed} 
               disabled={this.state.playing}
               onChange={this.handlePlaybackSpeedChange}/>
-            <button disabled={this.state.playing} onClick={() => {this.startPlayback(0)}}>start playback</button>
+            <button disabled={this.state.playing || this.state.allStreams.length === 0} onClick={() => {this.startPlayback(0)}}>start playback</button>
             <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
             
           </div>
@@ -545,6 +529,7 @@ class App extends Component<{}, IState> {
                 audioContext = {this.state.audioContext}
                 updateGainValue = {this.updateGainValue}
                 updatePannerValue = {this.updatePannerValue}
+                isFocus = {true}
               />
               <button onClick={this.resetFocusStream}>unfocus</button>
             </div>
@@ -565,6 +550,7 @@ class App extends Component<{}, IState> {
                   audioContext = {this.state.audioContext}
                   updateGainValue = {this.updateGainValue}
                   updatePannerValue = {this.updatePannerValue}
+                  isFocus = {false}
                 />
               </>
             )
