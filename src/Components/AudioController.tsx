@@ -6,8 +6,8 @@ interface IProps {
   muteMedia:          boolean,
   gainValue:          number,
   pannerValue:        number,
-  updateGainControl:  any,
-  updatePannerControl:any
+  updateGainControl:  (g: number) => void,
+  updatePannerControl:(p: number) => void
 }
 
 interface IState {}
@@ -15,8 +15,8 @@ interface IState {}
 /////////////////////////////////////////////////////////////
 
 class AudioController extends Component<IProps, IState> {
-  pannerNode: any;
-  gainNode: any;
+  pannerNode: AudioNode;
+  gainNode: AudioNode;
   constructor(props: IProps) {
     super(props);
     this.pannerNode = null;

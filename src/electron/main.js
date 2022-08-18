@@ -19,6 +19,7 @@ function createWindow () {
     title: "WFE Navigator",
     width: 1920,
     height: 1080,
+    minWidth: 1280,
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),

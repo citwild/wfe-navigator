@@ -9,7 +9,7 @@ interface IProps {
     maxTime:        number
   },
   masterTime:       number,
-  updateMasterTime: any
+  updateMasterTime: (t: number) => void
 }
 
 interface IState {

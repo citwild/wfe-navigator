@@ -12,31 +12,30 @@ import Stream from '../Classes/Stream';
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 interface IProps {
-  stream:           StreamChannel,
-  masterTime:       number,
-  updateMasterTime: any,
-  playing:          boolean,
-  playbackSpeed:    number,
-  showFileInDir:    any,
-  audioContext:     any,
-  updateGainValue:  any,
-  updatePannerValue:any,
+  stream:           StreamChannel
+  masterTime:       number
+  updateMasterTime: (t: number) => void
+  playing:          boolean
+  playbackSpeed:    number
+  showFileInDir:    any
+  audioContext:     AudioContext
+  updateGainValue:  (streamID: number, g: number) => void
+  updatePannerValue:(streamID: number, p: number) => void
   isFocus:          boolean
 }
 
 interface IState {
   mediaAtMasterTime:  Media
-  // playing:            boolean
 }
 
 interface StreamChannel {
-  uniqueId:       number,
-  stream:         Stream,
-  timelineInput:  StreamTimeline,
-  playerRef:      HTMLInputElement,
-  showMedia:      boolean,
-  muteMedia:      boolean,
-  gainValue:      number,
+  uniqueId:       number
+  stream:         Stream
+  timelineInput:  StreamTimeline
+  playerRef:      HTMLInputElement
+  showMedia:      boolean
+  muteMedia:      boolean
+  gainValue:      number
   pannerValue:    number
 }
 
@@ -49,8 +48,8 @@ type TimeSegment = {
 /////////////////////////////////////////////////////////////
 
 class StreamManager extends Component<IProps, IState> {
-  pannerNode: any;
-  gainNode: any;
+  pannerNode: StereoPannerNode;
+  gainNode: GainNode;
   constructor(props: IProps) {
     super(props);
     this.state = {  
@@ -116,7 +115,7 @@ class StreamManager extends Component<IProps, IState> {
   render() { 
     return (
       <>
-      <div className='player-wrapper'>
+      <div className={this.props.isFocus ? 'focus-player-wrapper' : 'player-wrapper'}>
         <div><b>{this.props.stream.stream.getLocation()}</b></div>
 
         {this.props.stream.showMedia ? 

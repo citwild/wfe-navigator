@@ -9,10 +9,10 @@ import Stream from '../Classes/Stream';
 
 interface IProps {
   sliderRange: {
-    minTime: number,
+    minTime: number
     maxTime: number
   },
-  masterTime: number,
+  masterTime: number
   allStreams: StreamChannel[]
 }
 
@@ -155,15 +155,11 @@ class StreamTimelines extends Component<IProps, IState> {
       nextProps.allStreams.map( (eachChannel: StreamChannel) => {
         newTimelineInput.push(eachChannel.timelineInput);
       }) ;
-
     if(newTimelineInput !== prevState.allTimelineInput){
       //Change in props
       return {
         allTimelineInput: newTimelineInput
       };
-
-
-      
     }
     return null; // No change to state
   }

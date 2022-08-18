@@ -193,7 +193,7 @@ class QueryController extends Component<IProps, IState> {
     //   { name: 'location', label: 'Location' },
     //   { name: 'equipment', label: 'Equipment' },
     // ];
-    console.log(this.state.query);
+    // console.log(this.state.query);
     return (
       <div className='query-builder'>
         <button onClick={() => this.getQueryFields("media_files")}>get all fields</button>

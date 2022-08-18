@@ -1,36 +1,35 @@
 import React, { Component } from 'react';
 
 import Stream from './../Classes/Stream';
-import Checkbox from '@mui/material/Checkbox';
 
 
 interface IProps {
   allStreams:       Array<StreamChannel>
-  showMediaToggle:  any
-  muteMediaToggle:  any
-  moveStreamUp:     any
-  moveStreamDown:   any
-  removeStream:     any
+  showMediaToggle:  (streamID: number) => void
+  muteMediaToggle:  (streamID: number) => void
+  moveStreamUp:     (index: number) => void
+  moveStreamDown:   (index: number) => void
+  removeStream:     (streamID: number, index: number) => void
   focusStream:      number
-  setFocusStream:   any
+  setFocusStream:   (index: number) => void
 }
 
 interface IState {}
 
 interface StreamChannel {
-  uniqueId:       number,
-  stream:         Stream,
-  timelineInput:  StreamTimeline,
-  playerRef:      HTMLInputElement,
-  showMedia:      boolean,
-  muteMedia:      boolean,
-  gainValue:      number,
+  uniqueId:       number
+  stream:         Stream
+  timelineInput:  StreamTimeline
+  playerRef:      HTMLInputElement
+  showMedia:      boolean
+  muteMedia:      boolean
+  gainValue:      number
   pannerValue:    number
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
 type TimeSegment = {
-  starting_time:  number,
+  starting_time:  number
   ending_time:    number
 }
 

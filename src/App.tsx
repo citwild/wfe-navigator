@@ -32,7 +32,6 @@ interface IState {
   playing:                boolean,
   playbackSpeed:          number,
   allStreams:             Array<StreamChannel>,
-  audioContext:           any,
   focusStream:            any
 }
 
@@ -57,6 +56,7 @@ type TimeSegment = {
 
 class App extends Component<{}, IState> {
   playbackIntervalObject: ReturnType<typeof setInterval>;
+  audioContext: AudioContext;
   constructor() {
     super({});
     this.state = {
@@ -75,10 +75,10 @@ class App extends Component<{}, IState> {
       playing: false,
       playbackSpeed: 1,   
       allStreams: [],
-      audioContext: new window.AudioContext(),
       focusStream: null
     };
     this.playbackIntervalObject = null;
+    this.audioContext = new window.AudioContext();
   }
 
   componentDidMount() {
@@ -339,7 +339,7 @@ class App extends Component<{}, IState> {
   }
 
   updateMasterTime = (newMasterTime: number): void => {
-    console.log(newMasterTime);
+    // console.log(newMasterTime);
     if (this.state.sliderRange.minTime === null) {
       this.setState({
         masterTime: 0
@@ -517,21 +517,21 @@ class App extends Component<{}, IState> {
 
 
           {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
-            <div id="focus-Stream" style={{width: '800px'}}>
+            <div id="focus-Stream">
               <StreamManager
-                key = {"focus-" + this.state.allStreams[this.state.focusStream].uniqueId.toString()}
+                key = {"focus-stream"}
                 stream = {this.state.allStreams[this.state.focusStream]}
                 masterTime = {this.state.masterTime}
                 updateMasterTime = {this.updateMasterTime}
                 playing = {this.state.playing}
                 showFileInDir = {this.showFileInDir}
                 playbackSpeed = {this.state.playbackSpeed}
-                audioContext = {this.state.audioContext}
+                audioContext = {this.audioContext}
                 updateGainValue = {this.updateGainValue}
                 updatePannerValue = {this.updatePannerValue}
                 isFocus = {true}
               />
-              <button onClick={this.resetFocusStream}>unfocus</button>
+              <div><button onClick={this.resetFocusStream}>unfocus</button></div>
             </div>
           }
 
@@ -547,7 +547,7 @@ class App extends Component<{}, IState> {
                   playing = {this.state.playing}
                   showFileInDir = {this.showFileInDir}
                   playbackSpeed = {this.state.playbackSpeed}
-                  audioContext = {this.state.audioContext}
+                  audioContext = {this.audioContext}
                   updateGainValue = {this.updateGainValue}
                   updatePannerValue = {this.updatePannerValue}
                   isFocus = {false}
