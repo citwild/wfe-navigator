@@ -475,6 +475,8 @@ class App extends Component<{}, IState> {
               moveStreamUp = {this.moveStreamUp}
               moveStreamDown = {this.moveStreamDown}
               removeStream = {this.removeStream}
+              focusStream = {this.state.focusStream}
+              setFocusStream = {this.setFocusStream}
             />}
           </div>
 
@@ -530,43 +532,28 @@ class App extends Component<{}, IState> {
           </div>
 
 
-          {/* {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
-            <div style={{width: '800px'}}>
-              {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) === null && this.state.allStreams[this.state.focusStream].showMedia 
-                && 
-                <div className="no-media no-source" style={{width: '800px', height: '440px'}}>
-                  <i>no media to display</i>
-                </div>}
-              { (this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) === null || this.state.allStreams[this.state.focusStream] !== null) && !this.state.allStreams[this.state.focusStream].showMedia 
-                && 
-                <div className="no-media hidden-media" style={{width: '800px', height: '440px'}}>
-                  <i>media is hidden by user</i>
-                </div>}
-              {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime) !== null && this.state.allStreams[this.state.focusStream].showMedia 
-                && <VideoAudioHandler
-                      key = {this.state.allStreams[this.state.focusStream].uniqueId.toString() + "-focus"}
-                      keyID = {this.state.allStreams[this.state.focusStream].uniqueId + 1}
-                      media = {this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime)}
-                      url = {rootDir + this.state.allStreams[this.state.focusStream].stream.getMediaAtTime(this.state.masterTime).getSource()}
-                      masterTime = {this.state.masterTime}
-                      updateMasterTime = {this.updateMasterTime}
-                      playing = {this.state.playing}
-                      muteMedia = {this.state.allStreams[this.state.focusStream].muteMedia}
-                      playbackSpeed = {this.state.playbackSpeed}
-                      audioContext = {this.state.audioContext}
-                    /> }
+          {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
+            <div id="focus-Stream" style={{width: '800px'}}>
+              <StreamManager
+                key = {"focus-" + this.state.allStreams[this.state.focusStream].uniqueId.toString()}
+                stream = {this.state.allStreams[this.state.focusStream]}
+                masterTime = {this.state.masterTime}
+                updateMasterTime = {this.updateMasterTime}
+                playing = {this.state.playing}
+                showFileInDir = {this.showFileInDir}
+                playbackSpeed = {this.state.playbackSpeed}
+                audioContext = {this.state.audioContext}
+                updateGainValue = {this.updateGainValue}
+                updatePannerValue = {this.updatePannerValue}
+              />
+              <button onClick={this.resetFocusStream}>unfocus</button>
             </div>
-          } */}
-        
+          }
 
-        {this.state.focusStream !== null &&
-          <div id="focus-Stream"></div>
-        }
-          
         <div id="media-container">
           {this.state.allStreams.map( (thisChannel: StreamChannel, index: number) => {
             return (
-              <React.Fragment>
+              <>
                 <StreamManager
                   key = {thisChannel.uniqueId.toString()}
                   stream = {thisChannel}
@@ -579,8 +566,7 @@ class App extends Component<{}, IState> {
                   updateGainValue = {this.updateGainValue}
                   updatePannerValue = {this.updatePannerValue}
                 />
-                
-              </React.Fragment>
+              </>
             )
           })}
         </div>

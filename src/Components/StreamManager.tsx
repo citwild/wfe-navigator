@@ -67,6 +67,11 @@ class StreamManager extends Component<IProps, IState> {
     this.pannerNode.connect(audioCxt.destination);
   }
 
+  componentWillUnmount(): void {
+    this.pannerNode.disconnect();
+    this.gainNode.disconnect();
+  }
+
   NoMedia = (): React.ReactElement => {
     return (
       <div className="no-media no-source">
@@ -113,12 +118,9 @@ class StreamManager extends Component<IProps, IState> {
       <div className='player-wrapper'>
         <div><b>{this.props.stream.stream.getLocation()}</b></div>
 
-        {this.state.mediaAtMasterTime === null && this.props.stream.showMedia 
-          && <this.NoMedia/>}
-        { (this.state.mediaAtMasterTime === null || this.state.mediaAtMasterTime !== null) && !this.props.stream.showMedia 
-          && <this.HiddenMedia/>}
-        {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia 
-          && <>
+        {this.props.stream.showMedia ? 
+          this.state.mediaAtMasterTime !== null ?
+          <>
             <VideoAudioHandler
               key = {this.props.stream.uniqueId}
               keyID = {this.props.stream.uniqueId}
@@ -133,7 +135,7 @@ class StreamManager extends Component<IProps, IState> {
               gainNode = {this.gainNode}
             /> 
             <AudioController
-              key = {this.props.stream.uniqueId + "-audio"}
+              key = {this.props.stream.uniqueId + "-audio-controls"}
               keyID = {this.props.stream.uniqueId}
               muteMedia = {this.props.stream.muteMedia}
               gainValue = {this.props.stream.gainValue}
@@ -141,7 +143,10 @@ class StreamManager extends Component<IProps, IState> {
               updateGainControl = {this.updateGainControl}
               updatePannerControl = {this.updatePannerControl}
             />
-          </>}
+          </>
+            : <this.NoMedia/>
+          : <this.HiddenMedia/>  
+        }
 
 
       </div>

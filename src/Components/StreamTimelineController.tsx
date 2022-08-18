@@ -11,11 +11,11 @@ interface IProps {
   moveStreamUp:     any
   moveStreamDown:   any
   removeStream:     any
+  focusStream:      number
+  setFocusStream:   any
 }
 
-interface IState {
-  columns:    Array<any>
-}
+interface IState {}
 
 interface StreamChannel {
   uniqueId:       number,
@@ -37,44 +37,12 @@ type TimeSegment = {
 class StreamTimelineController extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      columns: []
-    }
   }
 
-  componentDidMount(): void {
-    const tableColumns = [
-      {
-        Header: 'location',  
-        accessor: 'location'
-      },
-      {
-        Header: 'stream',  
-        accessor: 'showMedia'
-      },
-      {
-        Header: 'audio',  
-        accessor: 'muteMedia'
-      },
-      {
-        Header: '',  
-        accessor: 'moveUp'
-      },
-      {
-        Header: '',  
-        accessor: 'moveDown'
-      },
-      {
-        Header: 'Remove',  
-        accessor: 'remove'
-      }
-    ];
-    this.setState({ columns: tableColumns });
-  }
   
   render() {
     return (
-      <React.Fragment>
+      <>
         <table>
           <tbody>
             <tr>
@@ -131,13 +99,16 @@ class StreamTimelineController extends Component<IProps, IState> {
                     <button className="controller" onClick={() => {this.props.moveStreamDown(index)}} disabled={index === this.props.allStreams.length - 1}>▼</button>
                   </td>
                   <td>
+                    <button className="controller" onClick={() => {this.props.setFocusStream(index)}} disabled={index === this.props.focusStream}>🔍</button>
+                  </td>
+                  <td>
                     <button className="controller" onClick={() => {this.props.removeStream(thisChannel.uniqueId, index)}}>❌</button>
                   </td>
                 </tr>
             })}
           </tbody>
         </table>
-      </React.Fragment>
+      </>
     );
   }
 }

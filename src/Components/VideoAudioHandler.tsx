@@ -244,6 +244,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
     return (
       <div id={"player-" + this.props.keyID}>
         {/* {this.props.media.mediaType === 'Audio' && <canvas ref={this.canvas} id="myCanvas" width="320" height="175"></canvas>} */}
+        {this.props.media.mediaType === 'Audio' && <img src="speaker_icon.svg" style={{"height": "175px"}}></img>}
         <ReactPlayer
           ref={this.ref}
           className='react-player'

@@ -95,8 +95,12 @@ table.center {
 
 
 /* ---------------------------------------------- Timeline Controls */
+table {
+  white-space: nowrap;
+}
+
 #stream-controllers {
-  padding-bottom: 18px;
+  padding-bottom: 24px;
   /* display: inline-block; */
 }
 
