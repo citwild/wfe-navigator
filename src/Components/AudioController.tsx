@@ -1,12 +1,6 @@
 // Libraries
 import React, { Component } from 'react';
 
-// Class objects
-import Media from '../Classes/Media';
-import Stream from '../Classes/Stream';
-
-const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
-
 interface IProps {
   keyID:              number,
   muteMedia:          boolean,
@@ -16,9 +10,7 @@ interface IProps {
   updatePannerControl:any
 }
 
-interface IState {
-  mediaAtMasterTime:  Media
-}
+interface IState {}
 
 /////////////////////////////////////////////////////////////
 
@@ -27,14 +19,8 @@ class AudioController extends Component<IProps, IState> {
   gainNode: any;
   constructor(props: IProps) {
     super(props);
-    this.state = {  
-      mediaAtMasterTime: null
-    }
     this.pannerNode = null;
     this.gainNode = null;
-  }
-  
-  componentDidMount(): void {
   }
 
   changePannerValue = (e: any) => {
@@ -46,7 +32,6 @@ class AudioController extends Component<IProps, IState> {
   }
 
   render() { 
-    console.log(this.props.pannerValue);
     return (
       <div>
       <table className='range-table center'>

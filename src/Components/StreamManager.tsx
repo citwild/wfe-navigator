@@ -97,11 +97,6 @@ class StreamManager extends Component<IProps, IState> {
     }
   }
 
-  connectWebAudioSource = (audioSourceNode: any) => {
-    // sourceNode -> gainNode -> pannerNode -> output
-    this.gainNode.connect(audioSourceNode);
-  }
-
   updatePannerControl = (newValue: number) => {
     this.pannerNode.pan.value = newValue;
     this.props.updatePannerValue(this.props.stream.uniqueId, newValue);
@@ -135,12 +130,7 @@ class StreamManager extends Component<IProps, IState> {
               muteMedia = {this.props.stream.muteMedia}
               playbackSpeed = {this.props.playbackSpeed}
               audioContext = {this.props.audioContext}
-              connectWebAudioSource = {this.connectWebAudioSource}
               gainNode = {this.gainNode}
-              // gainValue = {this.props.stream.gainValue}
-              // pannerValue = {this.props.stream.pannerValue}
-              // updateGainValue = {this.props.updateGainValue}
-              // updatePannerValue = {this.props.updatePannerValue}
             /> 
             <AudioController
               key = {this.props.stream.uniqueId + "-audio"}
