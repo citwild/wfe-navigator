@@ -382,6 +382,8 @@ class App extends Component<{}, IState> {
       allStreams : prevState.allStreams.map( eachStream => {
         if (eachStream.uniqueId === streamID) {
           return {...eachStream, gainValue: newGainValue};
+        } else {
+          return eachStream;
         }
       }) 
     }));
@@ -392,6 +394,8 @@ class App extends Component<{}, IState> {
       allStreams : prevState.allStreams.map( eachStream => {
         if (eachStream.uniqueId === streamID) {
           return {...eachStream, pannerValue: newPannerValue};
+        } else {
+          return eachStream;
         }
       }) 
     }));

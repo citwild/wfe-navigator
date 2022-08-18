@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 // Components
 import VideoAudioHandler from './VideoAudioHandler';
+import AudioController from './AudioController';
 
 // Class objects
 import Media from '../Classes/Media';
@@ -47,15 +48,23 @@ type TimeSegment = {
 /////////////////////////////////////////////////////////////
 
 class StreamManager extends Component<IProps, IState> {
+  pannerNode: any;
+  gainNode: any;
   constructor(props: IProps) {
     super(props);
     this.state = {  
       mediaAtMasterTime: null
-      // playing: false
     }
+    this.pannerNode = null;
+    this.gainNode = null;
   }
   
-  componentDidUpdate() {
+  componentDidMount(): void {
+    const audioCxt = this.props.audioContext;
+    this.gainNode = audioCxt.createGain();
+    this.pannerNode = audioCxt.createStereoPanner();
+    this.gainNode.connect(this.pannerNode);
+    this.pannerNode.connect(audioCxt.destination);
   }
 
   NoMedia = (): React.ReactElement => {
@@ -88,9 +97,24 @@ class StreamManager extends Component<IProps, IState> {
     }
   }
 
+  connectWebAudioSource = (audioSourceNode: any) => {
+    // sourceNode -> gainNode -> pannerNode -> output
+    this.gainNode.connect(audioSourceNode);
+  }
+
+  updatePannerControl = (newValue: number) => {
+    this.pannerNode.pan.value = newValue;
+    this.props.updatePannerValue(this.props.stream.uniqueId, newValue);
+  }
+
+  updateGainControl = (newValue: number) => {
+    this.gainNode.gain.value = newValue;
+    this.props.updateGainValue(this.props.stream.uniqueId, newValue);
+  }
 
   render() { 
     return (
+      <>
       <div className='player-wrapper'>
         <div><b>{this.props.stream.stream.getLocation()}</b></div>
 
@@ -99,25 +123,39 @@ class StreamManager extends Component<IProps, IState> {
         { (this.state.mediaAtMasterTime === null || this.state.mediaAtMasterTime !== null) && !this.props.stream.showMedia 
           && <this.HiddenMedia/>}
         {this.state.mediaAtMasterTime !== null && this.props.stream.showMedia 
-          && <VideoAudioHandler
-                key = {this.props.stream.uniqueId}
-                keyID = {this.props.stream.uniqueId}
-                media = {this.state.mediaAtMasterTime}
-                url = {rootDir + this.state.mediaAtMasterTime.getSource()}
-                masterTime = {this.props.masterTime}
-                updateMasterTime = {this.props.updateMasterTime}
-                playing = {this.props.playing}
-                muteMedia = {this.props.stream.muteMedia}
-                playbackSpeed = {this.props.playbackSpeed}
-                audioContext = {this.props.audioContext}
-                gainValue = {this.props.stream.gainValue}
-                pannerValue = {this.props.stream.pannerValue}
-                updateGainValue = {this.props.updateGainValue}
-                updatePannerValue = {this.props.updatePannerValue}
-              /> }
+          && <>
+            <VideoAudioHandler
+              key = {this.props.stream.uniqueId}
+              keyID = {this.props.stream.uniqueId}
+              media = {this.state.mediaAtMasterTime}
+              url = {rootDir + this.state.mediaAtMasterTime.getSource()}
+              masterTime = {this.props.masterTime}
+              updateMasterTime = {this.props.updateMasterTime}
+              playing = {this.props.playing}
+              muteMedia = {this.props.stream.muteMedia}
+              playbackSpeed = {this.props.playbackSpeed}
+              audioContext = {this.props.audioContext}
+              connectWebAudioSource = {this.connectWebAudioSource}
+              gainNode = {this.gainNode}
+              // gainValue = {this.props.stream.gainValue}
+              // pannerValue = {this.props.stream.pannerValue}
+              // updateGainValue = {this.props.updateGainValue}
+              // updatePannerValue = {this.props.updatePannerValue}
+            /> 
+            <AudioController
+              key = {this.props.stream.uniqueId + "-audio"}
+              keyID = {this.props.stream.uniqueId}
+              muteMedia = {this.props.stream.muteMedia}
+              gainValue = {this.props.stream.gainValue}
+              pannerValue = {this.props.stream.pannerValue}
+              updateGainControl = {this.updateGainControl}
+              updatePannerControl = {this.updatePannerControl}
+            />
+          </>}
 
 
       </div>
+    </>
     );
   }
 }

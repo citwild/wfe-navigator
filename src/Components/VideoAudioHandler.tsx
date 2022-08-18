@@ -20,10 +20,12 @@ interface IProps {
   playbackSpeed:    number,
   muteMedia:        boolean,
   audioContext:     any,
-  gainValue:        number,
-  pannerValue:      number,
-  updateGainValue:  any,
-  updatePannerValue:any
+  connectWebAudioSource: any,
+  gainNode:         any
+  // gainValue:        number,
+  // pannerValue:      number,
+  // updateGainValue:  any,
+  // updatePannerValue:any
 }
 
 interface IState {
@@ -109,13 +111,11 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   componentWillUnmount(): void {
     //update gainValue and pannerValue at the master state
-    this.props.updateGainValue(this.props.keyID, this.state.audioGainValue);
-    this.props.updatePannerValue(this.props.keyID, this.state.audioPannerValue);
     if (this.audioSource)  {
       this.audioSource.disconnect();
-      this.pannerNode.disconnect();
-      this.gainNode.disconnect();
-      this.analyserNode.disconnect();
+      // this.pannerNode.disconnect();
+      // this.gainNode.disconnect();
+      // this.analyserNode.disconnect();
     }
   }
 
@@ -276,20 +276,11 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
     //for visualizing AUDIO
     this.rafId = requestAnimationFrame(this.tick);
-   
-    // Create a stereo panner
-    this.pannerNode = audioCxt.createStereoPanner();
-    this.pannerNode.pan.value = this.state.audioPannerValue;
-
+ 
+      console.log(this.audioSource);
+    // connect the AudioBufferSourceNode to the gainNode in StreamManager
+    this.audioSource.connect(this.props.gainNode);
     
-
-    // connect the AudioBufferSourceNode to the gainNode
-    // and the gainNode to the destination, so we can play the
-    // music and adjust the panning using the controls
-    this.audioSource.connect(this.gainNode);
-    this.gainNode.connect(this.analyserNode);
-    this.analyserNode.connect(this.pannerNode);
-    this.pannerNode.connect(audioCxt.destination);
   }
   
   draw() {
@@ -358,7 +349,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
           onLoadedData={this.connectWebAudioAPI}
         />
         </div>
-        <div>
+        {/* <div>
           <table className='range-table center'>
             <tr>
               <td className='range-pre-label'>{Math.floor(50 - this.state.audioPannerValue * 50) + "%"}</td>
@@ -391,7 +382,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
               <td>{Math.round(this.state.audioGainValue * 100) + "%"}</td>
             </tr>
           </table>
-        </div>
+        </div> */}
         
         
         </React.Fragment>
