@@ -43,7 +43,9 @@ interface StreamChannel {
     timelineInput:  StreamTimeline,
     playerRef:      HTMLInputElement,
     showMedia:      boolean,
-    muteMedia:      boolean
+    muteMedia:      boolean,
+    gainValue:      number,
+    pannerValue:    number
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
@@ -214,7 +216,9 @@ class App extends Component<{}, IState> {
         timelineInput:  this.transformStreamToTimelineFormat(stream),
         playerRef: null,
         showMedia: true,
-        muteMedia: false
+        muteMedia: false,
+        gainValue: 1,
+        pannerValue: 0
       };
       this.setState({
         allStreams: [...this.state.allStreams, newStreamChannel]
@@ -373,6 +377,25 @@ class App extends Component<{}, IState> {
     }
   }
 
+  updateGainValue = (streamID: number, newGainValue: number) => {
+    this.setState( prevState =>({
+      allStreams : prevState.allStreams.map( eachStream => {
+        if (eachStream.uniqueId === streamID) {
+          return {...eachStream, gainValue: newGainValue};
+        }
+      }) 
+    }));
+  }
+
+  updatePannerValue = (streamID: number, newPannerValue: number) => {
+    this.setState( prevState =>({
+      allStreams : prevState.allStreams.map( eachStream => {
+        if (eachStream.uniqueId === streamID) {
+          return {...eachStream, pannerValue: newPannerValue};
+        }
+      }) 
+    }));
+  }
 
   setFocusStream = (streamIndex: number) => {
     this.setState({ focusStream: streamIndex });
@@ -456,7 +479,7 @@ class App extends Component<{}, IState> {
               <TimelineValueDisplay
                 datetimeMS = {this.state.sliderRange.minTime}
                 text = {"slider starts at..."}
-                textColor = {"lightgrey"}
+                textColor = {"auto"}
               />
               <TimelineValueDisplay
                 datetimeMS = {this.state.masterTime}
@@ -466,7 +489,7 @@ class App extends Component<{}, IState> {
               <TimelineValueDisplay
                 datetimeMS = {this.state.sliderRange.maxTime}
                 text = {"slider ends at..."}
-                textColor = {"lightgrey"}
+                textColor = {"auto"}
               />
             </div>
 
@@ -549,6 +572,8 @@ class App extends Component<{}, IState> {
                   showFileInDir = {this.showFileInDir}
                   playbackSpeed = {this.state.playbackSpeed}
                   audioContext = {this.state.audioContext}
+                  updateGainValue = {this.updateGainValue}
+                  updatePannerValue = {this.updatePannerValue}
                 />
                 
               </React.Fragment>

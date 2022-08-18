@@ -23,7 +23,9 @@ interface StreamChannel {
   timelineInput:  StreamTimeline,
   playerRef:      HTMLInputElement,
   showMedia:      boolean,
-  muteMedia:      boolean
+  muteMedia:      boolean,
+  gainValue:      number,
+  pannerValue:    number
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }

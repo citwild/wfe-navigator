@@ -19,7 +19,11 @@ interface IProps {
   playing:          boolean,
   playbackSpeed:    number,
   muteMedia:        boolean,
-  audioContext:     any
+  audioContext:     any,
+  gainValue:        number,
+  pannerValue:      number,
+  updateGainValue:  any,
+  updatePannerValue:any
 }
 
 interface IState {
@@ -32,7 +36,7 @@ interface IState {
   // muted:          boolean,
   played:           number,
   loaded:           number,
-duration:           number,
+  duration:         number,
   // playbackRate: number,
   loop:             boolean,
   seeking:          boolean,
@@ -81,11 +85,10 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   componentDidMount(): void {
     this.syncWithMasterTime();
-    // this.setState({ 
-    //   playing: this.props.playing,
-    //   muted: this.props.muteMedia,
-    //   playbackRate: this.props.playbackSpeed
-    // });    
+    this.setState({ 
+      audioGainValue: this.props.gainValue,
+      audioPannerValue: this.props.pannerValue
+    });    
     this.analyserNode = this.props.audioContext.createAnalyser();
     this.gainNode = this.props.audioContext.createGain();
     //could add gain node in the future for higher volume
@@ -105,6 +108,9 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   componentWillUnmount(): void {
+    //update gainValue and pannerValue at the master state
+    this.props.updateGainValue(this.props.keyID, this.state.audioGainValue);
+    this.props.updatePannerValue(this.props.keyID, this.state.audioPannerValue);
     if (this.audioSource)  {
       this.audioSource.disconnect();
       this.pannerNode.disconnect();

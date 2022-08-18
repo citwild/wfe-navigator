@@ -17,7 +17,9 @@ interface IProps {
   playing:          boolean,
   playbackSpeed:    number,
   showFileInDir:    any,
-  audioContext:     any
+  audioContext:     any,
+  updateGainValue:  any,
+  updatePannerValue:any
 }
 
 interface IState {
@@ -31,7 +33,9 @@ interface StreamChannel {
   timelineInput:  StreamTimeline,
   playerRef:      HTMLInputElement,
   showMedia:      boolean,
-  muteMedia:      boolean
+  muteMedia:      boolean,
+  gainValue:      number,
+  pannerValue:    number
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
@@ -106,6 +110,10 @@ class StreamManager extends Component<IProps, IState> {
                 muteMedia = {this.props.stream.muteMedia}
                 playbackSpeed = {this.props.playbackSpeed}
                 audioContext = {this.props.audioContext}
+                gainValue = {this.props.stream.gainValue}
+                pannerValue = {this.props.stream.pannerValue}
+                updateGainValue = {this.props.updateGainValue}
+                updatePannerValue = {this.props.updatePannerValue}
               /> }
 
 
