@@ -21,19 +21,19 @@ interface IState {
 }
 
 interface StreamChannel {
-  uniqueId:       number,
-  stream:         Stream,
-  timelineInput:  StreamTimeline,
-  playerRef:      HTMLInputElement,
-  showMedia:      boolean,
-  muteMedia:      boolean,
-  gainValue:      number,
+  uniqueId:       number
+  stream:         Stream
+  timelineInput:  StreamTimeline
+  playerRef:      HTMLInputElement
+  showMedia:      boolean
+  muteMedia:      boolean
+  gainValue:      number
   pannerValue:    number
 }
 
 type StreamTimeline = { times: Array<TimeSegment> }
 type TimeSegment = {
-  starting_time:  number,
+  starting_time:  number
   ending_time:    number
 }
 
@@ -102,7 +102,8 @@ class StreamTimelines extends Component<IProps, IState> {
         tooltip.style.left  = d.clientX - tooltip.offsetWidth - 2 + "px";
         tooltip.style.top = d.clientY - tooltip.offsetHeight - 2 + "px";
 
-        const fileName = this.props.allStreams[i].stream.getMediaAtTime(timeAtHover).getName();
+        const mediaObj = this.props.allStreams[i].stream.getMediaAtTime(timeAtHover);
+        const fileName = mediaObj === null ? "" : mediaObj.getName();
         d3.select('#timeline-tooltip')
           .text(fileName);
         
@@ -139,7 +140,7 @@ class StreamTimelines extends Component<IProps, IState> {
       d3.select('#timeline-tooltip').style('visibility', 'hidden');
     });
 
-    this.props.allStreams.map((thisStream: StreamChannel, index: number) => {
+    this.props.allStreams.forEach((thisStream: StreamChannel, index: number) => {
       if (!thisStream.showMedia) {
         d3.selectAll("rect.timelineSeries_" + index)
           .style("fill", "#999999");
@@ -152,7 +153,7 @@ class StreamTimelines extends Component<IProps, IState> {
   //
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     let newTimelineInput: StreamTimeline[] = [];
-      nextProps.allStreams.map( (eachChannel: StreamChannel) => {
+      nextProps.allStreams.forEach( (eachChannel: StreamChannel) => {
         newTimelineInput.push(eachChannel.timelineInput);
       }) ;
     if(newTimelineInput !== prevState.allTimelineInput){

@@ -5,10 +5,10 @@ import * as d3Slider from 'd3-simple-slider';
 
 interface IProps {
   sliderRange: {
-    minTime:        number,
+    minTime:        number
     maxTime:        number
   },
-  masterTime:       number,
+  masterTime:       number
   updateMasterTime: (t: number) => void
 }
 

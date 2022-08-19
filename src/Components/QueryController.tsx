@@ -17,6 +17,7 @@ interface IProps {
   dbConfig:         any,
   addStream:        any,
   removeStream:     any
+  addNewStreamToStreamTimeline: (s: Stream) => void
 }
 
 interface IState {
@@ -26,7 +27,7 @@ interface IState {
 }
 
 interface StreamChannel {
-  uniqueId:       number,
+  uniqueId:       any,
   stream:         Stream,
   timelineInput:  StreamTimeline,
   playerRef:      HTMLInputElement,
@@ -46,7 +47,7 @@ type TimeSegment = {
 
 const fields: Field[] = [
   {
-      name: "media_type",
+      name: "media_files.media_type",
       label: "Media Type",
       valueSource: [
           "media_type"
@@ -54,12 +55,12 @@ const fields: Field[] = [
       datatype: "text",
       valueEditorType: "select",
       values: [
-        {name: "video", label: "Video"},
-        {name: "audio", label: "Audio"}
+        {name: "Video", label: "Video"},
+        {name: "Audio", label: "Audio"}
       ]
   },
   {
-      name: "location",
+      name: "media_files.location",
       label: "Location",
       valueSource: [
           "location"
@@ -67,7 +68,7 @@ const fields: Field[] = [
       datatype: "text"
   },
   {
-      name: "equipment",
+      name: "media_files.equipment",
       label: "Equipment",
       datatype: "text",
       valueEditorType: "select",
@@ -77,7 +78,7 @@ const fields: Field[] = [
       ]
   },
   {
-      name: "file_ext",
+      name: "media_files.file_ext",
       label: "File Ext",
       valueSource: [
           "file_ext"
@@ -85,7 +86,7 @@ const fields: Field[] = [
       datatype: "text"
   },
   {
-      name: "year",
+      name: "media_files.year",
       label: "Year",
       valueSource: [
           "year"
@@ -93,7 +94,7 @@ const fields: Field[] = [
       datatype: "integer"
   },
   {
-      name: "month",
+      name: "media_files.month",
       label: "Month",
       valueSource: [
           "month"
@@ -101,7 +102,7 @@ const fields: Field[] = [
       datatype: "integer"
   },
   {
-      name: "date",
+      name: "media_files.date",
       label: "Date",
       valueSource: [
           "date"
@@ -109,7 +110,7 @@ const fields: Field[] = [
       datatype: "integer"
   },
   {
-      name: "nominal_date",
+      name: "media_files.nominal_date",
       label: "Date",
       valueSource: [
           "nominal_date"
@@ -118,7 +119,7 @@ const fields: Field[] = [
       inputType: "date"
   },
   {
-      name: "recording_mode",
+      name: "media_files.recording_mode",
       label: "Recording Mode",
       valueSource: [
           "recording_mode"
@@ -156,36 +157,157 @@ class QueryController extends Component<IProps, IState> {
 
 
 
-  getQueryFields = (tableName: string) => {
-    console.log("trying to get fields");
-    var fields: any[] = [];
-    //dynamically gets all distinct fields from db 
-    //@ts-expect-error
-    window.api.receive("allFields", (data) => {
-      console.log(Object.keys(data));
-      Object.keys(data).forEach(columnName => {
-        const columnStartCase = columnName.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        const thisField = 
-        { 
-          name: columnName, 
-          label: columnStartCase,
-          valueSources: [columnName],
-          datatype: data[columnName].type
-        };
-        fields.push(thisField);
-      });
+  // getQueryFields = (tableName: string) => {
+  //   console.log("trying to get fields");
+  //   var fields: any[] = [];
+  //   //dynamically gets all distinct fields from db 
+  //   //@ts-expect-error
+  //   window.api.receive("allFields", (data) => {
+  //     console.log(Object.keys(data));
+  //     Object.keys(data).forEach(columnName => {
+  //       const columnStartCase = columnName.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  //       const thisField = 
+  //       { 
+  //         name: columnName, 
+  //         label: columnStartCase,
+  //         valueSources: [columnName],
+  //         datatype: data[columnName].type
+  //       };
+  //       fields.push(thisField);
+  //     });
       
       
-      console.log(fields);
-    });
-    //@ts-expect-error
-    window.api.send("getFields", tableName);
-  }
+  //     console.log(fields);
+  //   });
+  //   //@ts-expect-error
+  //   window.api.send("getFields", tableName);
+  // }
 
   setQuery = (input: any) => {
     this.setState({ query: input });
   }
 
+
+  queryStreams = () => {
+    const subquery: String = formatQuery(this.state.query, 'sql');
+    console.warn(subquery);
+    //@ts-expect-error
+    window.api.receive("foundStreams", (streamList) => {
+      
+      //@ts-expect-error
+      streamList.forEach(stream => {
+        console.log(stream);
+        this.queryAllMediaInStream(stream.stream_id);
+      })
+    });
+    //@ts-expect-error
+    window.api.send("queryStreams", subquery);
+  }
+
+  queryAllMediaInStream = (sm_stream_id: number) => {
+    console.log("getAllMediaInStream ID: " + sm_stream_id);
+    //@ts-expect-error
+    window.api.receive("allMediaInStream", (mediaList) => {
+      console.log(mediaList);
+
+      //create stream object from all media
+
+        // add all media objects to this stream 
+
+      // add to stream timeline
+      this.addToStreamTimeline(sm_stream_id, mediaList);
+      // mediaList.forEach(m => {
+
+      // })
+      
+    });
+    //@ts-expect-error
+    window.api.send("findMediaInStream", sm_stream_id);
+  }
+
+
+  addToStreamTimeline = (stream_id: any, mediaListJSON: any) => {
+    //check if this stream already exist in allStreams 
+    // if (!(stream_id in this.props.allStreams.map(s => s.uniqueId))) {
+    //   //if does not already exist, then do all this:
+    //   //create list of media objects
+    //   const mediaObjectList: Array<Media> = this.createMediaListFromJSON(mediaListJSON);
+
+    //   //create stream from media objects
+    //   const newStream: Stream = this.createStreamFromMediaList(stream_id, mediaObjectList);
+    //   //create streamchannel from stream
+    //   // const newChannel: StreamChannel = this.createStreamChannelFromStream(stream_id, newStream);
+    //   this.props.addNewStreamToStreamTimeline(newStream);
+
+      
+    // }
+    new Promise((resolve, reject) => {
+      if (!(stream_id in this.props.allStreams.map(s => s.uniqueId))) {
+        resolve(mediaListJSON);
+      } else {
+        reject();
+      }
+    })
+    .then((mediaListJSON) => {
+      return this.createMediaListFromJSON(mediaListJSON);
+    })
+    .then((mediaObjectList) => {
+      return this.createStreamFromMediaList(stream_id, mediaObjectList);
+    })
+    .then((newStream) => {
+      this.props.addNewStreamToStreamTimeline(newStream);
+    });
+  }
+
+
+  createStreamFromMediaList= (stream_id: any, mediaList: Array<Media>): Stream => {
+    //get all uniques values of Date, Location, Equipment from this media list
+    let allDates: String[]= mediaList.map(m => m.date);
+    let allLocations: String[] = mediaList.map(m => m.location);
+    let allEquipments: String[] = mediaList.map(m => m.equipment);
+    let uniqueDates: string = [...new Set(allDates)].join(',');
+    let uniqueLocations: string = [...new Set(allLocations)].join(',');
+    let uniqueEquipments: string = [...new Set(allEquipments)].join(',');
+    return new Stream(uniqueDates, uniqueLocations, uniqueEquipments, mediaList, undefined, undefined, undefined, undefined, stream_id);
+  }
+
+  createMediaListFromJSON = (mediaListJSON :any): Media[] => {
+    var mediaObjectList: Media[] = mediaListJSON.map((mediaItem: any) => {
+
+      /// TEMP path creator, based on COMPRESSED VERSION of files
+      var pathConstruct: string[] = [mediaItem.nominal_date];
+      if (mediaItem.location !== "Unknown") { 
+        pathConstruct.push(mediaItem.location);
+      }
+      if (mediaItem.equipment !== "Unknown") {
+        pathConstruct.push(mediaItem.equipment);
+      }
+      var path: string = pathConstruct.join('/') + "/";
+
+      var fileSuffix = "";
+      if (mediaItem.location === 'Huddle') {
+        fileSuffix = "-320";
+      } else if (mediaItem.equipment === 'gopro') {
+        fileSuffix = "-320";
+      } else if (mediaItem.equipment === 'zoom') {
+        fileSuffix = "-128";
+      }
+      /////////////////////////////////////////////////////////////
+      return new Media(
+        mediaItem.time_begin, 
+        mediaItem.time_end,
+        path + mediaItem.file_name.split('.')[0] + fileSuffix + "." + (mediaItem.media_type === 'Video' ? mediaItem.file_ext : "mp3"), 
+        mediaItem.file_name, 
+        mediaItem.nominal_date, 
+        mediaItem.location, 
+        mediaItem.equipment,
+        mediaItem.media_type,
+        mediaItem.media_id
+      )
+    });
+    console.log({mediaObjectList});
+    return mediaObjectList;
+  }
 
   render() { 
     // const fields: Field[] = [
@@ -193,16 +315,19 @@ class QueryController extends Component<IProps, IState> {
     //   { name: 'location', label: 'Location' },
     //   { name: 'equipment', label: 'Equipment' },
     // ];
-    // console.log(this.state.query);
+
     return (
       <div className='query-builder'>
-        <button onClick={() => this.getQueryFields("media_files")}>get all fields</button>
+        
         <QueryBuilder 
           fields={fields} 
           onQueryChange={(q) => this.setState({ query : q })}
           query={this.state.query}
         />
         <pre>{formatQuery(this.state.query, 'sql')}</pre>
+        <button onClick={() => this.queryStreams()}>+ streams that apply</button>
+        <button onClick={() => this.queryStreams()}>- streams that apply</button>
+        
       </div>
     );
   }

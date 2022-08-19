@@ -2,6 +2,7 @@
 import Media from "./Media";
 
 export default class Stream {
+
   date:           string;
   location:       string;
   equipment:      string;
@@ -10,6 +11,7 @@ export default class Stream {
   latestTime:     number;
   type:           string; //stream, media
   description:    string;
+  dbItemID:   number | string | null;
 
   constructor( 
     date: string = "", 
@@ -19,7 +21,8 @@ export default class Stream {
     earliestTime: number = -1,
     latestTime: number = 0,
     type: string = "media", //stream, media
-    description: string = ""
+    description: string = "",
+    dbItemID: number | string | null = null
     ) {
     this.media = media; 
     this.earliestTime = earliestTime; 
@@ -29,6 +32,9 @@ export default class Stream {
     this.equipment = equipment;
     this.type = type;
     this.description = description;
+    this.dbItemID = dbItemID;
+    this.sortMedia();
+    this.updateTimeRange();
   }
 
 

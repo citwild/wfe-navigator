@@ -36,7 +36,7 @@ interface IState {
 }
 
 interface StreamChannel {
-    uniqueId:       number,
+    uniqueId:       any,
     stream:         Stream,
     timelineInput:  StreamTimeline,
     playerRef:      HTMLInputElement,
@@ -212,6 +212,27 @@ class App extends Component<{}, IState> {
     //@ts-expect-error
     window.api.send("getFiles", [streamDate, streamLocation, streamEquipment]);
   }
+
+
+  addNewStreamToStreamTimeline = (newStream: Stream) => {
+    let newChannel: StreamChannel = {
+      uniqueId:       newStream.dbItemID.toString().replace(/[ :]+/g, ""),
+      stream:         newStream,
+      timelineInput:  this.transformStreamToTimelineFormat(newStream),
+      playerRef:      null,
+      showMedia:      true,
+      muteMedia:      false,
+      gainValue:      1,
+      pannerValue:    0
+    };
+    this.setState({
+      allStreams: [...this.state.allStreams, newChannel]
+    }, () => {
+      console.log(this.state.allStreams);
+      this.updateMasterSliderRange(); 
+    });
+  }
+
 
 
   removeStream = (streamID: number, index: number) => {
@@ -394,7 +415,8 @@ class App extends Component<{}, IState> {
   }
   
   handlePlaybackSpeedChange = (e: any) => {
-    this.setState({ playbackSpeed: e.target.value});
+    let newSpeed: number = e.target.value;
+    this.setState({ playbackSpeed: newSpeed});
   }
 
   render() {
@@ -516,7 +538,7 @@ class App extends Component<{}, IState> {
           </div>
 
 
-          {this.state.focusStream !== null && this.state.allStreams.length !== 0 && 
+          {this.state.focusStream !== null && 
             <div id="focus-Stream">
               <StreamManager
                 key = {"focus-stream"}
@@ -564,6 +586,7 @@ class App extends Component<{}, IState> {
               dbConfig = {this.state.dbConfig}
               addStream = {this.addStream}
               removeStream = {this.removeStream}
+              addNewStreamToStreamTimeline = {this.addNewStreamToStreamTimeline}
             />
           }
         </div>

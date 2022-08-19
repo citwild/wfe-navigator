@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 
 interface IProps {
-  keyID:              number,
-  muteMedia:          boolean,
-  gainValue:          number,
-  pannerValue:        number,
-  updateGainControl:  (g: number) => void,
+  keyID:              number
+  muteMedia:          boolean
+  gainValue:          number
+  pannerValue:        number
+  updateGainControl:  (g: number) => void
   updatePannerControl:(p: number) => void
 }
 
@@ -35,6 +35,7 @@ class AudioController extends Component<IProps, IState> {
     return (
       <div>
       <table className='range-table center'>
+        <thead></thead>
         <tr>
           <td className='range-pre-label'>{Math.floor(50 - this.props.pannerValue * 50) + "%"}</td>
           <td>

@@ -11,7 +11,7 @@ const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
 
 
 interface IProps {
-  keyID:            number
+  keyID:            any
   media:            Media
   url:              string
   masterTime:       number
@@ -21,36 +21,35 @@ interface IProps {
   muteMedia:        boolean
   audioContext:     AudioContext
   gainNode:         GainNode
+  isFocus:          boolean
 }
 
-interface IState {
-  previousMasterTime: number
-}
+interface IState {}
 
 /////////////////////////////////////////////////////////////
 
 class VideoAudioHandler extends Component<IProps, IState> {
   playerRef: React.RefObject<unknown>;
-  audioSource: MediaElementAudioSourceNode;
+  audioSource: MediaElementAudioSourceNode; 
+  prevMasterTime: number;
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      previousMasterTime: 0,
-    }
     this.playerRef = React.createRef();
     this.audioSource = null;
+    this.prevMasterTime = this.props.masterTime;
   }
 
   componentDidMount(): void {
     this.syncWithMasterTime();
-    this.setState({ previousMasterTime: this.props.masterTime });
   }
 
   componentDidUpdate(): void {
-    if (Math.abs(this.state.previousMasterTime - this.props.masterTime) > 2000) {
-      this.setState({ previousMasterTime: this.props.masterTime });
+    if (Math.abs(this.prevMasterTime - this.props.masterTime) > (1.5 * 1000 * this.props.playbackSpeed)) {
+      // 1.5 = margin of error
+      // (1000)*(speed) = step in ms for each progress interval
       this.syncWithMasterTime();
     }
+    this.prevMasterTime = this.props.masterTime; 
   }
 
   componentWillUnmount(): void {
@@ -84,22 +83,23 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   connectWebAudioAPI = () => {
-    let audioCxt = this.props.audioContext;
-    // Create a MediaElementAudioSourceNode
-    // Feed the HTMLMediaElement into it\
-    const sourceType = this.props.media.mediaType;
-    if (this.audioSource == null) {
+    if (!this.props.isFocus && this.audioSource === null) {
+      let audioCxt = this.props.audioContext;
+      const sourceType = this.props.media.mediaType;
+      // select the HTMLMediaElement to create a MediaElementAudioSourceNode
       const thisAudioSource = document.querySelector('#player-' + this.props.keyID + ' > div.react-player > ' + sourceType);
       this.audioSource = audioCxt.createMediaElementSource(thisAudioSource);
+
       // connect the AudioSourceNode to the gainNode passed from StreamManager
       this.audioSource.connect(this.props.gainNode);
     }
+    
   }
   
   render() { 
     return (
       <div id={"player-" + this.props.keyID}>
-        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg"></img>}
+        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals"></img>}
         <ReactPlayer
           ref={this.ref}
           className='react-player'

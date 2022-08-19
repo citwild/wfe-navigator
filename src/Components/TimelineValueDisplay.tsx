@@ -2,8 +2,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
-const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
-
 interface IProps {
   datetimeMS:     number
   text:           string

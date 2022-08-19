@@ -29,7 +29,7 @@ interface IState {
 }
 
 interface StreamChannel {
-  uniqueId:       number
+  uniqueId:       any
   stream:         Stream
   timelineInput:  StreamTimeline
   playerRef:      HTMLInputElement
@@ -63,8 +63,9 @@ class StreamManager extends Component<IProps, IState> {
     const audioCxt = this.props.audioContext;
     this.gainNode = audioCxt.createGain();
     this.pannerNode = audioCxt.createStereoPanner();
-    this.gainNode.connect(this.pannerNode);
-    this.pannerNode.connect(audioCxt.destination);
+    this.gainNode
+      .connect(this.pannerNode)
+      .connect(audioCxt.destination);
   }
 
   componentWillUnmount(): void {
@@ -133,6 +134,7 @@ class StreamManager extends Component<IProps, IState> {
               playbackSpeed = {this.props.playbackSpeed}
               audioContext = {this.props.audioContext}
               gainNode = {this.gainNode}
+              isFocus = {this.props.isFocus}
             />
             {!this.props.isFocus && 
               <AudioController

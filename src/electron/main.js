@@ -74,7 +74,46 @@ function createWindow () {
         mainWindow.webContents.send("allFields", res); // Send result back to renderer process
       })
     })
+
+    ipcMain.on("findMediaInStream",  (event, sm_stream_id) => {
+      console.log("retrieve media in stream");
+      let result = knex
+                    .select()
+                    .from("media_files")
+                    .join("stream_media", {"media_files.media_id": "stream_media.media_id"})
+                    .where("stream_media.stream_id", sm_stream_id);
+      result.then( (res) => {
+        mainWindow.webContents.send("allMediaInStream", res); // Send result back to renderer process
+      })
+    })
     
+    ipcMain.on("queryStreams",  (event, whereQuery) => {
+      console.log("find all streams with media that applies to subquery");
+      // SELECT DISTINCT stream_id 
+      // FROM stream_media 
+      // INNER JOIN media_files ON media_files.media_id = stream_media.media_id
+      // WHERE 
+      //   media_files.date = 20
+      //   AND
+      //   (
+      //     media_files.location = 'Huddle'
+      //     OR 
+      //     media_files.location = 'PS A'
+      //   )
+      // )
+      let result = knex
+                    .select("stream_id")
+                    .distinct()
+                    .from("stream_media")
+                    .join("media_files", {"media_files.media_id": "stream_media.media_id"})
+                    .whereRaw(whereQuery);
+
+
+      result.then( (res) => {
+        console.warn(res);
+        mainWindow.webContents.send("foundStreams", res); // Send result back to renderer process
+      })
+    })
 
 
 

@@ -37,7 +37,6 @@ class StreamTimelineController extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
   }
-
   
   render() {
     return (
@@ -45,7 +44,6 @@ class StreamTimelineController extends Component<IProps, IState> {
         <table>
           <tbody>
             <tr>
-              <th></th>
               <th></th>
               <th><img style={{width: "10pt"}} src="onoff.svg" alt="availability"></img></th> 
               <th>👁</th>
@@ -56,8 +54,7 @@ class StreamTimelineController extends Component<IProps, IState> {
             </tr>
             {this.props.allStreams.map((thisChannel: StreamChannel, index: number) => {
               return <tr className="controller-row" key={"controller-" + thisChannel.uniqueId}>
-                  <td style={{textAlign: 'left'}}>{thisChannel.stream.getLocation()}</td>
-                  <td style={{textAlign: 'left'}}>{thisChannel.stream.getEquipment() !== 'Unknown' && thisChannel.stream.getEquipment()}</td>
+                  <td style={{textAlign: 'left'}}>{thisChannel.stream.getLocation() + ", " + thisChannel.stream.getEquipment()}</td>
                   <td>
                     <input  
                       type="checkbox"
