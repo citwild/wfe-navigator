@@ -89,18 +89,7 @@ function createWindow () {
     
     ipcMain.on("queryStreams",  (event, whereQuery) => {
       console.log("find all streams with media that applies to subquery");
-      // SELECT DISTINCT stream_id 
-      // FROM stream_media 
-      // INNER JOIN media_files ON media_files.media_id = stream_media.media_id
-      // WHERE 
-      //   media_files.date = 20
-      //   AND
-      //   (
-      //     media_files.location = 'Huddle'
-      //     OR 
-      //     media_files.location = 'PS A'
-      //   )
-      // )
+
       let result = knex
                     .select("stream_id")
                     .distinct()

@@ -216,7 +216,7 @@ class App extends Component<{}, IState> {
 
   addNewStreamToStreamTimeline = (newStream: Stream) => {
     let newChannel: StreamChannel = {
-      uniqueId:       newStream.dbItemID.toString().replace(/[ :]+/g, ""),
+      uniqueId:       newStream.dbItemID,
       stream:         newStream,
       timelineInput:  this.transformStreamToTimelineFormat(newStream),
       playerRef:      null,
@@ -562,7 +562,7 @@ class App extends Component<{}, IState> {
             return (
               <>
                 <StreamManager
-                  key = {thisChannel.uniqueId.toString()}
+                  key = {thisChannel.uniqueId}
                   stream = {thisChannel}
                   masterTime = {this.state.masterTime}
                   updateMasterTime = {this.updateMasterTime}
