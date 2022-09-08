@@ -86,6 +86,17 @@ function createWindow () {
         mainWindow.webContents.send("allMediaInStream", res); // Send result back to renderer process
       })
     })
+
+    ipcMain.handle("test", async (event, sm_stream_id) => {
+      console.log("retrieve media in stream #" + sm_stream_id);
+      let result = await knex
+                    .select()
+                    .from("media_files")
+                    .join("stream_media", {"media_files.media_id": "stream_media.media_id"})
+                    .where("stream_media.stream_id", sm_stream_id);
+      return result;
+    })
+
     
     ipcMain.on("queryStreams",  (event, whereQuery) => {
       console.log("find all streams with media that applies to subquery");

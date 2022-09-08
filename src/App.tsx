@@ -32,6 +32,9 @@ interface IState {
   playing:                boolean,
   playbackSpeed:          number,
   allStreams:             Array<StreamChannel>,
+  streamsInView:          Map<number, Stream>,
+  channelOrder:           number[],
+  channelSettings:        Map<number, Channel>
   focusStream:            any
 }
 
@@ -46,6 +49,17 @@ interface StreamChannel {
     pannerValue:    number
 }
 
+interface Channel {
+  streamID:       number,
+  channelOrder:   number,
+  timelineInput:  StreamTimeline,
+  playerRef:      HTMLInputElement,
+  showMedia:      boolean,
+  muteMedia:      boolean,
+  gainValue:      number,
+  pannerValue:    number
+}
+
 type StreamTimeline = { times: Array<TimeSegment> }
 type TimeSegment = {
   starting_time:  number,
@@ -57,6 +71,7 @@ type TimeSegment = {
 class App extends Component<{}, IState> {
   playbackIntervalObject: ReturnType<typeof setInterval>;
   audioContext: AudioContext;
+  // streamsInView: Map<number, Stream>;
   constructor() {
     super({});
     this.state = {
@@ -75,10 +90,14 @@ class App extends Component<{}, IState> {
       playing: false,
       playbackSpeed: 1,   
       allStreams: [],
+      streamsInView: new Map<number, Stream>(),
+      channelOrder: [],
+      channelSettings: new Map<number, Channel>(),
       focusStream: null
     };
     this.playbackIntervalObject = null;
     this.audioContext = new window.AudioContext();
+    // this.streamsInView = new Map<number, Stream>();
   }
 
   componentDidMount() {
@@ -593,7 +612,7 @@ class App extends Component<{}, IState> {
         
 
 
-        <div style={{position: 'fixed', bottom: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
+        {/* <div style={{position: 'fixed', bottom: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
           <h4>Sample inputs</h4>
           <ul>
           {allGroupings2.map((g) => 
@@ -604,7 +623,7 @@ class App extends Component<{}, IState> {
             }>{g.toString()}</button></li>
             )}
           </ul>
-        </div>
+        </div> */}
         
       </div>
     );

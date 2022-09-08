@@ -1,4 +1,5 @@
 // Libraries
+import { resolve } from 'node:path/win32';
 import { format } from 'path';
 import React, { Component } from 'react';
 import { QueryBuilder, Field, RuleGroupType, RuleGroup, formatQuery } from 'react-querybuilder';
@@ -135,6 +136,8 @@ const fields: Field[] = [
 ]
 
 class QueryController extends Component<IProps, IState> {
+  returnedStreams: any;
+  returnedMedia: any;
 
   constructor(props: IProps) {
     super(props);
@@ -146,8 +149,11 @@ class QueryController extends Component<IProps, IState> {
         rules: []
       },
       queryFields: []
+      
 
     }
+    this.returnedStreams = [];
+    this.returnedMedia = new Map<number, any>();
   }
   
   componentDidMount() {
@@ -188,20 +194,42 @@ class QueryController extends Component<IProps, IState> {
   }
 
 
-  queryStreams = () => {
+  queryStreams = ()  => {
     const subquery: String = formatQuery(this.state.query, 'sql');
     console.warn(subquery);
     //@ts-expect-error
     window.api.receive("foundStreams", (streamList) => {
-      
-      //@ts-expect-error
-      streamList.forEach(stream => {
-        console.log(stream);
-        this.queryAllMediaInStream(stream.stream_id);
-      })
+      this.returnedStreams = streamList;
+      console.log(this.returnedStreams);
+      console.warn(streamList.length + " stream(s) found.");
     });
     //@ts-expect-error
     window.api.send("queryStreams", subquery);
+  }
+
+
+  //WORKING VERSION
+  addStreamsToView = async () => {
+    
+    const rStreams = this.returnedStreams;
+    
+    const results = await Promise.all(rStreams.map( async (thisStream: { stream_id: number; }) => {
+      
+      console.log(thisStream.stream_id);
+      //@ts-expect-error
+      return [thisStream.stream_id, await window.api.receiveAsPromise("test", thisStream.stream_id)];
+    }));
+    console.log(await results);
+
+  }
+
+  removeStreamsToView = () => {}
+
+  testInvoke = async () => {
+    console.log("test invoke");
+    //@ts-expect-error
+    const test =  await window.api.receiveAsPromise("test", 1);
+    console.log(test);
   }
 
   queryAllMediaInStream = (sm_stream_id: number) => {
@@ -215,11 +243,12 @@ class QueryController extends Component<IProps, IState> {
         // add all media objects to this stream 
 
       // add to stream timeline
-      this.addToStreamTimeline(sm_stream_id, mediaList);
+      // this.addToStreamTimeline(sm_stream_id, mediaList);
       // mediaList.forEach(m => {
 
       // })
-      
+      this.returnedMedia.set(sm_stream_id, mediaList);
+      return; 
     });
     //@ts-expect-error
     window.api.send("findMediaInStream", sm_stream_id);
@@ -228,35 +257,35 @@ class QueryController extends Component<IProps, IState> {
 
   addToStreamTimeline = (stream_id: any, mediaListJSON: any) => {
     //check if this stream already exist in allStreams 
-    // if (!(stream_id in this.props.allStreams.map(s => s.uniqueId))) {
-    //   //if does not already exist, then do all this:
-    //   //create list of media objects
-    //   const mediaObjectList: Array<Media> = this.createMediaListFromJSON(mediaListJSON);
+    if (!(stream_id in this.props.allStreams.map(s => s.uniqueId))) {
+      //if does not already exist, then do all this:
+      //create list of media objects
+      const mediaObjectList: Array<Media> = this.createMediaListFromJSON(mediaListJSON);
 
-    //   //create stream from media objects
-    //   const newStream: Stream = this.createStreamFromMediaList(stream_id, mediaObjectList);
-    //   //create streamchannel from stream
-    //   // const newChannel: StreamChannel = this.createStreamChannelFromStream(stream_id, newStream);
-    //   this.props.addNewStreamToStreamTimeline(newStream);
+      //create stream from media objects
+      const newStream: Stream = this.createStreamFromMediaList(stream_id, mediaObjectList);
+      //create streamchannel from stream
+      // const newChannel: StreamChannel = this.createStreamChannelFromStream(stream_id, newStream);
+      this.props.addNewStreamToStreamTimeline(newStream);
 
       
-    // }
-    new Promise((resolve, reject) => {
-      if (!(stream_id in this.props.allStreams.map(s => s.uniqueId))) {
-        resolve(mediaListJSON);
-      } else {
-        reject();
-      }
-    })
-    .then((mediaListJSON) => {
-      return this.createMediaListFromJSON(mediaListJSON);
-    })
-    .then((mediaObjectList) => {
-      return this.createStreamFromMediaList(stream_id, mediaObjectList);
-    })
-    .then((newStream) => {
-      this.props.addNewStreamToStreamTimeline(newStream);
-    });
+    }
+    // new Promise((resolve, reject) => {
+    //   if (!(stream_id in this.props.allStreams.map(s => s.uniqueId))) {
+    //     resolve(mediaListJSON);
+    //   } else {
+    //     reject();
+    //   }
+    // })
+    // .then((mediaListJSON) => {
+    //   return this.createMediaListFromJSON(mediaListJSON);
+    // })
+    // .then((mediaObjectList) => {
+    //   return this.createStreamFromMediaList(stream_id, mediaObjectList);
+    // })
+    // .then((newStream) => {
+    //   this.props.addNewStreamToStreamTimeline(newStream);
+    // });
   }
 
 
@@ -325,8 +354,10 @@ class QueryController extends Component<IProps, IState> {
           query={this.state.query}
         />
         <pre>{formatQuery(this.state.query, 'sql')}</pre>
-        <button onClick={() => this.queryStreams()}>+ streams that apply</button>
-        <button onClick={() => this.queryStreams()}>- streams that apply</button>
+        <button onClick={() => this.testInvoke()}>query then add</button>
+        <button onClick={() => this.queryStreams()}>query then add</button>
+        <button onClick={() => this.addStreamsToView()}>+ streams that apply</button>
+        <button onClick={() => this.removeStreamsToView()}>- streams that apply</button>
         
       </div>
     );
