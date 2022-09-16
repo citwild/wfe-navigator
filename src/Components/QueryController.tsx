@@ -18,7 +18,7 @@ interface IProps {
   dbConfig:         any,
   addStream:        any,
   removeStream:     any
-  addNewStreamToStreamTimeline: (s: Stream) => void
+  addNewStreamToStreamTimeline: (s: Stream[]) => void
 }
 
 interface IState {
@@ -221,6 +221,16 @@ class QueryController extends Component<IProps, IState> {
     }));
     console.log(await results);
 
+    let streamList: Stream[] = [];
+    for (var i = 0; i < await results.length; i++) {
+      
+      const mediaObjectList: Array<Media> = this.createMediaListFromJSON(results[i][1]);
+      const newStream: Stream = this.createStreamFromMediaList(results[i][0], mediaObjectList);
+      streamList.push(newStream);
+      
+    }
+    this.props.addNewStreamToStreamTimeline(streamList);
+    console.log(streamList);
   }
 
   removeStreamsToView = () => {}
@@ -266,7 +276,7 @@ class QueryController extends Component<IProps, IState> {
       const newStream: Stream = this.createStreamFromMediaList(stream_id, mediaObjectList);
       //create streamchannel from stream
       // const newChannel: StreamChannel = this.createStreamChannelFromStream(stream_id, newStream);
-      this.props.addNewStreamToStreamTimeline(newStream);
+      // this.props.addNewStreamToStreamTimeline(newStream);
 
       
     }
@@ -354,8 +364,8 @@ class QueryController extends Component<IProps, IState> {
           query={this.state.query}
         />
         <pre>{formatQuery(this.state.query, 'sql')}</pre>
-        <button onClick={() => this.testInvoke()}>query then add</button>
         <button onClick={() => this.queryStreams()}>query then add</button>
+        <div>{this.returnedStreams.length} stream(s) match your query.</div>
         <button onClick={() => this.addStreamsToView()}>+ streams that apply</button>
         <button onClick={() => this.removeStreamsToView()}>- streams that apply</button>
         

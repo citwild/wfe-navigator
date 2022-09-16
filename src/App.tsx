@@ -91,8 +91,8 @@ class App extends Component<{}, IState> {
       playbackSpeed: 1,   
       allStreams: [],
       streamsInView: new Map<number, Stream>(),
-      channelOrder: [],
       channelSettings: new Map<number, Channel>(),
+      channelOrder: [],
       focusStream: null
     };
     this.playbackIntervalObject = null;
@@ -233,19 +233,33 @@ class App extends Component<{}, IState> {
   }
 
 
-  addNewStreamToStreamTimeline = (newStream: Stream) => {
-    let newChannel: StreamChannel = {
-      uniqueId:       newStream.dbItemID,
-      stream:         newStream,
-      timelineInput:  this.transformStreamToTimelineFormat(newStream),
-      playerRef:      null,
-      showMedia:      true,
-      muteMedia:      false,
-      gainValue:      1,
-      pannerValue:    0
-    };
+  addNewStreamToStreamTimeline = (newStreamList: Stream[]) => {
+    let channelsToAdd: StreamChannel[] = [];
+    newStreamList.forEach(newStream => {
+      let newChannel: StreamChannel = {
+        uniqueId:       newStream.dbItemID,
+        stream:         newStream,
+        timelineInput:  this.transformStreamToTimelineFormat(newStream),
+        playerRef:      null,
+        showMedia:      true,
+        muteMedia:      false,
+        gainValue:      1,
+        pannerValue:    0
+      };
+      channelsToAdd.push(newChannel);
+    })
+    // let newChannel: StreamChannel = {
+    //   uniqueId:       newStream.dbItemID,
+    //   stream:         newStream,
+    //   timelineInput:  this.transformStreamToTimelineFormat(newStream),
+    //   playerRef:      null,
+    //   showMedia:      true,
+    //   muteMedia:      false,
+    //   gainValue:      1,
+    //   pannerValue:    0
+    // };
     this.setState({
-      allStreams: [...this.state.allStreams, newChannel]
+      allStreams: this.state.allStreams.concat(channelsToAdd)
     }, () => {
       console.log(this.state.allStreams);
       this.updateMasterSliderRange(); 
