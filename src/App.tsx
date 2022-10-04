@@ -16,6 +16,8 @@ import StreamManager from './Components/StreamManager';
 import StreamTimelineController from './Components/StreamTimelineController';
 import QueryController from './Components/QueryController';
 import TimelineValueDisplay from './Components/TimelineValueDisplay';
+import TimelineContainer from './Components/TimelineContainer';
+import StreamViewContainer from './Components/StreamViewContainer';
 
 // const rootDir = "http://localhost:8080/static/";
 const rootDir = "C:/Users/Irene/Desktop/BeamCoffer/";
@@ -53,7 +55,7 @@ interface Channel {
   streamID:       number,
   channelOrder:   number,
   timelineInput:  StreamTimeline,
-  playerRef:      HTMLInputElement,
+  playerRef:      HTMLInputElement, //TO DELETE
   showMedia:      boolean,
   muteMedia:      boolean,
   gainValue:      number,
@@ -458,159 +460,53 @@ class App extends Component<{}, IState> {
     // 3,600,000 ms = 1 hr
     // 86,400,000 ms = 1 day
  
-    const allGroupings2 = [
-      ["2014-02-19", "Huddle", "Unknown"],
-      ["2014-02-19", "PS A", "gopro"],
-      ["2014-02-19", "PS A", "zoom"],
-      ["2014-02-19", "PS B", "gopro"],
-      ["2014-02-19", "PS B", "zoom"],
-      ["2014-02-19", "PS C", "gopro"],
-      ["2014-02-19", "PS C", "zoom"],
-      // ["2014-02-19", "PS F", "gopro"],
-      ["2014-02-19", "PS F", "zoom"],
-      // ["2014-02-19", "PS G", "gopro"],
-      // ["2014-02-19", "PS G", "zoom"],
-      // ["2014-02-19", "Unknown", "Unknown"],
-
-      ["2014-02-20", "Huddle", "Unknown"],
-      ["2014-02-20", "PS A", "gopro"],
-      ["2014-02-20", "PS A", "zoom"],
-      ["2014-02-20", "PS B", "gopro"],
-      ["2014-02-20", "PS B", "zoom"],
-      ["2014-02-20", "PS C", "gopro"],
-      ["2014-02-20", "PS C", "zoom"],
-      ["2014-02-20", "PS D", "zoom"],
-      ["2014-02-20", "PS F", "gopro"],
-      ["2014-02-20", "PS F", "zoom"],
-      // ["2014-02-20", "PS G", "gopro"],
-      // ["2014-02-20", "PS G", "zoom"],
-
-      ["2014-02-21", "Huddle", "Unknown"],
-      ["2014-02-21", "PS A", "gopro"],
-      ["2014-02-21", "PS A", "zoom"],
-      ["2014-02-21", "PS B", "gopro"],
-      ["2014-02-21", "PS B", "zoom"],
-      ["2014-02-21", "PS C", "gopro"],
-      ["2014-02-21", "PS C", "zoom"],
-      ["2014-02-21", "PS F", "gopro"],
-      ["2014-02-21", "PS F", "zoom"],
-      // ["2014-02-21", "PS G", "gopro"],
-      // ["2014-02-21", "PS G", "zoom"],
-      // ["2014-02-21", "Unknown", "Unknown"]
-    ];
-
     return (
       <div style={{padding: 50, paddingBottom: 200}}>
         
-
         <div id="timeline-area">
-          
-          <div id="stream-controllers">
-            {this.state.allStreams.length > 0 &&
-            <StreamTimelineController
-              allStreams = {this.state.allStreams}
-              showMediaToggle = {this.showMediaToggle}
-              muteMediaToggle = {this.muteMediaToggle}
-              moveStreamUp = {this.moveStreamUp}
-              moveStreamDown = {this.moveStreamDown}
-              removeStream = {this.removeStream}
-              focusStream = {this.state.focusStream}
-              setFocusStream = {this.setFocusStream}
-            />}
-          </div>
-
-          <div id="timelines">
-            <div id="slider-value">
-              <TimelineValueDisplay
-                datetimeMS = {this.state.sliderRange.minTime}
-                text = {"slider starts at..."}
-                textColor = {"auto"}
-              />
-              <TimelineValueDisplay
-                datetimeMS = {this.state.masterTime}
-                text = {"Current playback time:"}
-                textColor = {"auto"}
-              />
-              <TimelineValueDisplay
-                datetimeMS = {this.state.sliderRange.maxTime}
-                text = {"slider ends at..."}
-                textColor = {"auto"}
-              />
-            </div>
-
-            <MainSlider
-              sliderRange = {this.state.sliderRange}
-              masterTime = {this.state.masterTime}
-              updateMasterTime = {this.updateMasterTime}
-            />
-
-            <StreamTimelines
-              sliderRange = {this.state.sliderRange}
-              allStreams = {this.state.allStreams}
-              masterTime = {this.state.masterTime}
-            />
-          </div>
-          
-          
-          
+          <TimelineContainer
+            allStreams = {this.state.allStreams}
+            showMediaToggle = {this.showMediaToggle}
+            muteMediaToggle = {this.muteMediaToggle}
+            moveStreamUp = {this.moveStreamUp}
+            moveStreamDown = {this.moveStreamDown}
+            removeStream = {this.removeStream}
+            focusStream = {this.state.focusStream}
+            setFocusStream = {this.setFocusStream}
+            sliderRange = {this.state.sliderRange}
+            masterTime = {this.state.masterTime}
+            updateMasterTime = {this.updateMasterTime}
+          />
         </div>
+
         <div id="playback-controller">
-            <label>Playback speed multiplier: </label>
-            <input 
-              type="number" 
-              min="0.25"
-              style={{width: 50}}
-              id="speed-multiplier" 
-              // name="speed-multiplier" 
-              value={this.state.playbackSpeed} 
-              disabled={this.state.playing}
-              onChange={this.handlePlaybackSpeedChange}/>
-            <button disabled={this.state.playing || this.state.allStreams.length === 0} onClick={() => {this.startPlayback(0)}}>start playback</button>
-            <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
-            
-          </div>
-
-
-          {this.state.focusStream !== null && 
-            <div id="focus-Stream">
-              <StreamManager
-                key = {"focus-stream"}
-                stream = {this.state.allStreams[this.state.focusStream]}
-                masterTime = {this.state.masterTime}
-                updateMasterTime = {this.updateMasterTime}
-                playing = {this.state.playing}
-                showFileInDir = {this.showFileInDir}
-                playbackSpeed = {this.state.playbackSpeed}
-                audioContext = {this.audioContext}
-                updateGainValue = {this.updateGainValue}
-                updatePannerValue = {this.updatePannerValue}
-                isFocus = {true}
-              />
-              <div><button onClick={this.resetFocusStream}>unfocus</button></div>
-            </div>
-          }
-
-        <div id="media-container">
-          {this.state.allStreams.map( (thisChannel: StreamChannel, index: number) => {
-            return (
-              <>
-                <StreamManager
-                  key = {thisChannel.uniqueId}
-                  stream = {thisChannel}
-                  masterTime = {this.state.masterTime}
-                  updateMasterTime = {this.updateMasterTime}
-                  playing = {this.state.playing}
-                  showFileInDir = {this.showFileInDir}
-                  playbackSpeed = {this.state.playbackSpeed}
-                  audioContext = {this.audioContext}
-                  updateGainValue = {this.updateGainValue}
-                  updatePannerValue = {this.updatePannerValue}
-                  isFocus = {false}
-                />
-              </>
-            )
-          })}
+          <label>Playback speed multiplier: </label>
+          <input 
+            type="number" 
+            min="0.25"
+            style={{width: 50}}
+            id="speed-multiplier" 
+            value={this.state.playbackSpeed} 
+            disabled={this.state.playing}
+            onChange={this.handlePlaybackSpeedChange}/>
+          <button disabled={this.state.playing || this.state.allStreams.length === 0} onClick={() => {this.startPlayback(0)}}>start playback</button>
+          <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
+          
         </div>
+
+        <StreamViewContainer
+          allStreams = {this.state.allStreams}
+          masterTime = {this.state.masterTime}
+          updateMasterTime = {this.updateMasterTime}
+          playing = {this.state.playing}
+          showFileInDir = {this.showFileInDir}
+          playbackSpeed = {this.state.playbackSpeed}
+          audioContext = {this.audioContext}
+          updateGainValue = {this.updateGainValue}
+          updatePannerValue = {this.updatePannerValue}
+          focusStream = {this.state.focusStream}
+          resetFocusStream = {this.resetFocusStream}
+        />
 
         <div id="query-area">
           {this.state.dbConfig === null &&
@@ -623,21 +519,6 @@ class App extends Component<{}, IState> {
             />
           }
         </div>
-        
-
-
-        {/* <div style={{position: 'fixed', bottom: 0, right: 0, backgroundColor: 'lightblue', opacity: 0.7}}> 
-          <h4>Sample inputs</h4>
-          <ul>
-          {allGroupings2.map((g) => 
-            <li><button onClick={(e) => {
-              this.addStream(g[0], g[1], g[2]);
-              e.currentTarget.disabled = true;
-              }
-            }>{g.toString()}</button></li>
-            )}
-          </ul>
-        </div> */}
         
       </div>
     );

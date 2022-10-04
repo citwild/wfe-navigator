@@ -1,5 +1,5 @@
 /* ---------------------------------------------- Media Player */
-#media-container {
+#stream-view-area {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

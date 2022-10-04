@@ -15,15 +15,15 @@ contextBridge.exposeInMainWorld(
         let validChannels = ["fromMain", "sendFiles", "selectFileInDir", "allFields", "foundStreams", "allMediaInStream"];
 
         if (validChannels.includes(channel)) {
-            // Deliberately strip event as it includes `sender` 
+            // Strip event as it includes `sender` 
             ipcRenderer.once(channel, (event, ...args) => func(...args)); 
         }
     },
     receiveAsPromise: (channel, data) => {
-      let validChannels = ["test"];
+      let validChannels = ["getStreamContents"];
 
       if (validChannels.includes(channel)) {
-          // Deliberately strip event as it includes `sender` 
+          // Strip event as it includes `sender` 
           console.log("invoke api");
           return ipcRenderer.invoke(channel, data); 
       }
@@ -33,6 +33,7 @@ contextBridge.exposeInMainWorld(
 
 document.addEventListener('DOMContentLoaded', () => {
   ipcRenderer.receive("allFields", (data) => {
+    console.warn(data);
 
   })
 

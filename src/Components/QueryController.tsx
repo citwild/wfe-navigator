@@ -1,6 +1,4 @@
 // Libraries
-import { resolve } from 'node:path/win32';
-import { format } from 'path';
 import React, { Component } from 'react';
 import { QueryBuilder, Field, RuleGroupType, RuleGroup, formatQuery } from 'react-querybuilder';
 import 'react-querybuilder/dist/query-builder.css';
@@ -25,6 +23,7 @@ interface IState {
   query:          RuleGroupType
   queryFields:    Field[]
   fieldsFetched:  boolean
+  returnedStreams: any
 }
 
 interface StreamChannel {
@@ -136,7 +135,7 @@ const fields: Field[] = [
 ]
 
 class QueryController extends Component<IProps, IState> {
-  returnedStreams: any;
+  
   returnedMedia: any;
 
   constructor(props: IProps) {
@@ -148,11 +147,10 @@ class QueryController extends Component<IProps, IState> {
         combinator: 'and',
         rules: []
       },
-      queryFields: []
-      
+      queryFields: [],
+      returnedStreams: []
 
     }
-    this.returnedStreams = [];
     this.returnedMedia = new Map<number, any>();
   }
   
@@ -199,8 +197,9 @@ class QueryController extends Component<IProps, IState> {
     console.warn(subquery);
     //@ts-expect-error
     window.api.receive("foundStreams", (streamList) => {
-      this.returnedStreams = streamList;
-      console.log(this.returnedStreams);
+      this.setState({ returnedStreams: streamList });
+      // this.returnedStreams = streamList;
+      console.log(this.state.returnedStreams);
       console.warn(streamList.length + " stream(s) found.");
     });
     //@ts-expect-error
@@ -211,13 +210,13 @@ class QueryController extends Component<IProps, IState> {
   //WORKING VERSION
   addStreamsToView = async () => {
     
-    const rStreams = this.returnedStreams;
+    const rStreams = this.state.returnedStreams;
     
     const results = await Promise.all(rStreams.map( async (thisStream: { stream_id: number; }) => {
       
       console.log(thisStream.stream_id);
       //@ts-expect-error
-      return [thisStream.stream_id, await window.api.receiveAsPromise("test", thisStream.stream_id)];
+      return [thisStream.stream_id, await window.api.receiveAsPromise("getStreamContents", thisStream.stream_id)];
     }));
     console.log(await results);
 
@@ -235,12 +234,6 @@ class QueryController extends Component<IProps, IState> {
 
   removeStreamsToView = () => {}
 
-  testInvoke = async () => {
-    console.log("test invoke");
-    //@ts-expect-error
-    const test =  await window.api.receiveAsPromise("test", 1);
-    console.log(test);
-  }
 
   queryAllMediaInStream = (sm_stream_id: number) => {
     console.log("getAllMediaInStream ID: " + sm_stream_id);
@@ -365,7 +358,7 @@ class QueryController extends Component<IProps, IState> {
         />
         <pre>{formatQuery(this.state.query, 'sql')}</pre>
         <button onClick={() => this.queryStreams()}>query then add</button>
-        <div>{this.returnedStreams.length} stream(s) match your query.</div>
+        <div>{this.state.returnedStreams.length} stream(s) match your query.</div>
         <button onClick={() => this.addStreamsToView()}>+ streams that apply</button>
         <button onClick={() => this.removeStreamsToView()}>- streams that apply</button>
         

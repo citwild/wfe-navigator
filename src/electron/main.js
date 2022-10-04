@@ -87,7 +87,9 @@ function createWindow () {
       })
     })
 
-    ipcMain.handle("test", async (event, sm_stream_id) => {
+
+    ipcMain.removeHandler("getStreamContents"); // prevent redundant handler registration on reload
+    ipcMain.handle("getStreamContents", async (event, sm_stream_id) => {
       console.log("retrieve media in stream #" + sm_stream_id);
       let result = await knex
                     .select()
