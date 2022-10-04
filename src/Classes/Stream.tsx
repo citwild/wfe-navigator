@@ -76,7 +76,7 @@ export default class Stream {
 
   // OTHER METHODS
   // Sort by video obj start time
-  sortMedia(): void {
+  private sortMedia(): void {
     this.media.sort((a,b) => { return a.startTime - b.startTime; });
   }
   
@@ -88,7 +88,7 @@ export default class Stream {
   }
 
   
-  updateTimeRange(): void {
+  private updateTimeRange(): void {
     // console.log(this.media[0].startTime + " and " + this.media[this.media.length - 1].endTime);
     this.earliestTime = this.media[0].startTime;
     this.latestTime = this.media[this.media.length - 1].endTime;
@@ -97,7 +97,7 @@ export default class Stream {
   // return media object that exists at the currentTime parameter
   // returns NULL if there is no media at that time
   //getFirstMediaAtTime << more explicit name
-  getMediaAtTime(currentTime: number): Media | null {
+  public getMediaAtTime(currentTime: number): Media | null {
     //check if within range of this stream
     if (currentTime < this.earliestTime || currentTime > this.latestTime) {
       return null;

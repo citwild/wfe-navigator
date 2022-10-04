@@ -270,15 +270,15 @@ class App extends Component<{}, IState> {
 
 
 
-  removeStream = (streamID: number, index: number) => {
+  removeStream = (streamIDs: number[]) => {
     // handle focusStream interaction with remove
-    if (this.state.focusStream !== null && index === this.state.focusStream) {
-      this.setState({ focusStream: null });
-    } else if (this.state.focusStream !== null && index < this.state.focusStream) {
-      this.setState( prevState => ({ 
-        focusStream: prevState.focusStream - 1 
-      }));
-    }
+    // if (this.state.focusStream !== null && index === this.state.focusStream) {
+    //   this.setState({ focusStream: null });
+    // } else if (this.state.focusStream !== null && index < this.state.focusStream) {
+    //   this.setState( prevState => ({ 
+    //     focusStream: prevState.focusStream - 1 
+    //   }));
+    // }
     // about to delete the last one 
     if (this.state.allStreams.length == 1) {
       this.stopPlayback();
@@ -293,7 +293,7 @@ class App extends Component<{}, IState> {
       });
     } else {
       this.setState( prevState => ({ 
-        allStreams: prevState.allStreams.filter( thisStream => thisStream.uniqueId !== streamID) 
+        allStreams: prevState.allStreams.filter( thisStream => !streamIDs.includes(thisStream.uniqueId)) 
       }), () => {
         this.updateMasterSliderRange();
       });
@@ -491,7 +491,7 @@ class App extends Component<{}, IState> {
             onChange={this.handlePlaybackSpeedChange}/>
           <button disabled={this.state.playing || this.state.allStreams.length === 0} onClick={() => {this.startPlayback(0)}}>start playback</button>
           <button disabled={!this.state.playing} onClick={this.stopPlayback}>stop playback</button>
-          
+          <p>{this.state.allStreams.length} stream(s) in view</p>
         </div>
 
         <StreamViewContainer

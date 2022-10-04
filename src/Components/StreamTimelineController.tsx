@@ -9,7 +9,7 @@ interface IProps {
   muteMediaToggle:  (streamID: number) => void
   moveStreamUp:     (index: number) => void
   moveStreamDown:   (index: number) => void
-  removeStream:     (streamID: number, index: number) => void
+  removeStream:     (streamIDs: number[]) => void
   focusStream:      number
   setFocusStream:   (index: number) => void
 }
@@ -98,7 +98,7 @@ class StreamTimelineController extends Component<IProps, IState> {
                     <button className="controller" onClick={() => {this.props.setFocusStream(index)}} disabled={index === this.props.focusStream}>🔍</button>
                   </td>
                   <td>
-                    <button className="controller" onClick={() => {this.props.removeStream(thisChannel.uniqueId, index)}}>❌</button>
+                    <button className="controller" onClick={() => {this.props.removeStream([thisChannel.uniqueId])}}>❌</button>
                   </td>
                 </tr>
             })}

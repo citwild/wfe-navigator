@@ -211,8 +211,13 @@ class QueryController extends Component<IProps, IState> {
   addStreamsToView = async () => {
     
     const rStreams = this.state.returnedStreams;
+
+    const currentStreamsAsID = Array.from(this.props.allStreams, item => item.uniqueId);
+    const distinctStreams = rStreams.filter( (item: any) => !currentStreamsAsID.includes(item.stream_id));
+    // console.log(currentStreamsAsID);
+    // console.log(distinctStreams);
     
-    const results = await Promise.all(rStreams.map( async (thisStream: { stream_id: number; }) => {
+    const results = await Promise.all(distinctStreams.map( async (thisStream: { stream_id: number; }) => {
       
       console.log(thisStream.stream_id);
       //@ts-expect-error
@@ -232,7 +237,15 @@ class QueryController extends Component<IProps, IState> {
     console.log(streamList);
   }
 
-  removeStreamsToView = () => {}
+  removeStreamsToView = async () => {
+    const rStreams = this.state.returnedStreams;
+
+    const currentStreamsAsID = Array.from(this.props.allStreams, item => item.uniqueId);
+    const distinctStreams = rStreams.filter( (item: any) => currentStreamsAsID.includes(item.stream_id));
+    const distinctStreamsAsID = Array.from(distinctStreams, (item: any) => item.stream_id);
+    this.props.removeStream(distinctStreamsAsID);
+
+  }
 
 
   queryAllMediaInStream = (sm_stream_id: number) => {
@@ -349,7 +362,7 @@ class QueryController extends Component<IProps, IState> {
     // ];
 
     return (
-      <div className='query-builder'>
+      <div id='query-builder'>
         
         <QueryBuilder 
           fields={fields} 
@@ -357,11 +370,16 @@ class QueryController extends Component<IProps, IState> {
           query={this.state.query}
         />
         <pre>{formatQuery(this.state.query, 'sql')}</pre>
-        <button onClick={() => this.queryStreams()}>query then add</button>
-        <div>{this.state.returnedStreams.length} stream(s) match your query.</div>
-        <button onClick={() => this.addStreamsToView()}>+ streams that apply</button>
-        <button onClick={() => this.removeStreamsToView()}>- streams that apply</button>
+        <button onClick={() => this.queryStreams()}>Query Database</button>
         
+        <div>{this.state.returnedStreams.length} stream(s) match your query</div>
+        
+        
+        
+        <div>
+          <button onClick={() => this.addStreamsToView()}>ADD all streams to View</button>
+          <button onClick={() => this.removeStreamsToView()}>REMOVE all streams from View</button>
+        </div>
       </div>
     );
   }

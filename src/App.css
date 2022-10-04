@@ -145,7 +145,10 @@ input[type=checkbox], button.controller, .controller-row > td {
 
 
 
-
+/* ---------------------------------------------- Query controller */
+#query-builder {
+  padding: 20px 0px;
+}
 
 
 

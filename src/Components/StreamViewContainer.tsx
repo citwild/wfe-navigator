@@ -81,8 +81,9 @@ class StreamViewContainer extends Component<IProps, IState> {
         }
       </div>
       
-
+      
       <div id="stream-view-area">
+        
         {this.props.allStreams.map( (thisChannel: StreamChannel, index: number) => {
           return (
             <>

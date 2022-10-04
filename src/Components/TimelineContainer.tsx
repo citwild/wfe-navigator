@@ -18,7 +18,7 @@ interface IProps {
   muteMediaToggle:  (streamID: number) => void
   moveStreamUp:     (index: number) => void
   moveStreamDown:   (index: number) => void
-  removeStream:     (streamID: number, index: number) => void
+  removeStream:     (streamIDs: number[]) => void
   focusStream:      number
   setFocusStream:   (index: number) => void
   sliderRange: {
@@ -75,10 +75,10 @@ class TimelineContainer extends Component<IProps, IState> {
   render() { 
 
     return (
-      <div id="timeline-area">
+      <>
           
         <div id="stream-controllers">
-          
+          {this.props.allStreams.length > 0 &&
           <StreamTimelineController
             allStreams = {this.props.allStreams}
             showMediaToggle = {this.props.showMediaToggle}
@@ -89,6 +89,7 @@ class TimelineContainer extends Component<IProps, IState> {
             focusStream = {this.props.focusStream}
             setFocusStream = {this.props.setFocusStream}
           />
+          }
         </div>
 
         <div id="timelines">
@@ -125,7 +126,7 @@ class TimelineContainer extends Component<IProps, IState> {
         
           
           
-      </div>
+      </>
     );
   }
 }
