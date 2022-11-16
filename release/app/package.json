@@ -1,0 +1,22 @@
+{
+  "name": "wfe-navigator",
+  "version": "0.1.0",
+  "description": "a desktop application for navigating WFE datasets",
+  "license": "MIT",
+  "author": {
+    "name": "Irene W.",
+    "email": "i.lalinwe@gmail.com",
+    "url": "https://github.com/citwild/wfe-navigator"
+  },
+  "main": "./dist/main/main.js",
+  "scripts": {
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.2",
+    "knex": "^2.0.0"
+    
+  }
+}
