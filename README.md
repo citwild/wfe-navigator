@@ -7,11 +7,11 @@ such as the BeamCoffer dataset https://sites.uw.edu/socha/beamcoffer-dataset/.
 ## Configuration file
 When the application starts, user will be prompted with a dialog to select a wfe-navigator configuration file.
 
-config file must use `.config.wfen` extension
+config file must use the `.config.wfen` extension, and uses the following format:
 ```js
 {
   "database": {
-    "filePath": "C:/path/to/database.db",     // if path contains backslash, make sure to escape each backslash
+    "filePath": "C:/path/to/database.db",  // if path contains backslash, make sure to escape each backslash
     "client": "sqlite3"
   },
   "media": {
