@@ -180,6 +180,18 @@ export default class MenuBuilder {
             shell.openExternal('https://github.com/electron/electron/issues');
           },
         },
+        {
+          label: 'User Guide',
+          click() {
+            shell.openExternal('https://github.com/citwild/wfe-navigator/wiki/User-Guide');
+          },
+        },
+        {
+          label: 'Developer Notes',
+          click() {
+            shell.openExternal('https://github.com/citwild/wfe-navigator/wiki/Developer-Notes');
+          },
+        },
       ],
     };
 
@@ -256,29 +268,21 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
+            label: 'View on Github',
             click() {
-              shell.openExternal('https://electronjs.org');
+              shell.openExternal('https://github.com/citwild/wfe-navigator/');
             },
           },
           {
-            label: 'Documentation',
+            label: 'User Guide',
             click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme'
-              );
+              shell.openExternal('https://github.com/citwild/wfe-navigator/wiki/User-Guide');
             },
           },
           {
-            label: 'Community Discussions',
+            label: 'Developer Notes',
             click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            },
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              shell.openExternal('https://github.com/citwild/wfe-navigator/wiki/Developer-Notes');
             },
           },
         ],
