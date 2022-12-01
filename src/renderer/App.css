@@ -32,12 +32,30 @@ code {
   padding: 10px 5px;
 }
 
+.player-container {
+  position: relative;
+}
+
+.no-file {
+  --noFile-height: 200px;
+
+  z-index: 999999;
+  color: red;
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: center;
+  line-height: var(--noFile-height);
+  height: var(--noFile-height);
+  width: calc(var(--noFile-height)*16/9);
+}
+
 .no-media, .speaker_img {
   --noMedia-height: 200px;
 
   display: inline-block;
   overflow: hidden;
-  
+
   color: white;
   text-align: center;
   line-height: var(--noMedia-height);
@@ -46,7 +64,7 @@ code {
 }
 
 .no-source {
-  background-color: black; 
+  background-color: black;
 }
 
 .hidden-media {
@@ -70,7 +88,7 @@ div.player-wrapper > div[id^='player-'] {
 }
 
 .focus-player-wrapper > div[id^='player-'] {
-  height: 400px; 
+  height: 400px;
 }
 
 /*---------------------------------------------- Timeline Display */
