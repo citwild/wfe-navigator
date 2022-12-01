@@ -29,7 +29,7 @@ interface IState {}
 
 class VideoAudioHandler extends Component<IProps, IState> {
   playerRef: React.RefObject<unknown>;
-  audioSource: MediaElementAudioSourceNode; 
+  audioSource: MediaElementAudioSourceNode;
   prevMasterTime: number;
   constructor(props: IProps) {
     super(props);
@@ -48,7 +48,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
       // (1000)*(speed) = step in ms for each progress interval
       this.syncWithMasterTime();
     }
-    this.prevMasterTime = this.props.masterTime; 
+    this.prevMasterTime = this.props.masterTime;
   }
 
   componentWillUnmount(): void {
@@ -67,7 +67,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   findSeekPosition = () => {
-    // this.props.media is never NULL 
+    // this.props.media is never NULL
     var msFromStart = this.props.masterTime - this.props.media.startTime;
     // console.log({msFromStart});
     return msFromStart / 1000;
@@ -78,7 +78,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   }
 
   ref = (player: any) => {
-    this.playerRef = player
+    this.playerRef = player;
   }
 
   connectWebAudioAPI = () => {
@@ -92,35 +92,44 @@ class VideoAudioHandler extends Component<IProps, IState> {
       // connect the AudioSourceNode to the gainNode passed from StreamManager
       this.audioSource.connect(this.props.gainNode);
     }
-    
   }
-  
-  render() { 
+
+  handleError = (e) => {
+    console.log('onError', e);
+    const videoElement = document.querySelector("player-" + this.props.keyID + " > div.react-player > video");
+    videoElement?.setAttribute('poster', "../file_not_found.jpeg");
+  }
+
+  render() {
     return (
-      <div id={"player-" + this.props.keyID}>
-        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals"></img>}
-        <ReactPlayer
-          ref={this.ref}
-          className='react-player'
-          width='100%'
-          height='100%'
-          url={this.props.mediaDir + this.props.media.getSource()}
-          playing={this.props.playing}
-          playbackRate={this.props.playbackSpeed}
-          muted={this.props.muteMedia}
-          onLoadedData={this.connectWebAudioAPI}
-          onPause={this.handlePause}
-          // onReady={() => {console.log('onReady')}}
-          // onPlay={() => console.log('onPlay')}
-          // onProgress={this.handleProgress}
-          // onSeek={e => console.log('onSeek', e)}
-          onStart={() => console.warn("FILE " + this.props.media.getName() + " Started")}
-          onEnded={() => console.warn("FILE " + this.props.media.getName() + " Ended")}
-          onError={e => console.log('onError', e)}
-        />
-      </div>
+      <>
+      { ReactPlayer.canPlay(this.props.mediaDir + this.props.media.getSource()) ?
+        <div id={"player-" + this.props.keyID}>
+          {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals"></img>}
+          <ReactPlayer
+            ref={this.ref}
+            className='react-player'
+            width='100%'
+            height='100%'
+            url={this.props.mediaDir + this.props.media.getSource()}
+            playing={this.props.playing}
+            playbackRate={this.props.playbackSpeed}
+            muted={this.props.muteMedia}
+            onLoadedData={this.connectWebAudioAPI}
+            onPause={this.handlePause}
+            // onReady={() => {console.log('onReady')}}
+            // onPlay={() => console.log('onPlay')}
+            // onProgress={this.handleProgress}
+            // onSeek={e => console.log('onSeek', e)}
+            onStart={() => console.warn("FILE " + this.props.media.getName() + " Started")}
+            onEnded={() => console.warn("FILE " + this.props.media.getName() + " Ended")}
+            onError={this.handleError}
+          />
+        </div>
+      : <div>File not found.</div> }
+      </>
     );
   }
 }
- 
+
 export default VideoAudioHandler;
