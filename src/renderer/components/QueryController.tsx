@@ -31,86 +31,11 @@ interface IProps {
 
 interface IState {
   query: RuleGroupType;
-  queryFields: Field[];
   fieldsFetched: boolean;
   returnedStreams: any;
 }
 
-
-/// //////////////////////////////////////////////////////////
-
-const fields: Field[] = [
-  {
-    name: 'media_files.media_type',
-    label: 'Media Type',
-    valueSource: ['media_type'],
-    datatype: 'text',
-    valueEditorType: 'select',
-    values: [
-      { name: 'Video', label: 'Video' },
-      { name: 'Audio', label: 'Audio' },
-    ],
-  },
-  {
-    name: 'media_files.location',
-    label: 'Location',
-    valueSource: ['location'],
-    datatype: 'text',
-  },
-  {
-    name: 'media_files.equipment',
-    label: 'Equipment',
-    datatype: 'text',
-    valueEditorType: 'select',
-    values: [
-      { name: 'gopro', label: 'GoPro' },
-      { name: 'zoom', label: 'Zoom' },
-    ],
-  },
-  {
-    name: 'media_files.file_ext',
-    label: 'File Ext',
-    valueSource: ['file_ext'],
-    datatype: 'text',
-  },
-  {
-    name: 'media_files.year',
-    label: 'Year',
-    valueSource: ['year'],
-    datatype: 'integer',
-  },
-  {
-    name: 'media_files.month',
-    label: 'Month',
-    valueSource: ['month'],
-    datatype: 'integer',
-  },
-  {
-    name: 'media_files.date',
-    label: 'Date',
-    valueSource: ['date'],
-    datatype: 'integer',
-  },
-  {
-    name: 'media_files.nominal_date',
-    label: 'Date',
-    valueSource: ['nominal_date'],
-    datatype: 'date',
-    inputType: 'date',
-  },
-  {
-    name: 'media_files.recording_mode',
-    label: 'Recording Mode',
-    valueSource: ['recording_mode'],
-    datatype: 'text',
-    valueEditorType: 'select',
-    values: [
-      { name: 'XY', label: 'XY' },
-      { name: 'MS', label: 'MS' },
-      { name: 'unknown', label: 'Unknown' },
-    ],
-  },
-];
+let qFields: Field[] = [];
 
 class QueryController extends Component<IProps, IState> {
   returnedMedia: any;
@@ -124,13 +49,23 @@ class QueryController extends Component<IProps, IState> {
         combinator: 'and',
         rules: [],
       },
-      queryFields: [],
       returnedStreams: [],
     };
     this.returnedMedia = new Map<number, any>();
   }
 
-  componentDidMount() {}
+  componentWillMount() {
+    this.getQueryFields();
+  }
+
+  getQueryFields = () => {
+    // @ts-expect-error
+    const qf = window.api.sendSync('getQueryFields');
+    if (qf !== null) {
+      qFields = qf;
+      this.setState({ fieldsFetched: true });
+    }
+  }
 
   setQuery = (input: any) => {
     this.setState({ query: input });
@@ -149,6 +84,8 @@ class QueryController extends Component<IProps, IState> {
     // @ts-expect-error
     window.api.send('queryStreams', subquery);
   };
+
+
 
   // WORKING VERSION
   addStreamsToView = async () => {
@@ -331,18 +268,15 @@ class QueryController extends Component<IProps, IState> {
   };
 
   render() {
-    // const fields: Field[] = [
-    //   { name: 'date', label: 'Date' },
-    //   { name: 'location', label: 'Location' },
-    //   { name: 'equipment', label: 'Equipment' },
-    // ];
-
     return (
       <div id="query-builder">
         <QueryBuilder
-          fields={fields}
+          fields={qFields}
           onQueryChange={(q) => this.setState({ query: q })}
           query={this.state.query}
+          autoSelectField={true}
+          disabled={!this.state.fieldsFetched}
+          showLockButtons
         />
         <pre>{formatQuery(this.state.query, 'sql')}</pre>
         <button onClick={() => this.queryStreams()}>Query Database</button>

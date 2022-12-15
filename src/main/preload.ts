@@ -16,6 +16,16 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.send(channel, data);
     }
   },
+  sendSync: (channel, data) => {
+    const validChannels = [
+      'getQueryFields',
+    ];
+
+    if (validChannels.includes(channel)) {
+      // Strip event as it includes `sender`
+      return ipcRenderer.sendSync(channel, data);
+    }
+  },
   receive: (channel, func) => {
     const validChannels = [
       'fromMain',
@@ -32,7 +42,9 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
   receiveAsPromise: (channel, data) => {
-    const validChannels = ['getStreamContents'];
+    const validChannels = [
+      'getStreamContents',
+    ];
 
     if (validChannels.includes(channel)) {
       // Strip event as it includes `sender`

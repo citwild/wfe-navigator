@@ -56,11 +56,15 @@ code {
   display: inline-block;
   overflow: hidden;
 
-  color: white;
+  /* color: white; */
   text-align: center;
   line-height: var(--noMedia-height);
   height: var(--noMedia-height);
   width: calc(var(--noMedia-height)*16/9);
+  color: black;
+  /* border: black;
+  border-style: dotted;
+  border-width: 2px; */
 }
 
 .no-source {
@@ -70,6 +74,9 @@ code {
 .hidden-media {
   background-color: lightgray;
   color: black;
+  border: black;
+  border-style: dotted;
+  border-width: 2px;
 }
 
 div[id^='panner-container'], div[id^='gain-container']{

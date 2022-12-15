@@ -116,7 +116,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
     return (
       <div id={"player-" + this.props.keyID} className="player-container">
         {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals"></img>}
-        {this.state.fileNotFound && <div className="no-file no-source">source file not found</div>}
+        {this.state.fileNotFound && <div className="no-file no-source">error loading file</div>}
         <ReactPlayer
           ref={this.ref}
           className='react-player'

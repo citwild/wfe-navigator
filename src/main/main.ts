@@ -13,10 +13,12 @@ import fs from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import e from 'express';
 
 let mainWindow: BrowserWindow | null = null;
 let dbFile: string;
 let mediaDir: string;
+let queryFields: any = null;
 let knex: any;
 
 
@@ -170,6 +172,15 @@ const createWindow = async () => {
       return result;
     });
 
+    //sync
+    ipcMain.on('getQueryFields', (event, args) => {
+      console.log(`retrieving fields for query builder...`);
+      event.returnValue = queryFields;
+    });
+
+
+
+
     ipcMain.on('queryStreams', (event, whereQuery) => {
       console.log('find all streams with media that applies to subquery');
 
@@ -238,7 +249,8 @@ const createWindow = async () => {
                 ? `${dataParsed.media.directoryPath}/`
                 : dataParsed.media.directoryPath;
             console.log(mediaDir);
-
+            queryFields = dataParsed.querybuilder.fields;
+            console.log(queryFields);
             // set up database connection
             knex = require('knex')({
               client: dataParsed.database.client,

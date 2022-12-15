@@ -77,7 +77,7 @@ class StreamManager extends Component<IProps, IState> {
 
   NoMedia = (): React.ReactElement => {
     return (
-      <div className="no-media no-source">
+      <div className="no-media">
         <i>no media to display</i>
       </div>
     );
