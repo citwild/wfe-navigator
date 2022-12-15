@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import VideocamIcon from '@mui/icons-material/Videocam';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 // Interfaces & Types
 import { StreamChannel } from './interfaces/StreamChannel.interface';
@@ -31,9 +32,8 @@ class StreamTimelineController extends Component<IProps, IState> {
           <tbody>
             <tr>
               <th></th>
-              <th><img style={{width: "10pt"}} src="onoff.svg" alt="availability"></img></th>
-              <th>👁</th>
-              <th>🔊</th>
+              <th><VideocamIcon/></th>
+              <th><VolumeUpIcon/></th>
               <th></th>
               <th></th>
               <th></th>
@@ -47,18 +47,6 @@ class StreamTimelineController extends Component<IProps, IState> {
                       key = {'stream-checkbox-' + thisChannel.uniqueId.toString()}
                       // size="small"
                       checked={thisChannel.showMedia}
-                      onChange={() => this.props.showMediaToggle(thisChannel.uniqueId)}
-                      style={{padding: 0}}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      key = {'video-checkbox-' + thisChannel.uniqueId.toString()}
-                      // size="small"
-                      checked
-                      // ={thisChannel.showMedia}
-                      disabled
                       onChange={() => this.props.showMediaToggle(thisChannel.uniqueId)}
                       style={{padding: 0}}
                     />

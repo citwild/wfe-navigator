@@ -298,7 +298,7 @@ class QueryController extends Component<IProps, IState> {
             onClick={() => this.addStreamsToView()}
             disabled={this.state.returnedStreams.length === 0}
           >
-            ADD all streams to View
+            <strong>ADD</strong>&nbsp;matched streams to View
           </Button>
           <Button
             variant="outlined"
@@ -306,7 +306,7 @@ class QueryController extends Component<IProps, IState> {
             onClick={() => this.removeStreamsToView()}
             disabled={this.state.returnedStreams.length === 0}
           >
-            REMOVE all streams from View
+            <strong>REMOVE</strong>&nbsp;matched streams from View
           </Button>
         </div>
       </div>

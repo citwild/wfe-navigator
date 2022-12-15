@@ -34,12 +34,12 @@ class StreamTimelines extends Component<IProps, IState> {
       allTimelineInput: new Array<StreamTimeline>()
     }
   }
-  
+
   componentDidMount() {
     if (document.querySelector('div#stream-timelines > svg') != null) {
       d3.select('div#stream-timelines').selectAll('svg').remove();
     }
-    
+
     this.createTimelines();
   }
 
@@ -47,7 +47,7 @@ class StreamTimelines extends Component<IProps, IState> {
     if (document.querySelector('div#stream-timelines > svg') != null) {
       d3.select('div#stream-timelines').selectAll('svg').remove();
     }
-    
+
     this.createTimelines();
   }
 
@@ -58,18 +58,18 @@ class StreamTimelines extends Component<IProps, IState> {
     const itemColor: string = "lightpink";
     const backgroundColor: string = "#f2f2f2";
     const margin = {
-      left: 20, 
-      right: 20, 
-      top: 0, 
+      left: 20,
+      right: 20,
+      top: 0,
       bottom: 0
     };
     const svgWidth: number = 1700;
-    const svgHeight: number = 
-        this.state.allTimelineInput.length === 0 
-        ? 0 
+    const svgHeight: number =
+        this.state.allTimelineInput.length === 0
+        ? 0
         : (this.state.allTimelineInput.length + 2) * (itemHeight + itemMargin);
 
-    
+
     var xScale: any = d3.scaleLinear()
       .domain([this.props.sliderRange.minTime, this.props.sliderRange.maxTime])
       .range([margin.left, svgWidth - margin.right]);
@@ -94,10 +94,10 @@ class StreamTimelines extends Component<IProps, IState> {
         const fileName = mediaObj === null ? "" : mediaObj.getName();
         d3.select('#timeline-tooltip')
           .text(fileName);
-        
+
       });
 
-    
+
 
     d3.select("#stream-timelines")
       .append("svg")
@@ -112,7 +112,7 @@ class StreamTimelines extends Component<IProps, IState> {
       .attr("height", '100%')
       .attr('x', xScale(this.props.masterTime))
       .style('fill', "red");
-    
+
     //Add indicator of currently playing media
     d3.selectAll("rect[id^='timelineItem']")
     .style("fill", (d: TimeSegment, index: number) => {
@@ -154,7 +154,7 @@ class StreamTimelines extends Component<IProps, IState> {
   }
 
 
-  render() { 
+  render() {
     return (
       <div id='stream-timelines'>
         <div id="timeline-tooltip">tooltip</div>
@@ -162,5 +162,5 @@ class StreamTimelines extends Component<IProps, IState> {
     );
   }
 }
- 
+
 export default StreamTimelines;

@@ -29,7 +29,7 @@ code {
 }
 
 .player-wrapper {
-  padding: 10px 5px;
+  padding: 20px 10px;
 }
 
 .player-container {
@@ -62,9 +62,9 @@ code {
   height: var(--noMedia-height);
   width: calc(var(--noMedia-height)*16/9);
   color: black;
-  /* border: black;
+  border: whitesmoke;
   border-style: dotted;
-  border-width: 2px; */
+  border-width: 2px;
 }
 
 .no-source {

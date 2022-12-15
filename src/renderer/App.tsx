@@ -493,6 +493,7 @@ class App extends Component<{}, IState> {
           <Button
             variant="contained"
             color="success"
+            size="small"
             disabled={this.state.playing || this.state.allStreams.length === 0}
             onClick={() => {
               this.startPlayback(0);
@@ -503,6 +504,7 @@ class App extends Component<{}, IState> {
           <Button
             variant="contained"
             color="error"
+            size="small"
             disabled={!this.state.playing}
             onClick={this.stopPlayback}
           >
