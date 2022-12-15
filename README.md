@@ -36,7 +36,7 @@ config file must use the `.config.wfen` extension, and uses the following format
 ```js
 {
   "database": {
-    "filePath": "C:/path/to/database.db",  // if path contains backslash, make sure to escape each backslash
+    "filePath": "C:/path/to/database.db",  // escape each backslash
     "client": "sqlite3"
   },
   "media": {
