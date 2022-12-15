@@ -4,7 +4,7 @@ large numbers (e.g., hundreds or thousands) or video, auidio, image, and other t
 such as the BeamCoffer dataset https://sites.uw.edu/socha/beamcoffer-dataset/.
 
 # How to run
-## Build
+## Build 🛠
 To build for your current OS, you would need to clone the repository, install node modules into your local clone, and package the application as follow: 
 1. Clone the repository
 2. Install node modules at the first level of the repository 
@@ -29,7 +29,7 @@ npm run package
 6. Find the packaged application installer at `wfe-navigator/release/app/build`
 
 
-## Configuration file
+## Configuration file ⚙
 When the application starts, user will be prompted with a dialog to select a wfe-navigator configuration file.
 
 config file must use the `.config.wfen` extension, and uses the following format:
@@ -48,3 +48,7 @@ config file must use the `.config.wfen` extension, and uses the following format
 }
 ```
 where the query builder's fields can be specified following this [format](https://react-querybuilder.js.org/docs/api/valueeditor#example)
+
+
+## View file 🔬
+`.view.wfen` extension

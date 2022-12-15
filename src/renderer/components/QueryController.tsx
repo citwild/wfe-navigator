@@ -10,6 +10,7 @@ import {
   formatQuery,
 } from 'react-querybuilder';
 import 'react-querybuilder/dist/query-builder.css';
+import Button from '@mui/material/Button';
 
 // Components
 
@@ -270,28 +271,43 @@ class QueryController extends Component<IProps, IState> {
   render() {
     return (
       <div id="query-builder">
+        <pre>{formatQuery(this.state.query, 'sql')}</pre>
         <QueryBuilder
           fields={qFields}
           onQueryChange={(q) => this.setState({ query: q })}
           query={this.state.query}
-          autoSelectField={true}
+          autoSelectField
           disabled={!this.state.fieldsFetched}
           showLockButtons
         />
-        <pre>{formatQuery(this.state.query, 'sql')}</pre>
-        <button onClick={() => this.queryStreams()}>Query Database</button>
-
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.queryStreams()}
+        >
+            Query Database
+        </Button>
         <div>
           {this.state.returnedStreams.length} stream(s) match your query
         </div>
 
         <div>
-          <button onClick={() => this.addStreamsToView()}>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={() => this.addStreamsToView()}
+            disabled={this.state.returnedStreams.length === 0}
+          >
             ADD all streams to View
-          </button>
-          <button onClick={() => this.removeStreamsToView()}>
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => this.removeStreamsToView()}
+            disabled={this.state.returnedStreams.length === 0}
+          >
             REMOVE all streams from View
-          </button>
+          </Button>
         </div>
       </div>
     );

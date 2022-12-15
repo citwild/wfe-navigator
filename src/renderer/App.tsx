@@ -2,6 +2,7 @@
 // Libraries
 import React, { Component } from 'react';
 import * as d3 from 'd3';
+import Button from '@mui/material/Button';
 
 // Styling
 import './App.css';
@@ -459,7 +460,7 @@ class App extends Component<{}, IState> {
     // 60,000 ms = 1 min
     // 3,600,000 ms = 1 hr
     // 86,400,000 ms = 1 day
-    
+
     return (
       <div style={{ padding: 50, paddingBottom: 200 }}>
         <div id="timeline-area">
@@ -489,17 +490,24 @@ class App extends Component<{}, IState> {
             disabled={this.state.playing}
             onChange={this.handlePlaybackSpeedChange}
           />
-          <button
+          <Button
+            variant="contained"
+            color="success"
             disabled={this.state.playing || this.state.allStreams.length === 0}
             onClick={() => {
               this.startPlayback(0);
             }}
           >
             start playback
-          </button>
-          <button disabled={!this.state.playing} onClick={this.stopPlayback}>
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            disabled={!this.state.playing}
+            onClick={this.stopPlayback}
+          >
             stop playback
-          </button>
+          </Button>
           <p>{this.state.allStreams.length} stream(s) in view</p>
         </div>
 

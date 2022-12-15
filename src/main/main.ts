@@ -172,13 +172,11 @@ const createWindow = async () => {
       return result;
     });
 
-    //sync
+    // sync
     ipcMain.on('getQueryFields', (event, args) => {
       console.log(`retrieving fields for query builder...`);
       event.returnValue = queryFields;
     });
-
-
 
 
     ipcMain.on('queryStreams', (event, whereQuery) => {

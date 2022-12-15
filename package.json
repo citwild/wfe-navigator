@@ -111,6 +111,8 @@
     }
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
     "d3": "^7.4.4",
@@ -136,7 +138,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.74",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.74",
     "@electron-forge/maker-zip": "^6.0.0-beta.74",
-    "@mui/material": "^5.8.2",
+    "@mui/material": "^5.11.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "@reduxjs/toolkit": "^1.8.5",
     "@svgr/webpack": "^6.3.1",

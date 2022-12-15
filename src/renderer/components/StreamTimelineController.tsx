@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import Stream from '../classes/Stream';
 
 // Interfaces & Types
 import { StreamChannel } from './interfaces/StreamChannel.interface';
@@ -24,7 +23,7 @@ class StreamTimelineController extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
   }
-  
+
   render() {
     return (
       <>
@@ -32,7 +31,7 @@ class StreamTimelineController extends Component<IProps, IState> {
           <tbody>
             <tr>
               <th></th>
-              <th><img style={{width: "10pt"}} src="onoff.svg" alt="availability"></img></th> 
+              <th><img style={{width: "10pt"}} src="onoff.svg" alt="availability"></img></th>
               <th>👁</th>
               <th>🔊</th>
               <th></th>
@@ -43,29 +42,29 @@ class StreamTimelineController extends Component<IProps, IState> {
               return <tr className="controller-row" key={"controller-" + thisChannel.uniqueId}>
                   <td style={{textAlign: 'left'}}>{thisChannel.stream.getLocation() + ", " + thisChannel.stream.getEquipment()}</td>
                   <td>
-                    <input  
+                    <input
                       type="checkbox"
                       key = {'stream-checkbox-' + thisChannel.uniqueId.toString()}
                       // size="small"
-                      checked={thisChannel.showMedia} 
+                      checked={thisChannel.showMedia}
                       onChange={() => this.props.showMediaToggle(thisChannel.uniqueId)}
                       style={{padding: 0}}
                     />
                   </td>
                   <td>
-                    <input  
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       key = {'video-checkbox-' + thisChannel.uniqueId.toString()}
                       // size="small"
                       checked
-                      // ={thisChannel.showMedia} 
+                      // ={thisChannel.showMedia}
                       disabled
                       onChange={() => this.props.showMediaToggle(thisChannel.uniqueId)}
                       style={{padding: 0}}
                     />
                   </td>
                   <td>
-                    <input  
+                    <input
                       type="checkbox"
                       key = {'audio-checkbox-' + thisChannel.uniqueId.toString()}
                       // size="small"
