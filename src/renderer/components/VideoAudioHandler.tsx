@@ -1,4 +1,10 @@
-//@ts-nocheck
+/* eslint-disable prefer-template */
+/* eslint-disable @typescript-eslint/lines-between-class-members */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable prettier/prettier */
+// @ts-nocheck
+
 
 // Libraries
 import React, { Component } from 'react';
@@ -74,7 +80,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
   findSeekPosition = () => {
     // this.props.media is never NULL
-    var msFromStart = this.props.masterTime - this.props.media.startTime;
+    const msFromStart = this.props.masterTime - this.props.media.startTime;
     // console.log({msFromStart});
     return msFromStart / 1000;
   }
@@ -115,7 +121,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   render() {
     return (
       <div id={"player-" + this.props.keyID} className="player-container">
-        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals"></img>}
+        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals" />}
         {this.state.fileNotFound && <div className="no-file no-source">error loading file</div>}
         <ReactPlayer
           ref={this.ref}

@@ -3,7 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
- body {
+body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -47,10 +47,11 @@ code {
   text-align: center;
   line-height: var(--noFile-height);
   height: var(--noFile-height);
-  width: calc(var(--noFile-height)*16/9);
+  width: calc(var(--noFile-height) * 16 / 9);
 }
 
-.no-media, .speaker_img {
+.no-media,
+.speaker_img {
   --noMedia-height: 200px;
 
   display: inline-block;
@@ -60,7 +61,7 @@ code {
   text-align: center;
   line-height: var(--noMedia-height);
   height: var(--noMedia-height);
-  width: calc(var(--noMedia-height)*16/9);
+  width: calc(var(--noMedia-height) * 16 / 9);
   color: black;
   border: whitesmoke;
   border-style: dotted;
@@ -69,6 +70,7 @@ code {
 
 .no-source {
   background-color: black;
+  width: 100%;
 }
 
 .hidden-media {
@@ -79,7 +81,8 @@ code {
   border-width: 2px;
 }
 
-div[id^='panner-container'], div[id^='gain-container']{
+div[id^='panner-container'],
+div[id^='gain-container'] {
   font-size: small;
 }
 
@@ -91,7 +94,6 @@ div.player-wrapper > div[id^='player-'] {
 #focus-stream {
   display: flex;
   padding: 100px;
-
 }
 
 .focus-player-wrapper > div[id^='player-'] {
@@ -123,7 +125,7 @@ div.player-wrapper > div[id^='player-'] {
 #timeline-tooltip {
   padding: 10px;
   background-color: black;
-  color:white;
+  color: white;
   opacity: 0.75;
   position: absolute;
   visibility: hidden;
@@ -142,8 +144,6 @@ table.center {
   margin-left: auto;
   margin-right: auto;
 }
-
-
 
 /* ---------------------------------------------- Timeline Controls */
 table {
@@ -170,48 +170,33 @@ button.controller {
   margin: 0;
 }
 
-input[type=checkbox] {
+input[type='checkbox'] {
   padding: 0;
   margin: 0;
 }
 
-input[type=checkbox], button.controller, .controller-row > td {
-    font-size: 12px;
+input[type='checkbox'],
+button.controller,
+.controller-row > td {
+  font-size: 12px;
 }
-
-
 
 /* ---------------------------------------------- Playback controls */
 #playback-controller {
   padding: 20px 0 50px 0;
 }
 
-
-
-
 /* ---------------------------------------------- Query controller */
 #query-builder {
   padding: 20px 0px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /*////////////////////////////*/
 /* native input sliders preset for multiple browsers*/
-input[type=range]:disabled::-webkit-slider-runnable-track {
+input[type='range']:disabled::-webkit-slider-runnable-track {
   background: #6e6e6e;
 }
-input[type=range]:disabled::-webkit-slider-thumb {
+input[type='range']:disabled::-webkit-slider-thumb {
   box-shadow: 0px 0px 0px #000000;
   border: 1px solid #6e6e6e;
   height: 15px;
@@ -223,57 +208,57 @@ input[type=range]:disabled::-webkit-slider-thumb {
   margin-top: -5px;
 }
 
-input[type=range] {
+input[type='range'] {
   /* height: 25px; */
   -webkit-appearance: none;
   /* margin: 10px 0; */
   /* width: 100%; */
 }
-input[type=range]:focus {
+input[type='range']:focus {
   outline: none;
 }
-input[type=range]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
   /* width: 100%; */
   height: 5px;
   cursor: pointer;
   box-shadow: 0px 0px 0px #000000;
-  background: #2497E3;
+  background: #2497e3;
   border-radius: 1px;
   border: 0px solid #000000;
 }
-input[type=range]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   box-shadow: 0px 0px 0px #000000;
-  border: 1px solid #2497E3;
+  border: 1px solid #2497e3;
   height: 15px;
   width: 15px;
   border-radius: 25px;
-  background: #A1D0FF;
+  background: #a1d0ff;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -5px;
 }
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #2497E3;
+input[type='range']:focus::-webkit-slider-runnable-track {
+  background: #2497e3;
 }
-input[type=range]::-moz-range-track {
+input[type='range']::-moz-range-track {
   /* width: 100%; */
   /* height: 5px; */
   cursor: pointer;
   box-shadow: 0px 0px 0px #000000;
-  background: #2497E3;
+  background: #2497e3;
   border-radius: 1px;
   border: 0px solid #000000;
 }
-input[type=range]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   box-shadow: 0px 0px 0px #000000;
-  border: 1px solid #2497E3;
+  border: 1px solid #2497e3;
   /* height: 18px; */
   /* width: 18px; */
   border-radius: 25px;
-  background: #A1D0FF;
+  background: #a1d0ff;
   cursor: pointer;
 }
-input[type=range]::-ms-track {
+input[type='range']::-ms-track {
   /* width: 100%; */
   /* height: 5px; */
   cursor: pointer;
@@ -281,32 +266,32 @@ input[type=range]::-ms-track {
   border-color: transparent;
   color: transparent;
 }
-input[type=range]::-ms-fill-lower {
-  background: #2497E3;
+input[type='range']::-ms-fill-lower {
+  background: #2497e3;
   border: 0px solid #000000;
   border-radius: 2px;
   box-shadow: 0px 0px 0px #000000;
 }
-input[type=range]::-ms-fill-upper {
-  background: #2497E3;
+input[type='range']::-ms-fill-upper {
+  background: #2497e3;
   border: 0px solid #000000;
   border-radius: 2px;
   box-shadow: 0px 0px 0px #000000;
 }
-input[type=range]::-ms-thumb {
+input[type='range']::-ms-thumb {
   margin-top: 1px;
   box-shadow: 0px 0px 0px #000000;
-  border: 1px solid #2497E3;
+  border: 1px solid #2497e3;
   /* height: 18px; */
   /* width: 18px; */
   /* border-radius: 25px; */
-  background: #A1D0FF;
+  background: #a1d0ff;
   cursor: pointer;
 }
-input[type=range]:focus::-ms-fill-lower {
-  background: #2497E3;
+input[type='range']:focus::-ms-fill-lower {
+  background: #2497e3;
 }
-input[type=range]:focus::-ms-fill-upper {
-  background: #2497E3;
+input[type='range']:focus::-ms-fill-upper {
+  background: #2497e3;
 }
 /*////////////////////////////*/

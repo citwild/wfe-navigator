@@ -50,35 +50,7 @@
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=development eslint --cache"
-    ],
-    "*.json,.{eslintrc,prettierrc}": [
-      "prettier --ignore-path .eslintignore --parser json --write"
-    ],
-    "*.{css,scss}": [
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ],
-    "*.{html,md,yml}": [
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ]
-  },
   "browserslist": [],
-  "prettier": {
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": [
-          ".prettierrc",
-          ".eslintrc"
-        ],
-        "options": {
-          "parser": "json"
-        }
-      }
-    ]
-  },
   "jest": {
     "moduleDirectories": [
       "node_modules",
@@ -127,10 +99,6 @@
     "react-dom": "^18.1.0",
     "react-player": "^2.10.0",
     "react-querybuilder": "^4.5.1",
-    "react-redux": "^8.0.4",
-    "react-router-dom": "^6.3.0",
-    "react-scripts": "^5.0.1",
-    "sqlite3": "^5.1.2",
     "wait-on": "^6.0.1"
   },
   "devDependencies": {
@@ -154,7 +122,6 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/react-test-renderer": "^18.0.0",
-    "@types/terser-webpack-plugin": "^5.0.4",
     "@types/webpack-bundle-analyzer": "^4.4.2",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
@@ -194,12 +161,12 @@
     "knex": "^2.0.0",
     "lint-staged": "^13.0.3",
     "mini-css-extract-plugin": "^2.6.1",
-    "prettier": "^2.7.1",
     "react-refresh": "^0.14.0",
     "react-test-renderer": "^18.2.0",
     "rimraf": "^3.0.2",
     "sass": "^1.54.4",
     "sass-loader": "^13.0.2",
+    "sqlite3": "^5.1.2",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.5",
     "ts-jest": "^28.0.8",
