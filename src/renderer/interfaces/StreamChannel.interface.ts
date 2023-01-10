@@ -5,7 +5,7 @@ export interface StreamChannel {
   uniqueId: any;
   stream: Stream;
   timelineInput: StreamTimeline;
-  playerRef: HTMLInputElement;
+  playerRef: HTMLInputElement | null;
   showMedia: boolean;
   muteMedia: boolean;
   gainValue: number;

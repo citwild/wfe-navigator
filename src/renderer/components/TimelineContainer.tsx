@@ -26,8 +26,8 @@ interface IProps {
   focusStream:      number
   setFocusStream:   (index: number) => void
   sliderRange: {
-    minTime:        number
-    maxTime:        number
+    minTime:        number | null
+    maxTime:        number | null
   },
   masterTime:       number
   updateMasterTime: (t: number) => void
@@ -42,17 +42,17 @@ class TimelineContainer extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = {  
+    this.state = {
 
     }
   }
 
 
-  render() { 
+  render() {
 
     return (
       <>
-          
+
         <div id="stream-controllers">
           {this.props.allStreams.length > 0 &&
           <StreamTimelineController
@@ -99,12 +99,12 @@ class TimelineContainer extends Component<IProps, IState> {
             masterTime = {this.props.masterTime}
           />
         </div>
-        
-          
-          
+
+
+
       </>
     );
   }
 }
- 
+
 export default TimelineContainer;

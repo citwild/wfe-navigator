@@ -40,7 +40,7 @@ interface IState {
 /// //////////////////////////////////////////////////////////
 
 class App extends Component<{}, IState> {
-  playbackIntervalObject: ReturnType<typeof setInterval> | null;
+  playbackIntervalObject: ReturnType<typeof setInterval> | undefined;
 
   audioContext: AudioContext;
 
@@ -65,7 +65,7 @@ class App extends Component<{}, IState> {
       channelOrder: [],
       focusStream: null,
     };
-    this.playbackIntervalObject = null;
+    this.playbackIntervalObject = undefined;
     this.audioContext = new window.AudioContext();
     this.mediaDir = '';
     // this.streamsInView = new Map<number, Stream>();
@@ -120,7 +120,7 @@ class App extends Component<{}, IState> {
   stopPlayback = (): void => {
     // clear the repeating function
     clearInterval(this.playbackIntervalObject);
-    this.playbackIntervalObject = null;
+    this.playbackIntervalObject = undefined;
     this.setState({
       playing: false,
     });
@@ -354,7 +354,7 @@ class App extends Component<{}, IState> {
 
   // probably not needed
   showFileInDir = (filePath: string): void => {
-    console.log(rootDir + filePath);
+    // console.log(rootDir + filePath);
     // @ts-expect-error
     window.api.send('selectFileInDir', rootDir + filePath);
   };
@@ -381,8 +381,8 @@ class App extends Component<{}, IState> {
     const getAllMaxs: number[] = this.state.allStreams.map(
       (thisChannel: StreamChannel) => thisChannel.stream.getLatestTime()
     );
-    const newMin: number = d3.min(getAllMins);
-    const newMax: number = d3.max(getAllMaxs);
+    const newMin: any = d3.min(getAllMins);
+    const newMax: any = d3.max(getAllMaxs);
     this.setState({
       sliderRange: {
         minTime: newMin,
