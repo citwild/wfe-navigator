@@ -19,7 +19,8 @@ contextBridge.exposeInMainWorld('api', {
   sendSync: (channel, data) => {
     const validChannels = [
       'getQueryFields',
-      'getMediaFileConfig'
+      'getMediaFileConfig',
+      'doesFileExist'
     ];
 
     if (validChannels.includes(channel)) {

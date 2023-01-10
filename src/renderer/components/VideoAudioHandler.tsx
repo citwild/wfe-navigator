@@ -32,6 +32,7 @@ interface IProps {
 }
 
 interface IState {
+  fileError:     boolean
   fileNotFound:  boolean
 }
 
@@ -44,6 +45,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
+      fileError: false,
       fileNotFound: false,
     }
 
@@ -52,9 +54,12 @@ class VideoAudioHandler extends Component<IProps, IState> {
     this.prevMasterTime = this.props.masterTime;
   }
 
+
   componentDidMount(): void {
     this.syncWithMasterTime();
   }
+
+
 
   componentDidUpdate(): void {
     if (Math.abs(this.prevMasterTime - this.props.masterTime) > (1.5 * 1000 * this.props.playbackSpeed)) {
@@ -70,6 +75,11 @@ class VideoAudioHandler extends Component<IProps, IState> {
       this.audioSource.disconnect();
     }
   }
+
+  // checkFileExist = (): boolean => {
+  //   // @ts-expect-error
+  //   const fc = window.api.sendSync('getMediaFileConfig');
+  // }
 
   handlePause = (e: Event) => {
     console.log('onPause')
@@ -113,18 +123,36 @@ class VideoAudioHandler extends Component<IProps, IState> {
     // const noFileMessage = document.querySelector("#player-" + this.props.keyID + " > div.no-file");
     // console.log(noFileMessage);
     // noFileMessage.setAttribute('display', 'block');
-    this.setState({ fileNotFound: true });
+
+     // @ts-expect-error
+    const fileExists = window.api.sendSync('doesFileExist', this.props.mediaDir + this.props.media.getSource());
+    if (fileExists) {
+      this.setState({
+        fileNotFound: false,
+        fileError: true
+      });
+    } else {
+      this.setState({
+        fileNotFound: true,
+        fileError: false
+      });
+    }
+
   }
 
   resetErrorHandling = () => {
-    this.setState({ fileNotFound: false });
+    this.setState({
+      fileNotFound: false,
+      fileError: false
+    });
   }
 
   render() {
     return (
       <div id={"player-" + this.props.keyID} className="player-container">
         {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src={speaker_img} alt="audio visuals" />}
-        {this.state.fileNotFound && <div className="no-file no-source">error loading file</div>}
+        {this.state.fileError && <div className="no-file no-source">error loading file</div>}
+        {this.state.fileNotFound && <div className="no-file no-source">file not found</div>}
         <ReactPlayer
           ref={this.ref}
           className='react-player'
@@ -134,7 +162,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
           playing={this.props.playing}
           playbackRate={this.props.playbackSpeed}
           muted={this.props.muteMedia}
-          onLoadStart={this.resetErrorHandling}
+          // onLoadStart={this.resetErrorHandling}
           onLoadedData={this.connectWebAudioAPI}
           onPause={this.handlePause}
           // onReady={() => {console.log('onReady')}}

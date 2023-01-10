@@ -262,15 +262,15 @@ class QueryController extends Component<IProps, IState> {
 
       const filePrefix = fileConfig.hasOwnProperty('prefix') ? fileConfig.prefix : '';
       const fileSuffix = fileConfig.hasOwnProperty('suffix') ? fileConfig.suffix : '';
+      const fileExt = fileConfig.hasOwnProperty('ext') ? fileConfig.ext : mediaItem.file_ext;
+      const fileName = `${filePrefix + mediaItem.base_name + fileSuffix}.${fileExt}`;
 
       /// //////////////////////////////////////////////////////////
       return new Media(
         mediaItem.time_begin,
         mediaItem.time_end,
-        `${path + filePrefix + mediaItem.base_name + fileSuffix}.${
-          fileConfig.hasOwnProperty('ext') ? fileConfig.ext : mediaItem.file_ext
-        }`,
-        mediaItem.file_name,
+        `${path + fileName}`,
+        fileName,
         mediaItem.nominal_date,
         mediaItem.location,
         mediaItem.equipment,

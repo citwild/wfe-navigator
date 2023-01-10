@@ -31,9 +31,6 @@ interface IState {
   playing: boolean;
   playbackSpeed: number;
   allStreams: Array<StreamChannel>;
-  streamsInView: Map<number, Stream>;
-  channelOrder: number[];
-  channelSettings: Map<number, Channel>;
   focusStream: any;
 }
 
@@ -60,9 +57,6 @@ class App extends Component<{}, IState> {
       playing: false,
       playbackSpeed: 1,
       allStreams: [],
-      streamsInView: new Map<number, Stream>(),
-      channelSettings: new Map<number, Channel>(),
-      channelOrder: [],
       focusStream: null,
     };
     this.playbackIntervalObject = undefined;

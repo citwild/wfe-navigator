@@ -185,6 +185,11 @@ const createWindow = async () => {
       event.returnValue = mediaFileConfig;
     });
 
+    ipcMain.on('doesFileExist', (event, filePath) => {
+      console.log(`check if file exists...`);
+      event.returnValue = fs.existsSync(filePath);
+    });
+
 
     ipcMain.on('queryStreams', (event, whereQuery) => {
       console.log('find all streams with media that applies to subquery');
