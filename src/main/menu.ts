@@ -1,3 +1,4 @@
+import fs from 'fs';
 import {
   app,
   Menu,
@@ -210,8 +211,65 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
+            label: '&Open View...',
             accelerator: 'Ctrl+O',
+            click: () => {
+              const { dialog } = require('electron');
+              const options = {
+                title: 'Select your WFE-Navigator view file',
+                filters: [
+                  {
+                    name: 'WFE-Navigator View Files',
+                    extensions: ['view.wfen'],
+                  },
+                ],
+                properties: ['openFile'],
+              };
+
+              // show dialog asking user to select config to load wfe-nav
+              const filePaths = dialog.showOpenDialogSync(this.mainWindow, options);
+              if (filePaths === undefined) {
+                console.log('no view file selected');
+              } else {
+                console.log(filePaths[0]);
+                const filePath = filePaths[0];
+
+                fs.readFile(filePath, 'utf8', (err, data) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    const dataParsed = JSON.parse(data);
+                    console.log(dataParsed);
+                    // // set media dir path
+                    // const lastCharInMediaDir = dataParsed.media.directoryPath.charAt(
+                    //   dataParsed.media.directoryPath.length - 1
+                    // );
+                    // dbFile = dataParsed.database.filePath;
+                    // mediaDir =
+                    //   lastCharInMediaDir !== '/'
+                    //     ? `${dataParsed.media.directoryPath}/`
+                    //     : dataParsed.media.directoryPath;
+                    // console.log(mediaDir);
+                    // queryFields = dataParsed.querybuilder.fields;
+
+                  }
+                });
+              }
+            },
+          },
+          {
+            label: '&Save',
+            accelerator: 'Ctrl+S',
+            click: () => {
+              this.mainWindow.webContents.reload();
+            },
+          },
+          {
+            label: '&Save View as...',
+            accelerator: 'Ctrl+Shift+S',
+            click: () => {
+              this.mainWindow.webContents.reload();
+            },
           },
           {
             label: '&Close',
