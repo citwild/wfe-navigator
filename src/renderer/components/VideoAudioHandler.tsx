@@ -13,6 +13,8 @@ import ReactPlayer from 'react-player';
 // Class objects
 import Media from '../classes/Media';
 
+import speaker_img from "../Speaker_Icon.png"
+
 
 interface IProps {
   keyID:            any
@@ -121,7 +123,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   render() {
     return (
       <div id={"player-" + this.props.keyID} className="player-container">
-        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src="speaker_icon.svg" alt="audio visuals" />}
+        {this.props.media.mediaType === 'Audio' && <img className="speaker_img" src={speaker_img} alt="audio visuals" />}
         {this.state.fileNotFound && <div className="no-file no-source">error loading file</div>}
         <ReactPlayer
           ref={this.ref}

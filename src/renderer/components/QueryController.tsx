@@ -33,6 +33,7 @@ interface IProps {
 interface IState {
   query: RuleGroupType;
   fieldsFetched: boolean;
+  mediaFileConfig: any;
   returnedStreams: any;
 }
 
@@ -45,6 +46,7 @@ class QueryController extends Component<IProps, IState> {
     super(props);
     this.state = {
       fieldsFetched: false,
+      mediaFileConfig: null,
       query: {
         id: 'root',
         combinator: 'and',
@@ -57,6 +59,7 @@ class QueryController extends Component<IProps, IState> {
 
   componentWillMount() {
     this.getQueryFields();
+    this.getMediaFileConfig();
   }
 
   getQueryFields = () => {
@@ -65,6 +68,14 @@ class QueryController extends Component<IProps, IState> {
     if (qf !== null) {
       qFields = qf;
       this.setState({ fieldsFetched: true });
+    }
+  }
+
+  getMediaFileConfig = () => {
+    // @ts-expect-error
+    const fc = window.api.sendSync('getMediaFileConfig');
+    if (fc !== null) {
+      this.setState({ mediaFileConfig: fc });
     }
   }
 
@@ -241,20 +252,23 @@ class QueryController extends Component<IProps, IState> {
       }
       const path = `${pathConstruct.join('/')}/`;
 
-      let fileSuffix = '';
-      if (mediaItem.location === 'Huddle') {
-        fileSuffix = '-320';
-      } else if (mediaItem.equipment === 'gopro') {
-        fileSuffix = '-320';
-      } else if (mediaItem.equipment === 'zoom') {
-        fileSuffix = '-128';
-      }
+      let fileConfig: any;
+      this.state.mediaFileConfig.forEach( (mf: any ) => {
+        let prop = mf.fileProp; //media_type
+        if (mediaItem[prop].toUpperCase() === mf.propValue.toUpperCase()) {
+          fileConfig = mf;
+        }
+      });
+
+      const filePrefix = fileConfig.hasOwnProperty('prefix') ? fileConfig.prefix : '';
+      const fileSuffix = fileConfig.hasOwnProperty('suffix') ? fileConfig.suffix : '';
+
       /// //////////////////////////////////////////////////////////
       return new Media(
         mediaItem.time_begin,
         mediaItem.time_end,
-        `${path + mediaItem.file_name.split('.')[0] + fileSuffix}.${
-          mediaItem.media_type === 'Video' ? mediaItem.file_ext : 'mp3'
+        `${path + filePrefix + mediaItem.base_name + fileSuffix}.${
+          fileConfig.hasOwnProperty('ext') ? fileConfig.ext : mediaItem.file_ext
         }`,
         mediaItem.file_name,
         mediaItem.nominal_date,

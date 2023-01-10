@@ -18,6 +18,7 @@ import e from 'express';
 let mainWindow: BrowserWindow | null = null;
 let dbFile: string;
 let mediaDir: string;
+let mediaFileConfig: any = null;
 let queryFields: any = null;
 let knex: any;
 
@@ -178,6 +179,12 @@ const createWindow = async () => {
       event.returnValue = queryFields;
     });
 
+    // sync
+    ipcMain.on('getMediaFileConfig', (event, args) => {
+      console.log(`retrieving file configuration...`);
+      event.returnValue = mediaFileConfig;
+    });
+
 
     ipcMain.on('queryStreams', (event, whereQuery) => {
       console.log('find all streams with media that applies to subquery');
@@ -248,6 +255,7 @@ const createWindow = async () => {
                 : dataParsed.media.directoryPath;
             console.log(mediaDir);
             queryFields = dataParsed.querybuilder.fields;
+            mediaFileConfig = dataParsed.media.fileConfig;
             console.log(queryFields);
             // set up database connection
             knex = require('knex')({

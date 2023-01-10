@@ -56,6 +56,7 @@ code {
 
   display: inline-block;
   overflow: hidden;
+  object-fit: contain;
 
   /* color: white; */
   text-align: center;
