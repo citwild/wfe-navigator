@@ -36,18 +36,44 @@ config file must use the `.config.wfen` extension, and uses the following format
 ```js
 {
   "database": {
-    "filePath": "C:/path/to/database.db",  // escape each backslash
+    "filePath": "C:/path/to/database.db",  //escape each backslash
     "client": "sqlite3"
   },
   "media": {
-    "directoryPath": "C:/path/to/media/directory"
+    "directoryPath": "C:/path/to/media/directory",
+    "fileConfig": [                 
+      {
+        "fileProp": "media_type",   //name of property to be compared
+        "propValue": "video",       //value of aforementioned property
+        "prefix": "",               //prefix to add to base_name
+        "suffix": "-320"            //suffix to add to base_name
+      },
+      {
+        "fileProp": "media_type",
+        "propValue": "audio",
+        "prefix": "",
+        "suffix": "-64",
+        "ext" : "mp3"               //extension of actual media file if different from specified in the database
+      }
+    ]
   },
   "querybuilder" : {
     "fields" : []   //follows queryBuilder's format
   }
 }
 ```
-where the query builder's fields can be specified following this [format](https://react-querybuilder.js.org/docs/api/valueeditor#example)
+where the **querybuilder** object can be specified following this [format](https://react-querybuilder.js.org/docs/api/valueeditor#example), and **fileConfig** object specifies the actual file path/name/type for the player to read if different from that in the database. This specification must be done conditionally, 
+
+i.e.
+```
+  {
+    "fileProp": "media_type",
+    "propValue": "audio",
+    "prefix": "",
+    "suffix": "-compressed"
+  }
+```
+is equivalent to adding `-compressed` to the end of the file name for every file with `media_type` value of `audio`.
 
 
 ## View file 🔬
