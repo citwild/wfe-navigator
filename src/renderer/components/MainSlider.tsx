@@ -27,29 +27,29 @@ class MainSlider extends Component<IProps, IState> {
       maxTime: 0
     }
   }
-  
+
   componentDidMount() {
     if (this.props.sliderRange.maxTime - this.props.sliderRange.minTime !== 0) {
       this.createMainSlider();
     }
-    
+
   }
 
   componentDidUpdate() {
     if (document.querySelector('div#main-slider > svg') != null) {
       d3.select('div#main-slider').selectAll('svg').remove();
     }
-    
+
     this.createMainSlider();
   }
 
   createMainSlider = (): void => {
     console.log('drawing main-slider...');
-    
+
     d3.select("#main-slider > svg").remove();
 
     const sliderHeight: number = 80;
-    const sliderWidth: number = 1700;
+    const sliderWidth: number = 950;
     const sideMargin: number = 20;
     const dayAxisColor: string = "#89CFF0";
 
@@ -65,7 +65,7 @@ class MainSlider extends Component<IProps, IState> {
       .axisTop(xTimeScale)
       .tickFormat(d3.timeFormat("%d %b"))
       .ticks(d3.timeDay, 1);
-    
+
     var slider = d3Slider
       .sliderTop()
       .min(this.state.minTime)
@@ -79,8 +79,8 @@ class MainSlider extends Component<IProps, IState> {
         // d3.select('#slider-value').text(new Date(value).toString());
         // d3.select('#value').text(val);
         // this.props.updateMasterTime(value);
-        
-        
+
+
       })
       .on('end', (value: number) => {
         this.props.updateMasterTime(value);
@@ -103,7 +103,7 @@ class MainSlider extends Component<IProps, IState> {
       .attr('transform', 'translate(' + sideMargin + ',70)')
       .call(slider);
 
-    
+
     svg
       .append("g")
       .attr("class", "day-axis")
@@ -129,7 +129,7 @@ class MainSlider extends Component<IProps, IState> {
       if (document.querySelector('div#main-slider > svg') != null) {
         d3.select('div#main-slider').selectAll('svg').remove();
       }
-    
+
       return {
         minTime: nextProps.sliderRange.minTime,
         maxTime: nextProps.sliderRange.maxTime
@@ -138,7 +138,7 @@ class MainSlider extends Component<IProps, IState> {
     return null; // No change to state
   }
 
-  render() { 
+  render() {
 
 
     return (
@@ -148,5 +148,5 @@ class MainSlider extends Component<IProps, IState> {
     );
   }
 }
- 
+
 export default MainSlider;

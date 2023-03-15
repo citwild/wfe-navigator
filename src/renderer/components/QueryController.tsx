@@ -285,7 +285,7 @@ class QueryController extends Component<IProps, IState> {
   render() {
     return (
       <div id="query-builder">
-        <pre>{formatQuery(this.state.query, 'sql')}</pre>
+        {/* <pre>{formatQuery(this.state.query, 'sql')}</pre> */}
         <QueryBuilder
           fields={qFields}
           onQueryChange={(q) => this.setState({ query: q })}

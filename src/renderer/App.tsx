@@ -88,23 +88,41 @@ class App extends Component<{}, IState> {
     }
   }
 
+  // TODO:  factor the start timer method
   startPlayback = (speedFactor: number): void => {
+    this.startInternalTimer(speedFactor);
+    // if (speedFactor === 0) {
+    //   const factorFromState = this.state.playbackSpeed;
+    //   this.playbackIntervalObject = setInterval(() => {
+    //     this.firePlaybackEvent(factorFromState);
+    //   }, 1000);
+    // } else {
+    //   // in case of separate buttons with different speedFactor
+    //   this.playbackIntervalObject = setInterval(() => {
+    //     this.firePlaybackEvent(speedFactor);
+    //   }, 1000);
+    // }
+    this.setState({
+      playing: true,
+    });
+  };
+
+  startInternalTimer = (speedFactor: number): void => {
     // start repeating function to move scrubber line
     // by speedfactor*1sec(or 1000ms) per 1sec
     if (speedFactor === 0) {
       const factorFromState = this.state.playbackSpeed;
-      this.playbackIntervalObject = setInterval(() => {
-        this.firePlaybackEvent(factorFromState);
-      }, 1000);
+      this.playbackIntervalObject = setInterval(
+        () => this.firePlaybackEvent(factorFromState),
+        1000
+      );
     } else {
       // in case of separate buttons with different speedFactor
-      this.playbackIntervalObject = setInterval(() => {
-        this.firePlaybackEvent(speedFactor);
-      }, 1000);
+      this.playbackIntervalObject = setInterval(
+        () => this.firePlaybackEvent(speedFactor),
+        1000
+      );
     }
-    this.setState({
-      playing: true,
-    });
   };
 
   firePlaybackEvent = (speedFactor: number): void => {

@@ -63,7 +63,7 @@ class StreamTimelines extends Component<IProps, IState> {
       top: 0,
       bottom: 0
     };
-    const svgWidth: number = 1700;
+    const svgWidth: number = 950;
     const svgHeight: number =
         this.state.allTimelineInput.length === 0
         ? 0
