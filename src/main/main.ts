@@ -11,9 +11,10 @@
 import path from 'path';
 import fs from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import e from 'express';
+import MenuBuilder from './menu';
 
 let mainWindow: BrowserWindow | null = null;
 let dbFile: string;
@@ -21,7 +22,6 @@ let mediaDir: string;
 let mediaFileConfig: any = null;
 let queryFields: any = null;
 let knex: any;
-
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
@@ -79,7 +79,7 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       contextIsolation: true,
       nodeIntegration: true,
-      webSecurity: false,
+      webSecurity: false, // for accessing local files
     },
   });
 
@@ -109,7 +109,6 @@ const createWindow = async () => {
     return { action: 'deny' };
   });
 
-  // from wfe-nav
   mainWindow.webContents.on('did-finish-load', () => {
     ipcMain.on('toMain', (event, args) => {
       console.log('main IPC RECEIVED');
@@ -274,12 +273,8 @@ const createWindow = async () => {
       }
     }
   });
-
 };
 
-/**
- * Add event listeners...
- */
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
@@ -296,9 +291,7 @@ app
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      if (mainWindow === null) {
-        createWindow();
-      }
+      if (mainWindow === null) createWindow();
     });
   })
   .catch(console.log);

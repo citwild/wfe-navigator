@@ -181,18 +181,6 @@ export default class MenuBuilder {
             shell.openExternal('https://github.com/electron/electron/issues');
           },
         },
-        {
-          label: 'User Guide',
-          click() {
-            shell.openExternal('https://github.com/citwild/wfe-navigator/wiki/User-Guide');
-          },
-        },
-        {
-          label: 'Developer Notes',
-          click() {
-            shell.openExternal('https://github.com/citwild/wfe-navigator/wiki/Developer-Notes');
-          },
-        },
       ],
     };
 
