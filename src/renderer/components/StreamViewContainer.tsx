@@ -36,17 +36,18 @@ class StreamViewContainer extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = {  
+    this.state = {
 
     }
   }
 
 
-  render() { 
+  // renders Stream Managers for all streams in view
+  render() {
     return (
       <>
       <div id="focus-area">
-        {this.props.focusStream !== null && 
+        {this.props.focusStream !== null &&
           <div id="focus-Stream">
             <StreamManager
               key = {"focus-stream"}
@@ -66,10 +67,10 @@ class StreamViewContainer extends Component<IProps, IState> {
           </div>
         }
       </div>
-      
-      
+
+
       <div id="stream-view-area">
-        
+
         {this.props.allStreams.map( (thisChannel: StreamChannel, index: number) => {
           return (
             <>
@@ -99,5 +100,5 @@ class StreamViewContainer extends Component<IProps, IState> {
     );
   }
 }
- 
+
 export default StreamViewContainer;

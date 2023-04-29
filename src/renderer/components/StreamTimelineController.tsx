@@ -25,6 +25,7 @@ class StreamTimelineController extends Component<IProps, IState> {
     super(props);
   }
 
+  // render a table of Stream timeline controls
   render() {
     return (
       <>

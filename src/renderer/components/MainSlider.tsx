@@ -35,6 +35,9 @@ class MainSlider extends Component<IProps, IState> {
 
   }
 
+  // FIX
+  // currently deletes the entire slider and redraws on every update to masterTime
+  // should only update the changes in SVG
   componentDidUpdate() {
     if (document.querySelector('div#main-slider > svg') != null) {
       d3.select('div#main-slider').selectAll('svg').remove();
@@ -43,6 +46,7 @@ class MainSlider extends Component<IProps, IState> {
     this.createMainSlider();
   }
 
+  // create D3 slider, see D3 doc for more info
   createMainSlider = (): void => {
     console.log('drawing main-slider...');
 
@@ -121,6 +125,8 @@ class MainSlider extends Component<IProps, IState> {
     // svg.call(slider);
   }
 
+  // check for changes in minTime and maxTime
+  // prompts a re-scale of slider when updating slider
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     //adapt Stream object into d3-timelines format to display
     if(nextProps.sliderRange.minTime !== prevState.minTime ||

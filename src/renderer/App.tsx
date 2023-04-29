@@ -88,7 +88,7 @@ class App extends Component<{}, IState> {
     }
   }
 
-  // TODO:  factor the start timer method
+
   startPlayback = (speedFactor: number): void => {
     this.startInternalTimer(speedFactor);
     // if (speedFactor === 0) {
@@ -107,6 +107,7 @@ class App extends Component<{}, IState> {
     });
   };
 
+  // when speedFactor = 0, it takes the value from the state(shown in text box)
   startInternalTimer = (speedFactor: number): void => {
     // start repeating function to move scrubber line
     // by speedfactor*1sec(or 1000ms) per 1sec
@@ -138,6 +139,7 @@ class App extends Component<{}, IState> {
     });
   };
 
+  // toggle showMedia state via streamID, used in StreamTimelinController
   showMediaToggle = (streamID: number): void => {
     const newState = this.state.allStreams.map((eachStream) => {
       if (eachStream.uniqueId === streamID) {
@@ -150,6 +152,7 @@ class App extends Component<{}, IState> {
     });
   };
 
+  // toggle muteMedia state via streamID, used in StreamTimelinController
   muteMediaToggle = (streamID: number): void => {
     const newState = this.state.allStreams.map((eachStream) => {
       if (eachStream.uniqueId === streamID) {
@@ -304,6 +307,8 @@ class App extends Component<{}, IState> {
     }
   };
 
+  // FIX: currently bugged
+  // move stream order in view up by one
   moveStreamUp = (streamIndex: number) => {
     if (streamIndex > 0) {
       // move up by one index
@@ -337,6 +342,8 @@ class App extends Component<{}, IState> {
     }
   };
 
+  // FIX: currently bugged
+  // move stream order in view down by one
   moveStreamDown = (streamIndex: number) => {
     // if not the last in order
     if (streamIndex < this.state.allStreams.length - 1) {
@@ -403,6 +410,8 @@ class App extends Component<{}, IState> {
     });
   };
 
+  // update masterTime to the input time
+  // handles edge cases so masterTime is always within valid range
   updateMasterTime = (newMasterTime: number): void => {
     // console.log(newMasterTime);
     if (this.state.sliderRange.minTime === null) {
@@ -462,6 +471,7 @@ class App extends Component<{}, IState> {
     this.setState({ focusStream: null });
   };
 
+  // syncs the playbackSpeed state with number in text box
   handlePlaybackSpeedChange = (e: any) => {
     const newSpeed: number = e.target.value;
     this.setState({ playbackSpeed: newSpeed });

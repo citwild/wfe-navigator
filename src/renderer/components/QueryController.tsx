@@ -62,6 +62,7 @@ class QueryController extends Component<IProps, IState> {
     this.getMediaFileConfig();
   }
 
+  // retrieve query fields from config file to be shown in the query builder
   getQueryFields = () => {
     // @ts-expect-error
     const qf = window.api.sendSync('getQueryFields');
@@ -71,6 +72,7 @@ class QueryController extends Component<IProps, IState> {
     }
   }
 
+  // retrieve media file version from config file for constructing the file path
   getMediaFileConfig = () => {
     // @ts-expect-error
     const fc = window.api.sendSync('getMediaFileConfig');
@@ -79,10 +81,12 @@ class QueryController extends Component<IProps, IState> {
     }
   }
 
+  // transforms built query into one command for KNEX to execute
   setQuery = (input: any) => {
     this.setState({ query: input });
   };
 
+  // execute query on DB
   queryStreams = () => {
     const subquery: string = formatQuery(this.state.query, 'sql');
     console.warn(subquery);
@@ -143,7 +147,7 @@ class QueryController extends Component<IProps, IState> {
     console.log(streamList);
   };
 
-  removeStreamsToView = async () => {
+  removeStreamsFromView = async () => {
     const rStreams = this.state.returnedStreams;
 
     const currentStreamsAsID = Array.from(
@@ -160,6 +164,7 @@ class QueryController extends Component<IProps, IState> {
     this.props.removeStream(distinctStreamsAsID);
   };
 
+  // retrieve sequence of media associated to the stream from DB as JSON
   queryAllMediaInStream = (sm_stream_id: number) => {
     console.log(`getAllMediaInStream ID: ${sm_stream_id}`);
     // @ts-expect-error
@@ -216,6 +221,7 @@ class QueryController extends Component<IProps, IState> {
     // });
   };
 
+  // create Stream js OBJECT from array of media OBJECT
   createStreamFromMediaList = (
     stream_id: any,
     mediaList: Array<Media>
@@ -240,6 +246,7 @@ class QueryController extends Component<IProps, IState> {
     );
   };
 
+  // create array of Media OBJECTs from JSON
   createMediaListFromJSON = (mediaListJSON: any): Media[] => {
     const mediaObjectList: Media[] = mediaListJSON.map((mediaItem: any) => {
       /// TEMP path creator, based on COMPRESSED VERSION of files
@@ -317,7 +324,7 @@ class QueryController extends Component<IProps, IState> {
           <Button
             variant="outlined"
             color="error"
-            onClick={() => this.removeStreamsToView()}
+            onClick={() => this.removeStreamsFromView()}
             disabled={this.state.returnedStreams.length === 0}
           >
             <strong>REMOVE</strong>&nbsp;matched streams from View

@@ -62,6 +62,8 @@ class VideoAudioHandler extends Component<IProps, IState> {
 
 
   componentDidUpdate(): void {
+    // the player will continue to play even if the elapsed time is not exactly
+    // correct but still within the margin of error
     if (Math.abs(this.prevMasterTime - this.props.masterTime) > (1.5 * 1000 * this.props.playbackSpeed)) {
       // 1.5 = margin of error
       // (1000)*(speed) = step in ms for each progress interval
@@ -86,10 +88,13 @@ class VideoAudioHandler extends Component<IProps, IState> {
     // this.syncWithMasterTime();
   }
 
+  // sync the media player to masterTime
+  // usually used when playback is completed or user jumps to different times
   syncWithMasterTime = () => {
     this.playerRef.seekTo(this.findSeekPosition(), "seconds");
   }
 
+  // find elapsed time of the Media Object based on masterTime
   findSeekPosition = () => {
     // this.props.media is never NULL
     const msFromStart = this.props.masterTime - this.props.media.startTime;
@@ -101,10 +106,13 @@ class VideoAudioHandler extends Component<IProps, IState> {
     console.table(state);
   }
 
+  // store a reference to this player
   ref = (player: any) => {
     this.playerRef = player;
   }
 
+  // creates MediaElementAudioSourceNode with the passed Media OBJECT as the source
+  // then connects the source to gainNode
   connectWebAudioAPI = () => {
     if (!this.props.isFocus && this.audioSource === null) {
       let audioCxt = this.props.audioContext;

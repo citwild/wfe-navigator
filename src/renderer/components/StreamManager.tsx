@@ -60,6 +60,9 @@ class StreamManager extends Component<IProps, IState> {
     this.gainNode.disconnect();
   }
 
+  // Check if Media OBJECT at new masterTime is the same as the Media OBJECT
+  // from previous masterTime. Update VideoAudioHandler with new Media OBJECT if
+  // it is not the same Media OBJECT, do nothing otherwise
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     const sourceAtNewMasterTime: Media = nextProps.stream.stream.getMediaAtTime(
       nextProps.masterTime
@@ -75,6 +78,8 @@ class StreamManager extends Component<IProps, IState> {
     };
   }
 
+  // renders an HTML element
+  // can be factored into a separate React component
   NoMedia = (): React.ReactElement => {
     return (
       <div className="no-media">
@@ -83,6 +88,8 @@ class StreamManager extends Component<IProps, IState> {
     );
   };
 
+  // renders an HTML element
+  // can be factored into a separate React component
   HiddenMedia = (): React.ReactElement => {
     return (
       <div className="no-media hidden-media">

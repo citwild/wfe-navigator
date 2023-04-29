@@ -43,6 +43,9 @@ class StreamTimelines extends Component<IProps, IState> {
     this.createTimelines();
   }
 
+  // FIX
+  // currently deletes the entire timeline and redraws on every update to masterTime
+  // should only update the changes in SVG
   componentDidUpdate() {
     if (document.querySelector('div#stream-timelines > svg') != null) {
       d3.select('div#stream-timelines').selectAll('svg').remove();
@@ -138,7 +141,8 @@ class StreamTimelines extends Component<IProps, IState> {
   }
 
 
-  //
+  // check for changes in stream in view
+  // redraws if there are changes, do nothing otherwise
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
     let newTimelineInput: StreamTimeline[] = [];
       nextProps.allStreams.forEach( (eachChannel: StreamChannel) => {
