@@ -50,8 +50,7 @@ code {
   width: calc(var(--noFile-height) * 16 / 9);
 }
 
-.no-media,
-.speaker_img {
+.no-media {
   --noMedia-height: 200px;
 
   display: inline-block;
@@ -67,6 +66,28 @@ code {
   border: whitesmoke;
   border-style: dotted;
   border-width: 2px;
+}
+
+.speaker_img {
+  --noMedia-height: 200px;
+
+  display: inline-block;
+  overflow: hidden;
+  object-fit: contain;
+  position: absolute;
+  background-position: center;
+
+  /* color: white; */
+  text-align: center;
+  line-height: var(--noMedia-height);
+  height: var(--noMedia-height);
+  width: 100%;
+  color: black;
+  border: whitesmoke;
+  border-style: dotted;
+  border-width: 2px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .no-source {

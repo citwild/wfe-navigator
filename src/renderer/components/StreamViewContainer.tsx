@@ -75,7 +75,7 @@ class StreamViewContainer extends Component<IProps, IState> {
           return (
             <>
               <StreamManager
-                key = {thisChannel.uniqueId}
+                key = {'sm' + thisChannel.uniqueId}
                 stream = {thisChannel}
                 masterTime = {this.props.masterTime}
                 updateMasterTime = {this.props.updateMasterTime}

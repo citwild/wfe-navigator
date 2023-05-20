@@ -170,70 +170,70 @@ class App extends Component<{}, IState> {
     streamLocation: string,
     streamEquipment: string
   ): void => {
-    /// // TEMP path creator, based on COMPRESSED VERSION of files
-    const pathConstruct: string[] = [streamDate];
-    if (streamLocation !== 'Unknown') {
-      pathConstruct.push(streamLocation);
-    }
-    if (streamEquipment !== 'Unknown') {
-      pathConstruct.push(streamEquipment);
-    }
-    const path = `${pathConstruct.join('/')}/`;
+    // /// // TEMP path creator, based on COMPRESSED VERSION of files
+    // const pathConstruct: string[] = [streamDate];
+    // if (streamLocation !== 'Unknown') {
+    //   pathConstruct.push(streamLocation);
+    // }
+    // if (streamEquipment !== 'Unknown') {
+    //   pathConstruct.push(streamEquipment);
+    // }
+    // const path = `${pathConstruct.join('/')}/`;
 
-    let fileSuffix = '';
-    if (streamLocation === 'Huddle') {
-      fileSuffix = '-320';
-    } else if (streamEquipment === 'gopro') {
-      fileSuffix = '-320';
-    } else if (streamEquipment === 'zoom') {
-      fileSuffix = '-128';
-    }
-    /// /////////////////////////////////////////////////////////
-    console.log(path);
-    const stream = new Stream(streamDate, streamLocation, streamEquipment);
-    // @ts-expect-error
-    window.api.receive('sendFiles', (data) => {
-      // @ts-expect-error
-      data.forEach((file) => {
-        stream.addMedia(
-          new Media(
-            file.time_begin,
-            file.time_end,
-            `${path + file.file_name.split('.')[0] + fileSuffix}.${
-              file.media_type === 'Video' ? file.file_ext : 'mp3'
-            }`,
-            file.file_name,
-            file.nominal_date,
-            file.location,
-            file.equipment,
-            file.media_type,
-            file.media_id
-          )
-        );
-      });
-      // console.log({stream});
-      const newStreamChannel: StreamChannel = {
-        uniqueId: Date.now(),
-        stream,
-        timelineInput: this.transformStreamToTimelineFormat(stream),
-        playerRef: null,
-        showMedia: true,
-        muteMedia: false,
-        gainValue: 1,
-        pannerValue: 0,
-      };
-      this.setState(
-        {
-          allStreams: [...this.state.allStreams, newStreamChannel],
-        },
-        () => {
-          console.log(this.state.allStreams);
-          this.updateMasterSliderRange();
-        }
-      );
-    });
-    // @ts-expect-error
-    window.api.send('getFiles', [streamDate, streamLocation, streamEquipment]);
+    // let fileSuffix = '';
+    // if (streamLocation === 'Huddle') {
+    //   fileSuffix = '-320';
+    // } else if (streamEquipment === 'gopro') {
+    //   fileSuffix = '-320';
+    // } else if (streamEquipment === 'zoom') {
+    //   fileSuffix = '-128';
+    // }
+    // /// /////////////////////////////////////////////////////////
+    // console.log(path);
+    // const stream = new Stream(streamDate, streamLocation, streamEquipment);
+    // // @ts-expect-error
+    // window.api.receive('sendFiles', (data) => {
+    //   // @ts-expect-error
+    //   data.forEach((file) => {
+    //     stream.addMedia(
+    //       new Media(
+    //         file.time_begin,
+    //         file.time_end,
+    //         `${path + file.file_name.split('.')[0] + fileSuffix}.${
+    //           file.media_type === 'Video' ? file.file_ext : 'mp3'
+    //         }`,
+    //         file.file_name,
+    //         file.nominal_date,
+    //         file.location,
+    //         file.equipment,
+    //         file.media_type,
+    //         file.media_id
+    //       )
+    //     );
+    //   });
+    //   // console.log({stream});
+    //   const newStreamChannel: StreamChannel = {
+    //     uniqueId: Date.now(),
+    //     stream,
+    //     timelineInput: this.transformStreamToTimelineFormat(stream),
+    //     playerRef: null,
+    //     showMedia: true,
+    //     muteMedia: false,
+    //     gainValue: 1,
+    //     pannerValue: 0,
+    //   };
+    //   this.setState(
+    //     {
+    //       allStreams: [...this.state.allStreams, newStreamChannel],
+    //     },
+    //     () => {
+    //       console.log(this.state.allStreams);
+    //       this.updateMasterSliderRange();
+    //     }
+    //   );
+    // });
+    // // @ts-expect-error
+    // window.api.send('getFiles', [streamDate, streamLocation, streamEquipment]);
   };
 
   addNewStreamToStreamTimeline = (newStreamList: Stream[]) => {
