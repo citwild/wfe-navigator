@@ -29,6 +29,7 @@ interface IProps {
 
 interface IState {
   mediaAtMasterTime: Media | null;
+  gainNode: GainNode | null;
 }
 
 
@@ -43,6 +44,7 @@ class StreamManager extends Component<IProps, IState> {
     super(props);
     this.state = {
       mediaAtMasterTime: null,
+      gainNode: null,
     };
     this.pannerNode = null;
     this.gainNode = null;
@@ -53,6 +55,8 @@ class StreamManager extends Component<IProps, IState> {
     this.gainNode = audioCxt.createGain();
     this.pannerNode = audioCxt.createStereoPanner();
     this.gainNode.connect(this.pannerNode).connect(audioCxt.destination);
+    console.log(this.gainNode);
+    this.setState({ gainNode: this.gainNode });
   }
 
   componentWillUnmount(): void {
@@ -124,7 +128,7 @@ class StreamManager extends Component<IProps, IState> {
             this.state.mediaAtMasterTime !== null ? (
               <>
                 <VideoAudioHandler
-                  key={this.props.stream.uniqueId}
+                  key={'vah-' + this.props.stream.uniqueId}
                   keyID={this.props.stream.uniqueId}
                   media={this.state.mediaAtMasterTime}
                   url={
@@ -137,7 +141,7 @@ class StreamManager extends Component<IProps, IState> {
                   muteMedia={this.props.stream.muteMedia}
                   playbackSpeed={this.props.playbackSpeed}
                   audioContext={this.props.audioContext}
-                  gainNode={this.gainNode}
+                  gainNode={this.state.gainNode}
                   isFocus={this.props.isFocus}
                   mediaDir={this.props.mediaDir}
                 />

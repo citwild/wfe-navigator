@@ -310,18 +310,32 @@ class App extends Component<{}, IState> {
   // FIX: currently bugged
   // move stream order in view up by one
   moveStreamUp = (streamIndex: number) => {
+    if (streamIndex > 1 && streamIndex < this.state.allStreams.length - 1) {
+      this.setState((prevState) => ({
+        allStreams: [...prevState.allStreams.slice(0, streamIndex - 1), prevState.allStreams[streamIndex], prevState.allStreams[streamIndex - 1], ...prevState.allStreams.slice(streamIndex + 1)]
+      }));
+    } else if (streamIndex === 1) {
+      this.setState((prevState) => ({
+        allStreams: [prevState.allStreams[streamIndex], prevState.allStreams[streamIndex - 1], ...prevState.allStreams.slice(streamIndex + 1)]
+      }));
+    } else if (streamIndex === this.state.allStreams.length - 1) {
+      this.setState((prevState) => ({
+        allStreams: [...prevState.allStreams.slice(0, streamIndex - 1), prevState.allStreams[streamIndex], prevState.allStreams[streamIndex - 1]]
+      }));
+    }
+
     if (streamIndex > 0) {
-      // move up by one index
-      const newAllStreams: StreamChannel[] = [];
-      for (var i = 0; i < streamIndex - 1; i++) {
-        newAllStreams.push(this.state.allStreams[i]);
-      }
-      newAllStreams.push(this.state.allStreams[streamIndex]);
-      newAllStreams.push(this.state.allStreams[streamIndex - 1]);
-      for (var i = streamIndex + 1; i < this.state.allStreams.length; i++) {
-        newAllStreams.push(this.state.allStreams[i]);
-      }
-      this.setState({ allStreams: newAllStreams });
+      // // // move up by one index
+      // const newAllStreams: StreamChannel[] = [];
+      // for (var i = 0; i < streamIndex - 1; i++) {
+      //   newAllStreams.push(this.state.allStreams[i]);
+      // }
+      // newAllStreams.push(this.state.allStreams[streamIndex]);
+      // newAllStreams.push(this.state.allStreams[streamIndex - 1]);
+      // for (var i = streamIndex + 1; i < this.state.allStreams.length; i++) {
+      //   newAllStreams.push(this.state.allStreams[i]);
+      // }
+      // this.setState({ allStreams: newAllStreams });
 
       // handler for moving streams adjacent to the focusStream
       if (

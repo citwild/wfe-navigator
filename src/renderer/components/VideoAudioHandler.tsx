@@ -122,6 +122,8 @@ class VideoAudioHandler extends Component<IProps, IState> {
       this.audioSource = audioCxt.createMediaElementSource(thisAudioSource);
 
       // connect the AudioSourceNode to the gainNode passed from StreamManager
+      console.log(this.audioSource);
+
       this.audioSource.connect(this.props.gainNode);
     }
   }
@@ -158,7 +160,7 @@ class VideoAudioHandler extends Component<IProps, IState> {
   render() {
     return (
       <div id={"player-" + this.props.keyID} className="player-container">
-        {this.props.media.mediaType === 'Audio' && <div className="speaker_img" style={{backgroundImage: `url(${speaker_img})`}} alt="audio visuals" />}
+        {this.props.media.mediaType === 'Audio' && <div className="speaker_img"><img src={speaker_img} style={{opacity: '0.5', height: '100%'}} alt="audio visuals" /></div>}
         {this.state.fileError && <div className="no-file no-source">error loading file</div>}
         {this.state.fileNotFound && <div className="no-file no-source">file not found</div>}
         <ReactPlayer
