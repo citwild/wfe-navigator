@@ -171,8 +171,9 @@ class VideoAudioHandler extends Component<IProps, IState> {
           url={this.props.mediaDir + this.props.media.getSource()}
           playing={this.props.playing}
           playbackRate={this.props.playbackSpeed}
+          onPlaybackRateChange={this.resetErrorHandling}
           muted={this.props.muteMedia}
-          // onLoadStart={this.resetErrorHandling}
+          onLoadStart={this.resetErrorHandling}
           onLoadedData={this.connectWebAudioAPI}
           onPause={this.handlePause}
           // onReady={() => {console.log('onReady')}}
