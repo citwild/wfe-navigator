@@ -3,6 +3,10 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 
 // Styling
 import './App.css';
@@ -32,6 +36,7 @@ interface IState {
   playbackSpeed: number;
   allStreams: Array<StreamChannel>;
   focusStream: any;
+  showErrorAlert: boolean;
 }
 
 /// //////////////////////////////////////////////////////////
@@ -58,6 +63,7 @@ class App extends Component<{}, IState> {
       playbackSpeed: 1,
       allStreams: [],
       focusStream: null,
+      showErrorAlert: false,
     };
     this.playbackIntervalObject = undefined;
     this.audioContext = new window.AudioContext();
@@ -90,21 +96,29 @@ class App extends Component<{}, IState> {
 
 
   startPlayback = (speedFactor: number): void => {
-    this.startInternalTimer(speedFactor);
-    // if (speedFactor === 0) {
-    //   const factorFromState = this.state.playbackSpeed;
-    //   this.playbackIntervalObject = setInterval(() => {
-    //     this.firePlaybackEvent(factorFromState);
-    //   }, 1000);
-    // } else {
-    //   // in case of separate buttons with different speedFactor
-    //   this.playbackIntervalObject = setInterval(() => {
-    //     this.firePlaybackEvent(speedFactor);
-    //   }, 1000);
-    // }
-    this.setState({
-      playing: true,
-    });
+    if (this.state.playbackSpeed > 16) {
+      this.setState({
+        showErrorAlert: true,
+        playbackSpeed: 16,
+      });
+    } else if (this.state.playbackSpeed <= 16 && this.state.playbackSpeed >= 0) {
+      this.startInternalTimer(speedFactor);
+      // if (speedFactor === 0) {
+      //   const factorFromState = this.state.playbackSpeed;
+      //   this.playbackIntervalObject = setInterval(() => {
+      //     this.firePlaybackEvent(factorFromState);
+      //   }, 1000);
+      // } else {
+      //   // in case of separate buttons with different speedFactor
+      //   this.playbackIntervalObject = setInterval(() => {
+      //     this.firePlaybackEvent(speedFactor);
+      //   }, 1000);
+      // }
+      this.setState({
+        showErrorAlert: false,
+        playing: true,
+      });
+    }
   };
 
   // when speedFactor = 0, it takes the value from the state(shown in text box)
@@ -516,7 +530,7 @@ class App extends Component<{}, IState> {
         </div>
 
         <div id="playback-controller">
-          <label>Playback speed multiplier: </label>
+          {/* <label>Playback speed multiplier: </label>
           <input
             type="number"
             min="0.25"
@@ -525,6 +539,20 @@ class App extends Component<{}, IState> {
             value={this.state.playbackSpeed}
             disabled={this.state.playing}
             onChange={this.handlePlaybackSpeedChange}
+          /> */}
+          <TextField
+            id="outlined-basic"
+            label="Playback rate"
+            variant="outlined"
+            sx={{
+              '& > :not(style)': { m: 1, width: '12ch' },
+            }}
+            size="small"
+            value={this.state.playbackSpeed}
+            disabled={this.state.playing}
+            onChange={this.handlePlaybackSpeedChange}
+            type="number"
+            inputProps={{ min: 0, max: 16 }}
           />
           <Button
             variant="contained"
@@ -546,9 +574,23 @@ class App extends Component<{}, IState> {
           >
             stop playback
           </Button>
-          <p>{this.state.allStreams.length} stream(s) in view</p>
+          <Snackbar
+            open={this.state.showErrorAlert}
+            autoHideDuration={10000}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            onClose={() => { this.setState({ showErrorAlert: false}) }}
+          >
+            <Alert
+              // onClose={handleClose}
+              variant="filled"
+              severity="warning"
+              sx={{ width: '100%' }}
+            > Playback rate exceeds supported range. Value is adjusted to 16x speed.
+            </Alert>
+          </Snackbar>
         </div>
 
+        <p>{this.state.allStreams.length} stream(s) in view</p>
         <StreamViewContainer
           allStreams={this.state.allStreams}
           masterTime={this.state.masterTime}
