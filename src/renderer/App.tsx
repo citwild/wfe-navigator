@@ -501,8 +501,15 @@ class App extends Component<{}, IState> {
 
   // syncs the playbackSpeed state with number in text box
   handlePlaybackSpeedChange = (e: any) => {
-    const newSpeed: number = e.target.value;
-    this.setState({ playbackSpeed: newSpeed });
+    let newSpeed: number = e.target.value;
+    if (newSpeed > 16) {
+      newSpeed = 16;
+      this.setState({ showErrorAlert: true });
+    }
+    if (newSpeed !== this.state.playbackSpeed) {
+      this.setState({ playbackSpeed: newSpeed });
+    }
+
   };
 
   render() {
